@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { dosen } from "@/data/dosen";
+import { db } from "@/prisma/db";
 import { notFound } from "next/navigation";
 
 interface DosenDetailPageProps {
@@ -12,7 +12,7 @@ export default async function DosenDetailPage({
   params,
 }: DosenDetailPageProps) {
   const { slug } = await params;
-
+  const dosen = await db.orm.public.Dosen.all();
   const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {

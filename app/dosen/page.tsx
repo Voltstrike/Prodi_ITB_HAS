@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { dosen } from "@/data/dosen";
+import { db } from "@/prisma/db";
 
-export default function DosenPage() {
+export default async function DosenPage() {
+  const dosen = await db.orm.public.Dosen.all();
+  
   return (
     <main>
       {/* Page Header */}

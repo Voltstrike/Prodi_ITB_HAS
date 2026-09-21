@@ -1,8 +1,10 @@
-import { kurikulum } from "@/data/kurikulum";
+import { db } from "@/prisma/db";
 import { kalenderAkademik } from "@/data/kalender";
 import { informasiAkademik } from "@/data/informasiAkademik";
 
-export default function AkademikPage() {
+export default async function AkademikPage() {
+  const kurikulum = await db.orm.public.Kurikulum.all();
+
   return (
     <main>
       {/* Page Header */}
@@ -60,7 +62,6 @@ export default function AkademikPage() {
           ))}
         </div>
       </section>
-          
 
       {/* Informasi Akademik */}
       <section>

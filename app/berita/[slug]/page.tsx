@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { berita } from "@/data/berita";
+import { db } from "@/prisma/db";
 import { notFound } from "next/navigation";
 
 interface BeritaDetailPageProps {
@@ -13,6 +13,7 @@ export default async function BeritaDetailPage({
 }: BeritaDetailPageProps) {
   const { slug } = await params;
 
+  const berita = await db.orm.public.Berita.all();
   const item = berita.find((berita) => berita.slug === slug);
 
   if (!item) {

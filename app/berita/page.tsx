@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { berita } from "@/data/berita";
+import { db } from "@/prisma/db";
 
-export default function BeritaPage() {
+export default async function BeritaPage() {
+  const berita = await db.orm.public.Berita.all();
   return (
     <main>
       {/* Page Header */}

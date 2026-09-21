@@ -1,0 +1,38 @@
+// use prisma-8 
+model Dosen {
+  id             Int                        @id @default(autoincrement())
+  nama           String
+  slug           String                     @unique
+  nidn           String
+  jabatan        String
+  bidangKeahlian String
+  foto           String
+  email          String
+  pendidikan     String
+  profil         String
+  createdAt      TimestamptzString          @default(now())
+  updatedAt      temporal.updatedAtString()
+}
+
+model Berita {
+  id          Int                        @id @default(autoincrement())
+  title       String
+  date        String
+  description String
+  image       String
+  slug        String                     @unique
+  content     String
+  createdAt   TimestamptzString          @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model Kurikulum {
+  id        Int      @id @default(autoincrement())
+  kode      String   @unique
+  nama      String
+  sks       Int
+  semester  Int
+  jenis     String
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
