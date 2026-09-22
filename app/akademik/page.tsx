@@ -3,7 +3,7 @@ import { informasiAkademik } from "@/data/informasiAkademik";
 
 export default async function AkademikPage() {
   const kurikulum = await db.orm.public.Kurikulum.all();
-  const kalenderAkademik = await.db.orm.public.Kurikulum.all();
+  const kalenderAkademik = await db.orm.public.KalenderAkademik.all();
 
   return (
     <main>
