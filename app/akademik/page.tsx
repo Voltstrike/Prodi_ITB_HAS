@@ -1,9 +1,10 @@
 import { db } from "@/prisma/db";
-import { informasiAkademik } from "@/data/informasiAkademik";
 
 export default async function AkademikPage() {
   const kurikulum = await db.orm.public.Kurikulum.all();
   const kalenderAkademik = await db.orm.public.KalenderAkademik.all();
+  const informasiAkademik = await db.orm.public.InformasiAkademik.all();
+
 
   return (
     <main>

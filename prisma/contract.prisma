@@ -45,3 +45,11 @@ model KalenderAkademik {
   createdAt      TimestamptzString @default(now())
   updatedAt      temporal.updatedAtString()
 }
+
+model InformasiAkademik {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  deskripsi String
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}

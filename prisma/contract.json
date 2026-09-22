@@ -12,6 +12,10 @@
       "model": "Dosen",
       "namespace": "public"
     },
+    "informasiAkademik": {
+      "model": "InformasiAkademik",
+      "namespace": "public"
+    },
     "kalenderAkademik": {
       "model": "KalenderAkademik",
       "namespace": "public"
@@ -255,6 +259,67 @@
               },
               "namespaceId": "public",
               "table": "dosen"
+            }
+          },
+          "InformasiAkademik": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "deskripsi": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "judul": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "deskripsi": {
+                  "column": "deskripsi"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "judul": {
+                  "column": "judul"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "informasiAkademik"
             }
           },
           "KalenderAkademik": {
@@ -585,6 +650,51 @@
                 }
               ]
             },
+            "informasiAkademik": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "deskripsi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "judul": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "kalenderAkademik": {
               "columns": {
                 "createdAt": {
@@ -707,10 +817,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a23b085726c552a29cc8c90cb51db61c888930badaf8965499adaaff28e891f5"
+    "storageHash": "fc5e48f1ab5c5a7fe50887efb3a0240d37079ed9c5d2cba2024902d5297addd4"
   },
   "execution": {
-    "executionHash": "0c4288727db65ea898d9cf5d719274f0e0d8d31231ae69929cd67265000c1afa",
+    "executionHash": "24316e0c4451dfd3ce59b50f1c3842fb5f922d5c2b5a6023f5becb72164b66e9",
     "mutations": {
       "defaults": [
         {
@@ -741,6 +851,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "dosen"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "informasiAkademik"
           }
         },
         {
