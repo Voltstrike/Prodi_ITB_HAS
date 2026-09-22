@@ -1,5 +1,6 @@
 import { db } from "@/prisma/db";
 import Link from "next/link";
+import HapusDosenButton from "./components/HapusDosenButton";
 
 export default async function AdminDosenPage() {
     const dosen = await db.orm.public.Dosen.all();
@@ -27,6 +28,8 @@ export default async function AdminDosenPage() {
                         <Link href={`/admin/dosen/${item.id}`}>
                             Edit
                         </Link>
+                        
+                        <HapusDosenButton slug={item.slug} />
                     </article>
                 ))}
             </div>
