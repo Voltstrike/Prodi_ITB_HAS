@@ -12,6 +12,10 @@
       "model": "Dosen",
       "namespace": "public"
     },
+    "kalenderAkademik": {
+      "model": "KalenderAkademik",
+      "namespace": "public"
+    },
     "kurikulum": {
       "model": "Kurikulum",
       "namespace": "public"
@@ -251,6 +255,77 @@
               },
               "namespaceId": "public",
               "table": "dosen"
+            }
+          },
+          "KalenderAkademik": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "kegiatan": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tanggalMulai": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tanggalSelesai": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "kegiatan": {
+                  "column": "kegiatan"
+                },
+                "tanggalMulai": {
+                  "column": "tanggalMulai"
+                },
+                "tanggalSelesai": {
+                  "column": "tanggalSelesai"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "kalenderAkademik"
             }
           },
           "Kurikulum": {
@@ -510,6 +585,56 @@
                 }
               ]
             },
+            "kalenderAkademik": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "kegiatan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tanggalMulai": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tanggalSelesai": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "kurikulum": {
               "columns": {
                 "createdAt": {
@@ -582,10 +707,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "5cd54cf8e79a12874fa28da6de7ac76a231aa2b1f5eb5979ccf52c15eefc613c"
+    "storageHash": "a23b085726c552a29cc8c90cb51db61c888930badaf8965499adaaff28e891f5"
   },
   "execution": {
-    "executionHash": "d62a72d8a4b5dab4d1b8a6726b6665b8281b20e0826d1a2ef0e3340bfc07c678",
+    "executionHash": "0c4288727db65ea898d9cf5d719274f0e0d8d31231ae69929cd67265000c1afa",
     "mutations": {
       "defaults": [
         {
@@ -616,6 +741,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "dosen"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "kalenderAkademik"
           }
         },
         {

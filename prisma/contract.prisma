@@ -36,3 +36,12 @@ model Kurikulum {
   createdAt TimestamptzString @default(now())
   updatedAt temporal.updatedAtString()
 }
+
+model KalenderAkademik {
+  id             Int      @id @default(autoincrement())
+  kegiatan       String
+  tanggalMulai   String
+  tanggalSelesai String
+  createdAt      TimestamptzString @default(now())
+  updatedAt      temporal.updatedAtString()
+}
