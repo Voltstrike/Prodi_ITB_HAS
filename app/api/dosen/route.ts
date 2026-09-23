@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/prisma/db";
 
 export async function GET() {
@@ -7,6 +8,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  await requireAdmin();
   const body = await request.json();
 
   const {

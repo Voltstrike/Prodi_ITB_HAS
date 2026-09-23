@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { db } from "@/prisma/db";
 
 interface DosenDetailRouteProps {
@@ -29,6 +30,8 @@ export async function PUT(
   request: Request,
   { params }: DosenDetailRouteProps
 ) {
+  await requireAdmin();
+
   const { slug } = await params;
   const body = await request.json();
 
@@ -89,6 +92,7 @@ export async function DELETE(
   request: Request,
   { params }: DosenDetailRouteProps
 ) {
+  await requireAdmin();
   const { slug } = await params;
 
   const dosen = await db.orm.public.Dosen.all();
