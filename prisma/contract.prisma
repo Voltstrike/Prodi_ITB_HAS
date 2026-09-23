@@ -53,3 +53,21 @@ model InformasiAkademik {
   createdAt TimestamptzString @default(now())
   updatedAt temporal.updatedAtString()
 }
+
+model AdminUser {
+  id           Int                        @id @default(autoincrement())
+  nama         String
+  email        String                     @unique
+  passwordHash String
+  role         String
+  createdAt    TimestamptzString          @default(now())
+  updatedAt    temporal.updatedAtString()
+}
+
+model AdminSession {
+  id        Int                        @id @default(autoincrement())
+  userId    Int
+  tokenHash String                     @unique
+  expiresAt TimestamptzString
+  createdAt TimestamptzString         @default(now())
+}
