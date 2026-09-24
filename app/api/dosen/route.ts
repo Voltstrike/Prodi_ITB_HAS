@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { db } from "@/prisma/db";
 
 export async function GET() {
@@ -8,7 +8,15 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  await requireAdmin();
+  const user = await requireAdminApi();
+
+  if (!user) {
+    return Response.json(
+      { message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
   const body = await request.json();
 
   const {
@@ -23,7 +31,6 @@ export async function POST(request: Request) {
     profil,
   } = body;
 
-  // Validasi field wajib
   if (
     !nama ||
     !slug ||
@@ -42,16 +49,16 @@ export async function POST(request: Request) {
   }
 
   const dosen = await db.orm.public.Dosen.create({
-  nama,
-  slug,
-  nidn,
-  jabatan,
-  bidangKeahlian,
-  foto,
-  email,
-  pendidikan,
-  profil,
-});
+    nama,
+    slug,
+    nidn,
+    jabatan,
+    bidangKeahlian,
+    foto,
+    email,
+    pendidikan,
+    profil,
+  });
 
   return Response.json(dosen, { status: 201 });
 }

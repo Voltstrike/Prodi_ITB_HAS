@@ -1,20 +1,14 @@
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { db } from "@/prisma/db";
-
-interface DosenDetailRouteProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
 
 export async function GET(
   request: Request,
-  { params }: DosenDetailRouteProps
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
 
   const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((d) => d.slug === slug);
+  const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
     return Response.json(
@@ -28,9 +22,16 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: DosenDetailRouteProps
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  await requireAdmin();
+  const user = await requireAdminApi();
+
+  if (!user) {
+    return Response.json(
+      { message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
 
   const { slug } = await params;
   const body = await request.json();
@@ -63,7 +64,7 @@ export async function PUT(
   }
 
   const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((d) => d.slug === slug);
+  const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
     return Response.json(
@@ -73,30 +74,38 @@ export async function PUT(
   }
 
   const updated = await db.orm.public.Dosen
-  .where({ id: item.id })
-  .update({
-    nama,
-    nidn,
-    jabatan,
-    bidangKeahlian,
-    foto,
-    email,
-    pendidikan,
-    profil,
-  });
+    .where({ id: item.id })
+    .update({
+      nama,
+      nidn,
+      jabatan,
+      bidangKeahlian,
+      foto,
+      email,
+      pendidikan,
+      profil,
+    });
 
   return Response.json(updated);
 }
 
 export async function DELETE(
   request: Request,
-  { params }: DosenDetailRouteProps
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  await requireAdmin();
+  const user = await requireAdminApi();
+
+  if (!user) {
+    return Response.json(
+      { message: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
   const { slug } = await params;
 
   const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((d) => d.slug === slug);
+  const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
     return Response.json(
