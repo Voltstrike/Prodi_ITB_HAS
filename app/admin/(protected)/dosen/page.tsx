@@ -21,10 +21,7 @@ export default async function AdminDosenPage() {
                     <article key={item.id}>
                         <h2>{item.nama}</h2>
                         <p>NIDN: {item.nidn}</p>
-                        <p>Jabatan: {item.jabatan}</p>
-                        <p>Bidang Keahlian: {item.bidangKeahlian}</p>
-                        <p>Email: {item.email}</p>
-
+                        <p>Pendidikan: {item.pendidikan}</p>
                         <Link href={`/admin/dosen/${item.id}`}>
                             Edit
                         </Link>

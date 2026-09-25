@@ -23,31 +23,20 @@ export default async function DosenDetailPage({
     <main>
       <section>
         <Image
-          src={item.foto}
+          src={item.foto || "/dosen/default.jpg"}
           alt={item.nama}
           width={300}
           height={300}
         />
 
         <h1>{item.nama}</h1>
-        <p>{item.jabatan}</p>
         <p>NIDN: {item.nidn}</p>
-        <p>{item.bidangKeahlian}</p>
+        <p>Pendidikan: {item.pendidikan}</p>
       </section>
 
       <section>
         <h2>Profil</h2>
-        <p>{item.profil}</p>
-      </section>
-
-      <section>
-        <h2>Pendidikan</h2>
-        <p>{item.pendidikan}</p>
-      </section>
-
-      <section>
-        <h2>Email</h2>
-        <p>{item.email}</p>
+        <p>{item.profil || "Profil belum tersedia."}</p>
       </section>
     </main>
   );

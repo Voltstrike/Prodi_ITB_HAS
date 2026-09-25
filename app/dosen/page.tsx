@@ -24,17 +24,16 @@ export default async function DosenPage() {
           {dosen.map((item) => (
             <article key={item.id}>
               <Link href={`/dosen/${item.slug}`}>
-                <Image
-                  src={item.foto}
+              <Image
+                  src={item.foto || "/dosen/default.jpg"}
                   alt={item.nama}
                   width={200}
                   height={200}
-                />
+              />
 
                 <h3>{item.nama}</h3>
                 <p>NIDN: {item.nidn}</p>
-                <p>{item.jabatan}</p>
-                <p>{item.bidangKeahlian}</p>
+                <p>Pendidikan: {item.pendidikan}</p>
 
                 <p>Lihat Profil →</p>
               </Link>

@@ -24,27 +24,14 @@ export async function POST(request: Request) {
     nama,
     slug,
     nidn,
-    jabatan,
-    bidangKeahlian,
     foto,
-    email,
     pendidikan,
     profil,
   } = body;
 
-  if (
-    !nama ||
-    !slug ||
-    !nidn ||
-    !jabatan ||
-    !bidangKeahlian ||
-    !foto ||
-    !email ||
-    !pendidikan ||
-    !profil
-  ) {
+  if (!nama || !slug || !nidn || !pendidikan) {
     return Response.json(
-      { message: "Semua field wajib diisi" },
+      { message: "Nama, NIDN, slug, dan pendidikan wajib diisi" },
       { status: 400 }
     );
   }
@@ -53,14 +40,10 @@ export async function POST(request: Request) {
     nama,
     slug,
     nidn,
-    jabatan,
-    bidangKeahlian,
-    foto,
-    email,
+    foto: foto || null,
     pendidikan,
-    profil,
+    profil: profil || null,
   });
-
 
   await createAuditLog({
     userId: user.id,
@@ -68,6 +51,7 @@ export async function POST(request: Request) {
     entity: "Dosen",
     entityId: dosen.id,
     details: `Menambahkan dosen ${dosen.nama}`,
-});
+  });
+
   return Response.json(dosen, { status: 201 });
 }

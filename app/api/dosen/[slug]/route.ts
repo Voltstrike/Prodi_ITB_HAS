@@ -40,26 +40,14 @@ export async function PUT(
   const {
     nama,
     nidn,
-    jabatan,
-    bidangKeahlian,
     foto,
-    email,
     pendidikan,
     profil,
   } = body;
 
-  if (
-    !nama ||
-    !nidn ||
-    !jabatan ||
-    !bidangKeahlian ||
-    !foto ||
-    !email ||
-    !pendidikan ||
-    !profil
-  ) {
+  if (!nama || !nidn || !pendidikan) {
     return Response.json(
-      { message: "Semua field wajib diisi" },
+      { message: "Nama, NIDN, dan pendidikan wajib diisi" },
       { status: 400 }
     );
   }
@@ -79,21 +67,18 @@ export async function PUT(
     .update({
       nama,
       nidn,
-      jabatan,
-      bidangKeahlian,
-      foto,
-      email,
+      foto: foto || null,
       pendidikan,
-      profil,
+      profil: profil || null,
     });
 
-await createAuditLog({
-  userId: user.id,
-  action: "UPDATE",
-  entity: "Dosen",
-  entityId: item.id,
-  details: `Mengubah data dosen dengan ID ${item.id}`,
-});
+  await createAuditLog({
+    userId: user.id,
+    action: "UPDATE",
+    entity: "Dosen",
+    entityId: item.id,
+    details: `Mengubah data dosen dengan ID ${item.id}`,
+  });
 
   return Response.json(updated);
 }

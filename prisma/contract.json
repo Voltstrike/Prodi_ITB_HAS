@@ -367,13 +367,6 @@
           },
           "Dosen": {
             "fields": {
-              "bidangKeahlian": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
               "createdAt": {
                 "nullable": false,
                 "type": {
@@ -381,15 +374,8 @@
                   "kind": "scalar"
                 }
               },
-              "email": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
               "foto": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -399,13 +385,6 @@
                 "nullable": false,
                 "type": {
                   "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "jabatan": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -431,7 +410,7 @@
                 }
               },
               "profil": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -455,23 +434,14 @@
             "relations": {},
             "storage": {
               "fields": {
-                "bidangKeahlian": {
-                  "column": "bidangKeahlian"
-                },
                 "createdAt": {
                   "column": "createdAt"
-                },
-                "email": {
-                  "column": "email"
                 },
                 "foto": {
                   "column": "foto"
                 },
                 "id": {
                   "column": "id"
-                },
-                "jabatan": {
-                  "column": "jabatan"
                 },
                 "nama": {
                   "column": "nama"
@@ -968,11 +938,6 @@
             },
             "dosen": {
               "columns": {
-                "bidangKeahlian": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": false
-                },
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "default": {
@@ -982,15 +947,10 @@
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
-                "email": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": false
-                },
                 "foto": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "id": {
                   "codecId": "pg/int4@1",
@@ -999,11 +959,6 @@
                     "kind": "function"
                   },
                   "nativeType": "int4",
-                  "nullable": false
-                },
-                "jabatan": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
                   "nullable": false
                 },
                 "nama": {
@@ -1024,7 +979,7 @@
                 "profil": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
                 },
                 "slug": {
                   "codecId": "pg/text@1",
@@ -1219,7 +1174,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "8463f2b2aa098edf6ff1f642f4d302eb776a6e9b847586e946c766e7e07bdc93"
+    "storageHash": "30d14f64b264e992bc36caba3271cd19dfba45b6d684fe4602ef8e27a58ddec6"
   },
   "execution": {
     "executionHash": "245a1f70a4247c87e0bb6fffacec1b3ef1493f18434e712c6e758ee4ced7431a",

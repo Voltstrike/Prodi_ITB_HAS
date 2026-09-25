@@ -4,12 +4,9 @@ model Dosen {
   nama           String
   slug           String                     @unique
   nidn           String
-  jabatan        String
-  bidangKeahlian String
-  foto           String
-  email          String
+  foto           String?
   pendidikan     String
-  profil         String
+  profil         String?
   createdAt      TimestamptzString          @default(now())
   updatedAt      temporal.updatedAtString()
 }
