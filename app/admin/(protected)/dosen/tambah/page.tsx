@@ -10,18 +10,13 @@ export default function TambahDosenPage() {
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
-        const jabatan = form.get("jabatan")?.toString() ?? "";
-        const bidangKeahlian = form.get("bidangKeahlian")?.toString() ?? "";
-        const foto = form.get("foto")?.toString() ?? "";
-        const email = form.get("email")?.toString() ?? "";
         const pendidikan = form.get("pendidikan")?.toString() ?? "";
-        const profil = form.get("profil")?.toString() ?? "";
 
         const slug = nama
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
 
         const response = await fetch("/api/dosen", {
             method: "POST",
@@ -32,12 +27,7 @@ export default function TambahDosenPage() {
                 nama,
                 slug,
                 nidn,
-                jabatan,
-                bidangKeahlian,
-                foto,
-                email,
                 pendidikan,
-                profil, 
             }),
         });
 
@@ -58,42 +48,22 @@ export default function TambahDosenPage() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Nama</label>
-                    <input name="nama" required/>
+                    <input name="nama" required />
                 </div>
 
                 <div>
                     <label>NIDN</label>
-                    <input name="nidn" required/>
-                </div>
-
-                <div>
-                    <label>Jabatan</label>
-                    <input name="jabatan" required/>
-                </div>
-
-                <div>
-                    <label>Bidang Keahlian</label>
-                    <input name="bidangKeahlian" required/>
-                </div>                
-
-                <div>
-                    <label>Foto</label>
-                    <input name="foto" required/>
-                </div>
-
-                <div>
-                    <label>Email</label>
-                    <input name="email" required/>
+                    <input name="nidn" required />
                 </div>
 
                 <div>
                     <label>Pendidikan</label>
-                    <input name="pendidikan" required/>
-                </div>
-
-                <div>
-                    <label>Profil</label>
-                    <textarea name="profil" required/>
+                    <select name="pendidikan" required>
+                        <option value="">Pilih pendidikan</option>
+                        <option value="S1">S1</option>
+                        <option value="S2">S2</option>
+                        <option value="S3">S3</option>
+                    </select>
                 </div>
 
                 <button type="submit">Simpan</button>
