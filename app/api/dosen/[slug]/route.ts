@@ -1,3 +1,4 @@
+import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { db } from "@/prisma/db";
 
@@ -86,6 +87,14 @@ export async function PUT(
       profil,
     });
 
+await createAuditLog({
+  userId: user.id,
+  action: "UPDATE",
+  entity: "Dosen",
+  entityId: item.id,
+  details: `Mengubah data dosen dengan ID ${item.id}`,
+});
+
   return Response.json(updated);
 }
 
@@ -117,6 +126,14 @@ export async function DELETE(
   await db.orm.public.Dosen
     .where({ id: item.id })
     .delete();
+
+  await createAuditLog({
+    userId: user.id,
+    action: "DELETE",
+    entity: "Dosen",
+    entityId: item.id,
+    details: `Menghapus data dosen dengan ID ${item.id}`,
+  });
 
   return Response.json({
     message: "Dosen berhasil dihapus",

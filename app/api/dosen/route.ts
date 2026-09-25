@@ -1,3 +1,4 @@
+import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { db } from "@/prisma/db";
 
@@ -60,5 +61,13 @@ export async function POST(request: Request) {
     profil,
   });
 
+
+  await createAuditLog({
+    userId: user.id,
+    action: "CREATE",
+    entity: "Dosen",
+    entityId: dosen.id,
+    details: `Menambahkan dosen ${dosen.nama}`,
+});
   return Response.json(dosen, { status: 201 });
 }

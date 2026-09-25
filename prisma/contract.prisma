@@ -71,3 +71,13 @@ model AdminSession {
   expiresAt TimestamptzString
   createdAt TimestamptzString         @default(now())
 }
+
+model AuditLog {
+  id        Int               @id @default(autoincrement())
+  userId    Int
+  action    String
+  entity    String
+  entityId  Int
+  details   String
+  createdAt TimestamptzString @default(now())
+}
