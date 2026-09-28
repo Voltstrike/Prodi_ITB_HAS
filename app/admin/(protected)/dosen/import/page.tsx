@@ -321,7 +321,29 @@ export default function ImportDosenPage() {
 
             {error && <p>{error}</p>}
 
-            {success && <p>{success}</p>}
+            {success && (
+                <div>
+                    <p>{success}</p>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.href = "/admin/dosen";
+                        }}
+                    >
+                        Kembali ke Daftar Dosen
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            window.location.reload();
+                        }}
+                    >
+                        Import File Lain
+                    </button>
+                </div>
+            )}
 
             {rows.length > 0 && (
                 <>
