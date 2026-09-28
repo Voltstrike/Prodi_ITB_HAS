@@ -88,39 +88,42 @@ export async function POST(request: Request) {
 
         const imported = [];
 
-        for (const row of rows) {
-            const nama = String(row.nama).trim();
-            const nidn = String(row.nidn).trim();
-            const pendidikan = String(row.pendidikan).trim();
+        await db.transaction(async (tx) => {
+            for (const row of rows) {
+                const nama = String(row.nama).trim();
+                const nidn = String(row.nidn).trim();
+                const pendidikan = String(row.pendidikan).trim();
 
-            const baseSlug = generateSlug(nama);
-            let slug = baseSlug;
-            let suffix = 2;
+                const baseSlug = generateSlug(nama);
+                let slug = baseSlug;
+                let suffix = 2;
 
-            while (existingSlugs.has(slug)) {
-                slug = `${baseSlug}-${suffix}`;
-                suffix += 1;
+                while (existingSlugs.has(slug)) {
+                    slug = `${baseSlug}-${suffix}`;
+                    suffix += 1;
+                }
+
+                existingSlugs.add(slug);
+
+                const dosenBaru = await tx.orm.public.Dosen.create({
+                    nama,
+                    slug,
+                    nidn,
+                    pendidikan,
+                });
+
+                await createAuditLog({
+                    userId: user.id,
+                    action: "CREATE",
+                    entity: "Dosen",
+                    entityId: dosenBaru.id,
+                    details: `Import Excel: ${nama} (${nidn})`,
+                    dbClient: tx,
+                });
+
+                imported.push(dosenBaru);
             }
-
-            existingSlugs.add(slug);
-
-            const dosenBaru = await db.orm.public.Dosen.create({
-                nama,
-                slug,
-                nidn,
-                pendidikan,
-            });
-
-            await createAuditLog({
-                userId: user.id,
-                action: "CREATE",
-                entity: "Dosen",
-                entityId: dosenBaru.id,
-                details: `Import Excel: ${nama} (${nidn})`,
-            });
-
-            imported.push(dosenBaru);
-        }
+        });
 
         return Response.json({
             message: "Import berhasil",

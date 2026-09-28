@@ -1,11 +1,14 @@
 import { db } from "@/prisma/db";
 
+type AuditDb = Pick<typeof db, "orm">;
+
 type CreateAuditLogInput = {
     userId: number;
     action: string;
     entity: string;
     entityId: number;
     details: string;
+    dbClient?: AuditDb;
 };
 
 export async function createAuditLog({
@@ -14,8 +17,9 @@ export async function createAuditLog({
     entity,
     entityId,
     details,
+    dbClient = db,
 }: CreateAuditLogInput) {
-    return db.orm.public.AuditLog.create({
+    return dbClient.orm.public.AuditLog.create({
         userId,
         action,
         entity,
