@@ -30,6 +30,23 @@ export default function ImportDosenPage() {
     const [importing, setImporting] = useState(false);
     const [success, setSuccess] = useState("");
 
+    function handleDownloadTemplate() {
+    const worksheet = XLSX.utils.aoa_to_sheet([
+        ["nama", "nidn", "pendidikan"],
+        ["", "", ""],
+    ]);
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Dosen"
+    );
+
+    XLSX.writeFile(workbook, "template-import-dosen.xlsx");
+}
+
     async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
 
@@ -279,6 +296,13 @@ export default function ImportDosenPage() {
     return (
         <main>
             <h1>Import Dosen</h1>
+
+            <button
+                type="button"
+                onClick={handleDownloadTemplate}
+            >
+                Download Template Excel
+            </button>
 
             <p>
                 Upload file Excel dengan kolom: nama, nidn, pendidikan.
