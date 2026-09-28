@@ -345,7 +345,7 @@ export default function ImportDosenPage() {
                 </div>
             )}
 
-            {rows.length > 0 && (
+            {rows.length > 0 && !success && (
                 <>
                     <p>
                         Total: {rows.length} data | Valid: {validRows.length} |
