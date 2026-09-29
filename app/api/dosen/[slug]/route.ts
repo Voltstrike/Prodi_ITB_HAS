@@ -114,14 +114,17 @@ export async function DELETE(
     return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
   }
 
-  await db.orm.public.Dosen.where({ id: item.id }).delete();
+  await db.transaction(async (tx) => {
+    await tx.orm.public.Dosen.where({ id: item.id }).delete();
 
-  await createAuditLog({
-    userId: user.id,
-    action: "DELETE",
-    entity: "Dosen",
-    entityId: item.id,
-    details: `Menghapus data dosen dengan ID ${item.id}`,
+    await createAuditLog({
+      userId: user.id,
+      action: "DELETE",
+      entity: "Dosen",
+      entityId: item.id,
+      details: `Menghapus data dosen dengan ID ${item.id}`,
+      dbClient: tx,
+    });
   });
 
   return Response.json({
