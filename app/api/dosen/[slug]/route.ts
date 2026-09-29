@@ -4,7 +4,7 @@ import { db } from "@/prisma/db";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
 
@@ -12,10 +12,7 @@ export async function GET(
   const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
-    return Response.json(
-      { message: "Dosen tidak ditemukan" },
-      { status: 404 }
-    );
+    return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
   }
 
   return Response.json(item);
@@ -23,32 +20,32 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const user = await requireAdminApi();
 
   if (!user) {
-    return Response.json(
-      { message: "Unauthorized" },
-      { status: 401 }
-    );
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const { slug } = await params;
   const body = await request.json();
 
-  const {
-    nama,
-    nidn,
-    foto,
-    pendidikan,
-    profil,
-  } = body;
+  const { nama, nidn, foto, pendidikan, profil } = body;
 
   if (!nama || !nidn || !pendidikan) {
     return Response.json(
       { message: "Nama, NIDN, dan pendidikan wajib diisi" },
-      { status: 400 }
+      { status: 400 },
+    );
+  }
+
+  if (!["S1", "S2", "S3"].includes(pendidikan)) {
+    return Response.json(
+      {
+        message: "Pendidikan harus S1, S2, atau S3",
+      },
+      { status: 400 },
     );
   }
 
@@ -56,15 +53,26 @@ export async function PUT(
   const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
+    return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
+  }
+
+  const duplicate = dosen.find(
+    (dosen) => dosen.nidn === nidn && dosen.id !== item.id,
+  );
+
+  if (duplicate) {
     return Response.json(
-      { message: "Dosen tidak ditemukan" },
-      { status: 404 }
+      {
+        message: `NIDN ${nidn} sudah terdaftar`,
+      },
+      { status: 400 },
     );
   }
 
-  const updated = await db.orm.public.Dosen
-    .where({ id: item.id })
-    .update({
+  const updated = await db.transaction(async (tx) => {
+    const dosenUpdated = await tx.orm.public.Dosen.where({
+      id: item.id,
+    }).update({
       nama,
       nidn,
       foto: foto || null,
@@ -72,12 +80,16 @@ export async function PUT(
       profil: profil || null,
     });
 
-  await createAuditLog({
-    userId: user.id,
-    action: "UPDATE",
-    entity: "Dosen",
-    entityId: item.id,
-    details: `Mengubah data dosen dengan ID ${item.id}`,
+    await createAuditLog({
+      userId: user.id,
+      action: "UPDATE",
+      entity: "Dosen",
+      entityId: item.id,
+      details: `Mengubah data dosen dengan ID ${item.id}`,
+      dbClient: tx,
+    });
+
+    return dosenUpdated;
   });
 
   return Response.json(updated);
@@ -85,15 +97,12 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const user = await requireAdminApi();
 
   if (!user) {
-    return Response.json(
-      { message: "Unauthorized" },
-      { status: 401 }
-    );
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const { slug } = await params;
@@ -102,15 +111,10 @@ export async function DELETE(
   const item = dosen.find((dosen) => dosen.slug === slug);
 
   if (!item) {
-    return Response.json(
-      { message: "Dosen tidak ditemukan" },
-      { status: 404 }
-    );
+    return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
   }
 
-  await db.orm.public.Dosen
-    .where({ id: item.id })
-    .delete();
+  await db.orm.public.Dosen.where({ id: item.id }).delete();
 
   await createAuditLog({
     userId: user.id,
