@@ -2,56 +2,104 @@ import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { db } from "@/prisma/db";
 
-export async function GET() {
-  const dosen = await db.orm.public.Dosen.all();
+function generateSlug(nama: string) {
+    return nama
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
 
-  return Response.json(dosen);
+export async function GET() {
+    const dosen = await db.orm.public.Dosen.all();
+
+    return Response.json(dosen);
 }
 
 export async function POST(request: Request) {
-  const user = await requireAdminApi();
+    const user = await requireAdminApi();
 
-  if (!user) {
-    return Response.json(
-      { message: "Unauthorized" },
-      { status: 401 }
-    );
-  }
+    if (!user) {
+        return Response.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+        );
+    }
 
-  const body = await request.json();
+    try {
+        const body = await request.json();
 
-  const {
-    nama,
-    slug,
-    nidn,
-    foto,
-    pendidikan,
-    profil,
-  } = body;
+        const nama = String(body.nama ?? "").trim();
+        const nidn = String(body.nidn ?? "").trim();
+        const pendidikan = String(body.pendidikan ?? "").trim();
 
-  if (!nama || !slug || !nidn || !pendidikan) {
-    return Response.json(
-      { message: "Nama, NIDN, slug, dan pendidikan wajib diisi" },
-      { status: 400 }
-    );
-  }
+        if (!nama || !nidn || !pendidikan) {
+            return Response.json(
+                { message: "Nama, NIDN, dan pendidikan wajib diisi" },
+                { status: 400 }
+            );
+        }
 
-  const dosen = await db.orm.public.Dosen.create({
-    nama,
-    slug,
-    nidn,
-    foto: foto || null,
-    pendidikan,
-    profil: profil || null,
-  });
+        if (!["S1", "S2", "S3"].includes(pendidikan)) {
+            return Response.json(
+                {
+                    message: "Pendidikan harus S1, S2, atau S3",
+                },
+                { status: 400 }
+            );
+        }
 
-  await createAuditLog({
-    userId: user.id,
-    action: "CREATE",
-    entity: "Dosen",
-    entityId: dosen.id,
-    details: `Menambahkan dosen ${dosen.nama}`,
-  });
+        const dosen = await db.orm.public.Dosen.all();
 
-  return Response.json(dosen, { status: 201 });
+        if (dosen.some((item) => item.nidn === nidn)) {
+            return Response.json(
+                {
+                    message: `NIDN ${nidn} sudah terdaftar`,
+                },
+                { status: 400 }
+            );
+        }
+
+        const existingSlugs = new Set(
+            dosen.map((item) => item.slug)
+        );
+
+        const baseSlug = generateSlug(nama);
+        let slug = baseSlug;
+        let suffix = 2;
+
+        while (existingSlugs.has(slug)) {
+            slug = `${baseSlug}-${suffix}`;
+            suffix += 1;
+        }
+
+        const created = await db.transaction(async (tx) => {
+            const dosenBaru = await tx.orm.public.Dosen.create({
+                nama,
+                slug,
+                nidn,
+                pendidikan,
+            });
+
+            await createAuditLog({
+                userId: user.id,
+                action: "CREATE",
+                entity: "Dosen",
+                entityId: dosenBaru.id,
+                details: `Menambahkan dosen ${dosenBaru.nama}`,
+                dbClient: tx,
+            });
+
+            return dosenBaru;
+        });
+
+        return Response.json(created, { status: 201 });
+    } catch (error) {
+        console.error("CREATE DOSEN ERROR:", error);
+
+        return Response.json(
+            { message: "Gagal menambahkan dosen" },
+            { status: 500 }
+        );
+    }
 }
