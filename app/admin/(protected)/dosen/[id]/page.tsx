@@ -7,12 +7,9 @@ interface Dosen {
     slug: string;
     nama: string;
     nidn: string;
-    jabatan: string;
-    bidangKeahlian: string;
-    foto: string;
-    email: string;
+    foto: string | null;
     pendidikan: string;
-    profil: string;
+    profil: string | null;
 }
 
 export default function EditDosenPage({
@@ -48,18 +45,19 @@ export default function EditDosenPage({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        if (!dosen) {
+            return;
+        }
+
         const form = new FormData(event.currentTarget);
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
-        const jabatan = form.get("jabatan")?.toString() ?? "";
-        const bidangKeahlian = form.get("bidangKeahlian")?.toString() ?? "";
         const foto = form.get("foto")?.toString() ?? "";
-        const email = form.get("email")?.toString() ?? "";
         const pendidikan = form.get("pendidikan")?.toString() ?? "";
         const profil = form.get("profil")?.toString() ?? "";
 
-        const response = await fetch(`/api/dosen/${dosen!.slug}`, {
+        const response = await fetch(`/api/dosen/${dosen.slug}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -67,23 +65,20 @@ export default function EditDosenPage({
             body: JSON.stringify({
                 nama,
                 nidn,
-                jabatan,
-                bidangKeahlian,
                 foto,
-                email,
                 pendidikan,
                 profil,
             }),
         });
 
-if (!response.ok) {
-    const error = await response.json();
-    alert(error.message ?? "Gagal mengubah data dosen");
-    return;
-}
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.message ?? "Gagal mengubah data dosen");
+            return;
+        }
 
-alert("Data dosen berhasil diubah");
-window.location.href = "/admin/dosen";
+        alert("Data dosen berhasil diubah");
+        window.location.href = "/admin/dosen";
     }
 
     return (
@@ -93,49 +88,41 @@ window.location.href = "/admin/dosen";
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Nama</label>
-                    <input name="nama" defaultValue={dosen.nama} required />
-                </div>
-
-                <div>
-                    <label>NIDN</label>
-                    <input name="nidn" defaultValue={dosen.nidn} required />
-                </div>
-
-                <div>
-                    <label>Jabatan</label>
-                    <input name="jabatan" defaultValue={dosen.jabatan} required />
-                </div>
-
-                <div>
-                    <label>Bidang Keahlian</label>
                     <input
-                        name="bidangKeahlian"
-                        defaultValue={dosen.bidangKeahlian}
+                        name="nama"
+                        defaultValue={dosen.nama}
                         required
                     />
                 </div>
 
                 <div>
-                    <label>Foto</label>
-                    <input name="foto" defaultValue={dosen.foto} required />
-                </div>
-
-                <div>
-                    <label>Email</label>
+                    <label>NIDN</label>
                     <input
-                        name="email"
-                        type="email"
-                        defaultValue={dosen.email}
+                        name="nidn"
+                        defaultValue={dosen.nidn}
                         required
                     />
                 </div>
 
                 <div>
                     <label>Pendidikan</label>
-                    <input
+                    <select
                         name="pendidikan"
                         defaultValue={dosen.pendidikan}
                         required
+                    >
+                        <option value="">Pilih pendidikan</option>
+                        <option value="S1">S1</option>
+                        <option value="S2">S2</option>
+                        <option value="S3">S3</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Foto</label>
+                    <input
+                        name="foto"
+                        defaultValue={dosen.foto ?? ""}
                     />
                 </div>
 
@@ -143,12 +130,13 @@ window.location.href = "/admin/dosen";
                     <label>Profil</label>
                     <textarea
                         name="profil"
-                        defaultValue={dosen.profil}
-                        required
+                        defaultValue={dosen.profil ?? ""}
                     />
                 </div>
 
-                <button type="submit">Simpan Perubahan</button>
+                <button type="submit">
+                    Simpan Perubahan
+                </button>
             </form>
         </main>
     );
