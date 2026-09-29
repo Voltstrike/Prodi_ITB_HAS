@@ -19,115 +19,163 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ slug: string }> },
+    request: Request,
+    { params }: { params: Promise<{ slug: string }> }
 ) {
-  const user = await requireAdminApi();
+    const user = await requireAdminApi();
 
-  if (!user) {
-    return Response.json({ message: "Unauthorized" }, { status: 401 });
-  }
+    if (!user) {
+        return Response.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+        );
+    }
 
-  const { slug } = await params;
-  const body = await request.json();
+    try {
+        const { slug } = await params;
+        const body = await request.json();
 
-  const { nama, nidn, foto, pendidikan, profil } = body;
+        const {
+            nama,
+            nidn,
+            foto,
+            pendidikan,
+            profil,
+        } = body;
 
-  if (!nama || !nidn || !pendidikan) {
-    return Response.json(
-      { message: "Nama, NIDN, dan pendidikan wajib diisi" },
-      { status: 400 },
-    );
-  }
+        if (!nama || !nidn || !pendidikan) {
+            return Response.json(
+                {
+                    message:
+                        "Nama, NIDN, dan pendidikan wajib diisi",
+                },
+                { status: 400 }
+            );
+        }
 
-  if (!["S1", "S2", "S3"].includes(pendidikan)) {
-    return Response.json(
-      {
-        message: "Pendidikan harus S1, S2, atau S3",
-      },
-      { status: 400 },
-    );
-  }
+        if (!["S1", "S2", "S3"].includes(pendidikan)) {
+            return Response.json(
+                {
+                    message: "Pendidikan harus S1, S2, atau S3",
+                },
+                { status: 400 }
+            );
+        }
 
-  const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((dosen) => dosen.slug === slug);
+        const dosen = await db.orm.public.Dosen.all();
+        const item = dosen.find(
+            (dosen) => dosen.slug === slug
+        );
 
-  if (!item) {
-    return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
-  }
+        if (!item) {
+            return Response.json(
+                { message: "Dosen tidak ditemukan" },
+                { status: 404 }
+            );
+        }
 
-  const duplicate = dosen.find(
-    (dosen) => dosen.nidn === nidn && dosen.id !== item.id,
-  );
+        const duplicate = dosen.find(
+            (dosen) =>
+                dosen.nidn === nidn &&
+                dosen.id !== item.id
+        );
 
-  if (duplicate) {
-    return Response.json(
-      {
-        message: `NIDN ${nidn} sudah terdaftar`,
-      },
-      { status: 400 },
-    );
-  }
+        if (duplicate) {
+            return Response.json(
+                {
+                    message: `NIDN ${nidn} sudah terdaftar`,
+                },
+                { status: 400 }
+            );
+        }
 
-  const updated = await db.transaction(async (tx) => {
-    const dosenUpdated = await tx.orm.public.Dosen.where({
-      id: item.id,
-    }).update({
-      nama,
-      nidn,
-      foto: foto || null,
-      pendidikan,
-      profil: profil || null,
-    });
+        const updated = await db.transaction(async (tx) => {
+            const dosenUpdated =
+                await tx.orm.public.Dosen
+                    .where({ id: item.id })
+                    .update({
+                        nama,
+                        nidn,
+                        foto: foto || null,
+                        pendidikan,
+                        profil: profil || null,
+                    });
 
-    await createAuditLog({
-      userId: user.id,
-      action: "UPDATE",
-      entity: "Dosen",
-      entityId: item.id,
-      details: `Mengubah data dosen dengan ID ${item.id}`,
-      dbClient: tx,
-    });
+            await createAuditLog({
+                userId: user.id,
+                action: "UPDATE",
+                entity: "Dosen",
+                entityId: item.id,
+                details: `Mengubah data dosen dengan ID ${item.id}`,
+                dbClient: tx,
+            });
 
-    return dosenUpdated;
-  });
+            return dosenUpdated;
+        });
 
-  return Response.json(updated);
+        return Response.json(updated);
+    } catch (error) {
+        console.error("UPDATE DOSEN ERROR:", error);
+
+        return Response.json(
+            { message: "Gagal mengubah data dosen" },
+            { status: 500 }
+        );
+    }
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ slug: string }> },
+    request: Request,
+    { params }: { params: Promise<{ slug: string }> }
 ) {
-  const user = await requireAdminApi();
+    const user = await requireAdminApi();
 
-  if (!user) {
-    return Response.json({ message: "Unauthorized" }, { status: 401 });
-  }
+    if (!user) {
+        return Response.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+        );
+    }
 
-  const { slug } = await params;
+    try {
+        const { slug } = await params;
 
-  const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((dosen) => dosen.slug === slug);
+        const dosen = await db.orm.public.Dosen.all();
+        const item = dosen.find(
+            (dosen) => dosen.slug === slug
+        );
 
-  if (!item) {
-    return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
-  }
+        if (!item) {
+            return Response.json(
+                { message: "Dosen tidak ditemukan" },
+                { status: 404 }
+            );
+        }
 
-  await db.transaction(async (tx) => {
-    await tx.orm.public.Dosen.where({ id: item.id }).delete();
+        await db.transaction(async (tx) => {
+            await tx.orm.public.Dosen
+                .where({ id: item.id })
+                .delete();
 
-    await createAuditLog({
-      userId: user.id,
-      action: "DELETE",
-      entity: "Dosen",
-      entityId: item.id,
-      details: `Menghapus data dosen dengan ID ${item.id}`,
-      dbClient: tx,
-    });
-  });
+            await createAuditLog({
+                userId: user.id,
+                action: "DELETE",
+                entity: "Dosen",
+                entityId: item.id,
+                details: `Menghapus data dosen dengan ID ${item.id}`,
+                dbClient: tx,
+            });
+        });
 
-  return Response.json({
-    message: "Dosen berhasil dihapus",
-  });
+        return Response.json({
+            message: "Dosen berhasil dihapus",
+        });
+    } catch (error) {
+        console.error("DELETE DOSEN ERROR:", error);
+
+        return Response.json(
+            { message: "Gagal menghapus data dosen" },
+            { status: 500 }
+        );
+    }
 }
