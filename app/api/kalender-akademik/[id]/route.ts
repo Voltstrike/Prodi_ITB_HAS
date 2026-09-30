@@ -177,7 +177,7 @@ export async function DELETE(
                 .where({ id: kalenderId })
                 .all();
         
-        const existing = existingRows[0];
+        const existing = existingRows[0];   
 
         if (!existing) {
             return Response.json(
