@@ -5,7 +5,9 @@ model Dosen {
   slug           String                     @unique
   nidn           String
   foto           String?
-  pendidikan     String
+  pendidikanS1   String?
+  pendidikanS2   String?
+  pendidikanS3   String?
   profil         String?
   createdAt      TimestamptzString          @default(now())
   updatedAt      temporal.updatedAtString()

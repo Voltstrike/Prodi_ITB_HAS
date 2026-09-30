@@ -10,13 +10,12 @@ export default function TambahDosenPage() {
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
-        const pendidikan = form.get("pendidikan")?.toString() ?? "";
-
-        const slug = nama
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
+        const pendidikanS1 =
+            form.get("pendidikanS1")?.toString() ?? "";
+        const pendidikanS2 =
+            form.get("pendidikanS2")?.toString() ?? "";
+        const pendidikanS3 =
+            form.get("pendidikanS3")?.toString() ?? "";
 
         const response = await fetch("/api/dosen", {
             method: "POST",
@@ -25,9 +24,10 @@ export default function TambahDosenPage() {
             },
             body: JSON.stringify({
                 nama,
-                slug,
                 nidn,
-                pendidikan,
+                pendidikanS1,
+                pendidikanS2,
+                pendidikanS3,
             }),
         });
 
@@ -57,13 +57,27 @@ export default function TambahDosenPage() {
                 </div>
 
                 <div>
-                    <label>Pendidikan</label>
-                    <select name="pendidikan" required>
-                        <option value="">Pilih pendidikan</option>
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
-                    </select>
+                    <label>S1</label>
+                    <input
+                        name="pendidikanS1"
+                        placeholder="Nama perguruan tinggi"
+                    />
+                </div>
+
+                <div>
+                    <label>S2</label>
+                    <input
+                        name="pendidikanS2"
+                        placeholder="Nama perguruan tinggi"
+                    />
+                </div>
+
+                <div>
+                    <label>S3</label>
+                    <input
+                        name="pendidikanS3"
+                        placeholder="Nama perguruan tinggi"
+                    />
                 </div>
 
                 <button type="submit">Simpan</button>

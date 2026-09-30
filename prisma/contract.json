@@ -402,8 +402,22 @@
                   "kind": "scalar"
                 }
               },
-              "pendidikan": {
-                "nullable": false,
+              "pendidikanS1": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "pendidikanS2": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "pendidikanS3": {
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -449,8 +463,14 @@
                 "nidn": {
                   "column": "nidn"
                 },
-                "pendidikan": {
-                  "column": "pendidikan"
+                "pendidikanS1": {
+                  "column": "pendidikanS1"
+                },
+                "pendidikanS2": {
+                  "column": "pendidikanS2"
+                },
+                "pendidikanS3": {
+                  "column": "pendidikanS3"
                 },
                 "profil": {
                   "column": "profil"
@@ -971,10 +991,20 @@
                   "nativeType": "text",
                   "nullable": false
                 },
-                "pendidikan": {
+                "pendidikanS1": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
-                  "nullable": false
+                  "nullable": true
+                },
+                "pendidikanS2": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "pendidikanS3": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "profil": {
                   "codecId": "pg/text@1",
@@ -1174,7 +1204,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "30d14f64b264e992bc36caba3271cd19dfba45b6d684fe4602ef8e27a58ddec6"
+    "storageHash": "41b3a595eb18c3bd2586f0c3317d32d861ce6fecb14139014454a2e5aa87a187"
   },
   "execution": {
     "executionHash": "245a1f70a4247c87e0bb6fffacec1b3ef1493f18434e712c6e758ee4ced7431a",

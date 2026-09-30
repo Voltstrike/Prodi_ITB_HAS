@@ -1,0 +1,44 @@
+[
+  {
+    "id": "dropColumn.dosen.pendidikan",
+    "label": "Drop column \"pendidikan\" from \"dosen\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pendidikan",
+        "table": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pendidikan\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikan"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"pendidikan\"",
+        "sql": "ALTER TABLE \"public\".\"dosen\" DROP COLUMN \"pendidikan\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pendidikan\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikan"
+        ]
+      }
+    ]
+  }
+]

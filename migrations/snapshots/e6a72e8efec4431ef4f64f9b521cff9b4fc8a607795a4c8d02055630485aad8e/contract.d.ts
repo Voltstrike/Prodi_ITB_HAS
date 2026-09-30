@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'41b3a595eb18c3bd2586f0c3317d32d861ce6fecb14139014454a2e5aa87a187'>;
+  StorageHashBase<'e6a72e8efec4431ef4f64f9b521cff9b4fc8a607795a4c8d02055630485aad8e'>;
 export type ExecutionHash =
   ExecutionHashBase<'245a1f70a4247c87e0bb6fffacec1b3ef1493f18434e712c6e758ee4ced7431a'>;
 export type ProfileHash =
@@ -284,6 +284,7 @@ export type FieldOutputTypes = {
       readonly slug: CodecTypes['pg/text@1']['output'];
       readonly nidn: CodecTypes['pg/text@1']['output'];
       readonly foto: CodecTypes['pg/text@1']['output'] | null;
+      readonly pendidikan: CodecTypes['pg/text@1']['output'];
       readonly pendidikanS1: CodecTypes['pg/text@1']['output'] | null;
       readonly pendidikanS2: CodecTypes['pg/text@1']['output'] | null;
       readonly pendidikanS3: CodecTypes['pg/text@1']['output'] | null;
@@ -362,6 +363,7 @@ export type FieldInputTypes = {
       readonly slug: CodecTypes['pg/text@1']['input'];
       readonly nidn: CodecTypes['pg/text@1']['input'];
       readonly foto: CodecTypes['pg/text@1']['input'] | null;
+      readonly pendidikan: CodecTypes['pg/text@1']['input'];
       readonly pendidikanS1: CodecTypes['pg/text@1']['input'] | null;
       readonly pendidikanS2: CodecTypes['pg/text@1']['input'] | null;
       readonly pendidikanS3: CodecTypes['pg/text@1']['input'] | null;
@@ -440,6 +442,7 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly nama: CodecTypes['pg/text@1']['output'];
       readonly nidn: CodecTypes['pg/text@1']['output'];
+      readonly pendidikan: CodecTypes['pg/text@1']['output'];
       readonly pendidikanS1: CodecTypes['pg/text@1']['output'] | null;
       readonly pendidikanS2: CodecTypes['pg/text@1']['output'] | null;
       readonly pendidikanS3: CodecTypes['pg/text@1']['output'] | null;
@@ -518,6 +521,7 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly nama: CodecTypes['pg/text@1']['input'];
       readonly nidn: CodecTypes['pg/text@1']['input'];
+      readonly pendidikan: CodecTypes['pg/text@1']['input'];
       readonly pendidikanS1: CodecTypes['pg/text@1']['input'] | null;
       readonly pendidikanS2: CodecTypes['pg/text@1']['input'] | null;
       readonly pendidikanS3: CodecTypes['pg/text@1']['input'] | null;
@@ -560,6 +564,7 @@ export namespace Models {
     slug: CodecTypes['pg/text@1']['output'];
     nidn: CodecTypes['pg/text@1']['output'];
     foto: CodecTypes['pg/text@1']['output'] | null;
+    pendidikan: CodecTypes['pg/text@1']['output'];
     pendidikanS1: CodecTypes['pg/text@1']['output'] | null;
     pendidikanS2: CodecTypes['pg/text@1']['output'] | null;
     pendidikanS3: CodecTypes['pg/text@1']['output'] | null;
@@ -891,6 +896,11 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: true;
+                };
+                readonly pendidikan: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
                 };
                 readonly pendidikanS1: {
                   readonly nativeType: 'text';
@@ -1323,6 +1333,10 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly pendidikan: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly pendidikanS1: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1364,6 +1378,7 @@ type ContractBase = Omit<
                 readonly slug: { readonly column: 'slug' };
                 readonly nidn: { readonly column: 'nidn' };
                 readonly foto: { readonly column: 'foto' };
+                readonly pendidikan: { readonly column: 'pendidikan' };
                 readonly pendidikanS1: { readonly column: 'pendidikanS1' };
                 readonly pendidikanS2: { readonly column: 'pendidikanS2' };
                 readonly pendidikanS3: { readonly column: 'pendidikanS3' };

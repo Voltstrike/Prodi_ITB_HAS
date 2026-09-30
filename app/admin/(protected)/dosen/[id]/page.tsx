@@ -8,7 +8,9 @@ interface Dosen {
     nama: string;
     nidn: string;
     foto: string | null;
-    pendidikan: string;
+    pendidikanS1: string | null;
+    pendidikanS2: string | null;
+    pendidikanS3: string | null;
     profil: string | null;
 }
 
@@ -54,7 +56,12 @@ export default function EditDosenPage({
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
         const foto = form.get("foto")?.toString() ?? "";
-        const pendidikan = form.get("pendidikan")?.toString() ?? "";
+        const pendidikanS1 =
+            form.get("pendidikanS1")?.toString() ?? "";
+        const pendidikanS2 =
+            form.get("pendidikanS2")?.toString() ?? "";
+        const pendidikanS3 =
+            form.get("pendidikanS3")?.toString() ?? "";
         const profil = form.get("profil")?.toString() ?? "";
 
         const response = await fetch(`/api/dosen/${dosen.slug}`, {
@@ -66,7 +73,9 @@ export default function EditDosenPage({
                 nama,
                 nidn,
                 foto,
-                pendidikan,
+                pendidikanS1,
+                pendidikanS2,
+                pendidikanS3,
                 profil,
             }),
         });
@@ -105,17 +114,30 @@ export default function EditDosenPage({
                 </div>
 
                 <div>
-                    <label>Pendidikan</label>
-                    <select
-                        name="pendidikan"
-                        defaultValue={dosen.pendidikan}
-                        required
-                    >
-                        <option value="">Pilih pendidikan</option>
-                        <option value="S1">S1</option>
-                        <option value="S2">S2</option>
-                        <option value="S3">S3</option>
-                    </select>
+                    <label>S1</label>
+                    <input
+                        name="pendidikanS1"
+                        defaultValue={dosen.pendidikanS1 ?? ""}
+                        placeholder="Nama perguruan tinggi"
+                    />
+                </div>
+
+                <div>
+                    <label>S2</label>
+                    <input
+                        name="pendidikanS2"
+                        defaultValue={dosen.pendidikanS2 ?? ""}
+                        placeholder="Nama perguruan tinggi"
+                    />
+                </div>
+
+                <div>
+                    <label>S3</label>
+                    <input
+                        name="pendidikanS3"
+                        defaultValue={dosen.pendidikanS3 ?? ""}
+                        placeholder="Nama perguruan tinggi"
+                    />
                 </div>
 
                 <div>

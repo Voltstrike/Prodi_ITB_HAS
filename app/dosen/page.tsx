@@ -33,7 +33,9 @@ export default async function DosenPage() {
 
                 <h3>{item.nama}</h3>
                 <p>NIDN: {item.nidn}</p>
-                <p>Pendidikan: {item.pendidikan}</p>
+                <p>S1: {item.pendidikanS1 || "-"}</p>
+                <p>S2: {item.pendidikanS2 || "-"}</p>
+                <p>S3: {item.pendidikanS3 || "-"}</p>
 
                 <p>Lihat Profil →</p>
               </Link>

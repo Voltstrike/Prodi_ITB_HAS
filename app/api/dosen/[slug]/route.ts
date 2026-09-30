@@ -35,28 +35,18 @@ export async function PUT(
         const { slug } = await params;
         const body = await request.json();
 
-        const {
-            nama,
-            nidn,
-            foto,
-            pendidikan,
-            profil,
-        } = body;
+        const nama = String(body.nama ?? "").trim();
+        const nidn = String(body.nidn ?? "").trim();
+        const foto = String(body.foto ?? "").trim();
+        const pendidikanS1 = String(body.pendidikanS1 ?? "").trim();
+        const pendidikanS2 = String(body.pendidikanS2 ?? "").trim();
+        const pendidikanS3 = String(body.pendidikanS3 ?? "").trim();
+        const profil = String(body.profil ?? "").trim();
 
-        if (!nama || !nidn || !pendidikan) {
+        if (!nama || !nidn) {
             return Response.json(
                 {
-                    message:
-                        "Nama, NIDN, dan pendidikan wajib diisi",
-                },
-                { status: 400 }
-            );
-        }
-
-        if (!["S1", "S2", "S3"].includes(pendidikan)) {
-            return Response.json(
-                {
-                    message: "Pendidikan harus S1, S2, atau S3",
+                    message: "Nama dan NIDN wajib diisi",
                 },
                 { status: 400 }
             );
@@ -97,7 +87,9 @@ export async function PUT(
                         nama,
                         nidn,
                         foto: foto || null,
-                        pendidikan,
+                        pendidikanS1: pendidikanS1 || null,
+                        pendidikanS2: pendidikanS2 || null,
+                        pendidikanS3: pendidikanS3 || null,
                         profil: profil || null,
                     });
 

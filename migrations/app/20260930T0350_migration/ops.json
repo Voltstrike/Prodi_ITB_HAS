@@ -1,0 +1,128 @@
+[
+  {
+    "id": "column.public.dosen.pendidikanS1",
+    "label": "Add column \"pendidikanS1\" to \"dosen\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pendidikanS1",
+        "table": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pendidikanS1\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS1"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pendidikanS1\"",
+        "sql": "ALTER TABLE \"public\".\"dosen\" ADD COLUMN \"pendidikanS1\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pendidikanS1\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS1"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.dosen.pendidikanS2",
+    "label": "Add column \"pendidikanS2\" to \"dosen\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pendidikanS2",
+        "table": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pendidikanS2\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS2"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pendidikanS2\"",
+        "sql": "ALTER TABLE \"public\".\"dosen\" ADD COLUMN \"pendidikanS2\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pendidikanS2\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS2"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.dosen.pendidikanS3",
+    "label": "Add column \"pendidikanS3\" to \"dosen\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "pendidikanS3",
+        "table": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"pendidikanS3\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS3"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"pendidikanS3\"",
+        "sql": "ALTER TABLE \"public\".\"dosen\" ADD COLUMN \"pendidikanS3\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"pendidikanS3\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dosen",
+          "pendidikanS3"
+        ]
+      }
+    ]
+  }
+]

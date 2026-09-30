@@ -42,20 +42,18 @@ export async function POST(request: Request) {
         for (const row of rows) {
             const nama = String(row.nama ?? "").trim();
             const nidn = String(row.nidn ?? "").trim();
-            const pendidikan = String(row.pendidikan ?? "").trim();
+            const pendidikanS1 =
+                String(row.pendidikanS1 ?? "").trim();
+            const pendidikanS2 =
+                String(row.pendidikanS2 ?? "").trim();
+            const pendidikanS3 =
+                String(row.pendidikanS3 ?? "").trim();
 
-            if (!nama || !nidn || !pendidikan) {
-                return Response.json(
-                    { message: "Nama, NIDN, dan pendidikan wajib diisi" },
-                    { status: 400 }
-                );
-            }
-
-            if (!["S1", "S2", "S3"].includes(pendidikan)) {
+            if (!nama || !nidn) {
                 return Response.json(
                     {
                         message:
-                            "Pendidikan harus S1, S2, atau S3",
+                            "Nama dan NIDN wajib diisi",
                     },
                     { status: 400 }
                 );
@@ -80,6 +78,10 @@ export async function POST(request: Request) {
             }
 
             batchNidn.add(nidn);
+
+            void pendidikanS1;
+            void pendidikanS2;
+            void pendidikanS3;
         }
 
         const existingSlugs = new Set(
@@ -92,7 +94,12 @@ export async function POST(request: Request) {
             for (const row of rows) {
                 const nama = String(row.nama).trim();
                 const nidn = String(row.nidn).trim();
-                const pendidikan = String(row.pendidikan).trim();
+                const pendidikanS1 =
+                    String(row.pendidikanS1 ?? "").trim();
+                const pendidikanS2 =
+                    String(row.pendidikanS2 ?? "").trim();
+                const pendidikanS3 =
+                    String(row.pendidikanS3 ?? "").trim();
 
                 const baseSlug = generateSlug(nama);
                 let slug = baseSlug;
@@ -105,12 +112,18 @@ export async function POST(request: Request) {
 
                 existingSlugs.add(slug);
 
-                const dosenBaru = await tx.orm.public.Dosen.create({
-                    nama,
-                    slug,
-                    nidn,
-                    pendidikan,
-                });
+                const dosenBaru =
+                    await tx.orm.public.Dosen.create({
+                        nama,
+                        slug,
+                        nidn,
+                        pendidikanS1:
+                            pendidikanS1 || null,
+                        pendidikanS2:
+                            pendidikanS2 || null,
+                        pendidikanS3:
+                            pendidikanS3 || null,
+                    });
 
                 await createAuditLog({
                     userId: user.id,

@@ -1,0 +1,541 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.adminSession",
+    "label": "Create table \"adminSession\"",
+    "summary": "Creates table \"adminSession\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "adminSession"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"adminSession\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminSession\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"adminSession\"",
+        "sql": "CREATE TABLE \"public\".\"adminSession\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expiresAt\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"tokenHash\" text NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"adminSession\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminSession\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.adminUser",
+    "label": "Create table \"adminUser\"",
+    "summary": "Creates table \"adminUser\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "adminUser"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"adminUser\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminUser\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"adminUser\"",
+        "sql": "CREATE TABLE \"public\".\"adminUser\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"nama\" text NOT NULL,\n  \"passwordHash\" text NOT NULL,\n  \"role\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"adminUser\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminUser\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.auditLog",
+    "label": "Create table \"auditLog\"",
+    "summary": "Creates table \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"auditLog\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"auditLog\"",
+        "sql": "CREATE TABLE \"public\".\"auditLog\" (\n  \"action\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"details\" text NOT NULL,\n  \"entity\" text NOT NULL,\n  \"entityId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"auditLog\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.berita",
+    "label": "Create table \"berita\"",
+    "summary": "Creates table \"berita\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"berita\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"berita\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"berita\"",
+        "sql": "CREATE TABLE \"public\".\"berita\" (\n  \"content\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"date\" text NOT NULL,\n  \"description\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"image\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"berita\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"berita\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.dosen",
+    "label": "Create table \"dosen\"",
+    "summary": "Creates table \"dosen\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"dosen\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosen\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"dosen\"",
+        "sql": "CREATE TABLE \"public\".\"dosen\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"foto\" text,\n  \"id\" SERIAL NOT NULL,\n  \"nama\" text NOT NULL,\n  \"nidn\" text NOT NULL,\n  \"pendidikan\" text NOT NULL,\n  \"profil\" text,\n  \"slug\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"dosen\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosen\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.informasiAkademik",
+    "label": "Create table \"informasiAkademik\"",
+    "summary": "Creates table \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"informasiAkademik\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasiAkademik\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"informasiAkademik\"",
+        "sql": "CREATE TABLE \"public\".\"informasiAkademik\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"deskripsi\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"judul\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"informasiAkademik\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasiAkademik\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.kalenderAkademik",
+    "label": "Create table \"kalenderAkademik\"",
+    "summary": "Creates table \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"kalenderAkademik\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"kalenderAkademik\"",
+        "sql": "CREATE TABLE \"public\".\"kalenderAkademik\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"kegiatan\" text NOT NULL,\n  \"tanggalMulai\" text NOT NULL,\n  \"tanggalSelesai\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"kalenderAkademik\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.kurikulum",
+    "label": "Create table \"kurikulum\"",
+    "summary": "Creates table \"kurikulum\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "kurikulum"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"kurikulum\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kurikulum\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"kurikulum\"",
+        "sql": "CREATE TABLE \"public\".\"kurikulum\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"jenis\" text NOT NULL,\n  \"kode\" text NOT NULL,\n  \"nama\" text NOT NULL,\n  \"semester\" int4 NOT NULL,\n  \"sks\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"kurikulum\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kurikulum\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.adminSession.adminSession_tokenHash_key",
+    "label": "Add unique constraint on \"adminSession\" (tokenHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "adminSession_tokenHash_key",
+        "table": "adminSession"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"adminSession_tokenHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminSession_tokenHash_key",
+          "public",
+          "\"public\".\"adminSession\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"adminSession_tokenHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"adminSession\" ADD CONSTRAINT \"adminSession_tokenHash_key\" UNIQUE (\"tokenHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"adminSession_tokenHash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminSession_tokenHash_key",
+          "public",
+          "\"public\".\"adminSession\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.adminUser.adminUser_email_key",
+    "label": "Add unique constraint on \"adminUser\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "adminUser_email_key",
+        "table": "adminUser"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"adminUser_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminUser_email_key",
+          "public",
+          "\"public\".\"adminUser\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"adminUser_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"adminUser\" ADD CONSTRAINT \"adminUser_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"adminUser_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminUser_email_key",
+          "public",
+          "\"public\".\"adminUser\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.berita.berita_slug_key",
+    "label": "Add unique constraint on \"berita\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "berita_slug_key",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"berita_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "berita_slug_key",
+          "public",
+          "\"public\".\"berita\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"berita_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ADD CONSTRAINT \"berita_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"berita_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "berita_slug_key",
+          "public",
+          "\"public\".\"berita\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.dosen.dosen_slug_key",
+    "label": "Add unique constraint on \"dosen\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "dosen_slug_key",
+        "table": "dosen"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"dosen_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosen_slug_key",
+          "public",
+          "\"public\".\"dosen\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"dosen_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"dosen\" ADD CONSTRAINT \"dosen_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"dosen_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosen_slug_key",
+          "public",
+          "\"public\".\"dosen\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.kurikulum.kurikulum_kode_key",
+    "label": "Add unique constraint on \"kurikulum\" (kode)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "kurikulum_kode_key",
+        "table": "kurikulum"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"kurikulum_kode_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kurikulum_kode_key",
+          "public",
+          "\"public\".\"kurikulum\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"kurikulum_kode_key\"",
+        "sql": "ALTER TABLE \"public\".\"kurikulum\" ADD CONSTRAINT \"kurikulum_kode_key\" UNIQUE (\"kode\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"kurikulum_kode_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kurikulum_kode_key",
+          "public",
+          "\"public\".\"kurikulum\""
+        ]
+      }
+    ]
+  }
+]
