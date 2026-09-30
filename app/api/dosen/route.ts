@@ -70,7 +70,7 @@ export async function POST(request: Request) {
             const dosenBaru = await tx.orm.public.Dosen.create({
                 nama,
                 slug,
-                nidn,
+                nidn,           
                 pendidikanS1: pendidikanS1 || null,
                 pendidikanS2: pendidikanS2 || null,
                 pendidikanS3: pendidikanS3 || null,

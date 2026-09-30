@@ -35,7 +35,7 @@ export default async function DosenDetailPage({
             <p>S1: {item.pendidikanS1 || "-"}</p>
             <p>S2: {item.pendidikanS2 || "-"}</p>
             <p>S3: {item.pendidikanS3 || "-"}</p>
-        </div>
+        </div>  
       </section>
 
       <section>
