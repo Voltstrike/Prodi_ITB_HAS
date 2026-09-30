@@ -35,6 +35,10 @@
     "kurikulum": {
       "model": "Kurikulum",
       "namespace": "public"
+    },
+    "staff": {
+      "model": "Staff",
+      "namespace": "public"
     }
   },
   "domain": {
@@ -708,6 +712,97 @@
               "namespaceId": "public",
               "table": "kurikulum"
             }
+          },
+          "Staff": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "foto": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "jabatan": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "lingkupKerja": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "nama": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "pendidikan": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "foto": {
+                  "column": "foto"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "jabatan": {
+                  "column": "jabatan"
+                },
+                "lingkupKerja": {
+                  "column": "lingkupKerja"
+                },
+                "nama": {
+                  "column": "nama"
+                },
+                "pendidikan": {
+                  "column": "pendidikan"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "staff"
+            }
           }
         }
       }
@@ -1197,6 +1292,66 @@
                   ]
                 }
               ]
+            },
+            "staff": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "foto": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "jabatan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "lingkupKerja": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "nama": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "pendidikan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
             }
           }
         },
@@ -1204,10 +1359,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "41b3a595eb18c3bd2586f0c3317d32d861ce6fecb14139014454a2e5aa87a187"
+    "storageHash": "2bee2ea034e2658c28b284f94cb78cb653b8a087ffed4da0e98567f539e61def"
   },
   "execution": {
-    "executionHash": "245a1f70a4247c87e0bb6fffacec1b3ef1493f18434e712c6e758ee4ced7431a",
+    "executionHash": "cc2cde3f5c2eb437012e5c7aef0deabbad2ab24ee0f84ca8b1d2997df3a8877d",
     "mutations": {
       "defaults": [
         {
@@ -1298,6 +1453,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "kurikulum"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "staff"
           }
         }
       ]

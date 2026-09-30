@@ -1,0 +1,41 @@
+[
+  {
+    "id": "table.staff",
+    "label": "Create table \"staff\"",
+    "summary": "Creates table \"staff\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "staff"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"staff\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"staff\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"staff\"",
+        "sql": "CREATE TABLE \"public\".\"staff\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"foto\" text,\n  \"id\" SERIAL NOT NULL,\n  \"jabatan\" text NOT NULL,\n  \"lingkupKerja\" text,\n  \"nama\" text NOT NULL,\n  \"pendidikan\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"staff\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"staff\""
+        ]
+      }
+    ]
+  }
+]
