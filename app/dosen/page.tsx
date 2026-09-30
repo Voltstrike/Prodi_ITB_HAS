@@ -4,6 +4,7 @@ import { db } from "@/prisma/db";
 
 export default async function DosenPage() {
   const dosen = await db.orm.public.Dosen.all();
+  const staff = await db.orm.public.Staff.all();
   
   return (
     <main>
@@ -47,7 +48,24 @@ export default async function DosenPage() {
       {/* Staff */}
       <section>
         <h2>Staff</h2>
-        <div>[Daftar Staff]</div>
+
+        <div>
+          {staff.map((item) => (
+            <article key={item.id}>
+              <Image
+                src={item.foto || "/dosen/default.jpg"}
+                alt={item.nama}
+                width={200}
+                height={200}
+              />
+
+              <h3>{item.nama}</h3>
+              <p>{item.jabatan}</p>
+              <p>Pendidikan: {item.pendidikan || "-"}</p>
+              <p>Lingkup Kerja: {item.lingkupKerja || "-"}</p>
+            </article>
+          ))}
+        </div>
       </section>
     </main>
   );
