@@ -1,6 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
 import { db } from "@/prisma/db";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import DosenCarousel from "./components/DosenCarousel";
+import StaffCarousel from "./components/StaffCarousel";
 
 export default async function DosenPage() {
   const dosen = await db.orm.public.Dosen.all();
@@ -8,65 +10,47 @@ export default async function DosenPage() {
   
   return (
     <main>
+      <Navbar />
       {/* Page Header */}
-      <section>
-        <h1>Dosen & Staff</h1>
-        <p>
-          Informasi dosen dan tenaga kependidikan Program Studi
-          Magister Manajemen Institut Teknologi dan Bisnis Haji Agus Salim.
-        </p>
+      <section className="border-b border-slate-100 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+            Dosen & Staff
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+            Informasi dosen dan tenaga kependidikan Program Studi
+            Magister Manajemen Institut Teknologi dan Bisnis Haji Agus Salim.
+          </p>
+        </div>
       </section>
 
       {/* Dosen */}
-      <section>
-        <h2>Dosen</h2>
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Dosen
+          </h2>
 
-        <div>
-          {dosen.map((item) => (
-            <article key={item.id}>
-              <Link href={`/dosen/${item.slug}`}>
-              <Image
-                  src={item.foto || "/dosen/default.jpg"}
-                  alt={item.nama}
-                  width={200}
-                  height={200}
-              />
-
-                <h3>{item.nama}</h3>
-                <p>NIDN: {item.nidn}</p>
-                <p>S1: {item.pendidikanS1 || "-"}</p>
-                <p>S2: {item.pendidikanS2 || "-"}</p>
-                <p>S3: {item.pendidikanS3 || "-"}</p>
-
-                <p>Lihat Profil →</p>
-              </Link>
-            </article>
-          ))}
+          <div className="mt-8">
+            <DosenCarousel dosen={dosen} />
+          </div>
         </div>
       </section>
 
       {/* Staff */}
-      <section>
-        <h2>Staff</h2>
+      <section className="bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Staff
+          </h2>
 
-        <div>
-          {staff.map((item) => (
-            <article key={item.id}>
-              <Image
-                src={item.foto || "/dosen/default.jpg"}
-                alt={item.nama}
-                width={200}
-                height={200}
-              />
-
-              <h3>{item.nama}</h3>
-              <p>{item.jabatan}</p>
-              <p>Pendidikan: {item.pendidikan || "-"}</p>
-              <p>Lingkup Kerja: {item.lingkupKerja || "-"}</p>
-            </article>
-          ))}
+          <div className="mt-8">
+            <StaffCarousel staff={staff} />
+          </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
