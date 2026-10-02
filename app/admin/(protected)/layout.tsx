@@ -1,5 +1,5 @@
 import { requireAdmin } from "@/lib/auth/require-admin";
-import LogoutButton from "./components/LogoutButton";
+import AdminNav from "./components/AdminNav";
 
 export default async function ProtectedAdminLayout({
     children,
@@ -10,10 +10,7 @@ export default async function ProtectedAdminLayout({
 
     return (
         <>
-            <header>
-                <LogoutButton />
-            </header>
-
+            <AdminNav />
             {children}
         </>
     );
