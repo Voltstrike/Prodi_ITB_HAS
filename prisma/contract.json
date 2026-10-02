@@ -36,6 +36,10 @@
       "model": "Kurikulum",
       "namespace": "public"
     },
+    "profil": {
+      "model": "Profil",
+      "namespace": "public"
+    },
     "staff": {
       "model": "Staff",
       "namespace": "public"
@@ -713,6 +717,107 @@
               "table": "kurikulum"
             }
           },
+          "Profil": {
+            "fields": {
+              "akreditasi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "dokumenAkreditasi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "misi": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sejarah": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "struktur": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "visi": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "akreditasi": {
+                  "column": "akreditasi"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "dokumenAkreditasi": {
+                  "column": "dokumenAkreditasi"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "misi": {
+                  "column": "misi"
+                },
+                "sejarah": {
+                  "column": "sejarah"
+                },
+                "struktur": {
+                  "column": "struktur"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "visi": {
+                  "column": "visi"
+                }
+              },
+              "namespaceId": "public",
+              "table": "profil"
+            }
+          },
           "Staff": {
             "fields": {
               "createdAt": {
@@ -1293,6 +1398,71 @@
                 }
               ]
             },
+            "profil": {
+              "columns": {
+                "akreditasi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "dokumenAkreditasi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "misi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "sejarah": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "struktur": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "visi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "staff": {
               "columns": {
                 "createdAt": {
@@ -1359,10 +1529,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "2bee2ea034e2658c28b284f94cb78cb653b8a087ffed4da0e98567f539e61def"
+    "storageHash": "d37055a58a11543fcf6d146b72f223d639c593475a78a6aa1f5e648c87439ab6"
   },
   "execution": {
-    "executionHash": "cc2cde3f5c2eb437012e5c7aef0deabbad2ab24ee0f84ca8b1d2997df3a8877d",
+    "executionHash": "fa6fe9c45fd0ebad09318dfbfe60e29dd6b1d60625d24a740b5a29776e6a1aba",
     "mutations": {
       "defaults": [
         {
@@ -1453,6 +1623,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "kurikulum"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "profil"
           }
         },
         {

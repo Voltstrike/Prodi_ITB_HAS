@@ -1,27 +1,27 @@
 // use prisma-8 
 model Dosen {
-  id             Int                        @id @default(autoincrement())
-  nama           String
-  slug           String                     @unique
-  nidn           String
-  foto           String?
-  pendidikanS1   String?
-  pendidikanS2   String?
-  pendidikanS3   String?
-  profil         String?
-  createdAt      TimestamptzString          @default(now())
-  updatedAt      temporal.updatedAtString()
+  id           Int                        @id @default(autoincrement())
+  nama         String
+  slug         String                     @unique
+  nidn         String
+  foto         String?
+  pendidikanS1 String?
+  pendidikanS2 String?
+  pendidikanS3 String?
+  profil       String?
+  createdAt    TimestamptzString          @default(now())
+  updatedAt    temporal.updatedAtString()
 }
 
 model Staff {
-  id                  Int                        @id @default(autoincrement())
-  nama                String
-  pendidikan          String?
-  jabatan             String
-  lingkupKerja        String?
-  foto                String?
-  createdAt           TimestamptzString          @default(now())
-  updatedAt           temporal.updatedAtString()
+  id           Int                        @id @default(autoincrement())
+  nama         String
+  pendidikan   String?
+  jabatan      String
+  lingkupKerja String?
+  foto         String?
+  createdAt    TimestamptzString          @default(now())
+  updatedAt    temporal.updatedAtString()
 }
 
 model Berita {
@@ -37,30 +37,30 @@ model Berita {
 }
 
 model Kurikulum {
-  id        Int      @id @default(autoincrement())
-  kode      String   @unique
+  id        Int                        @id @default(autoincrement())
+  kode      String                     @unique
   nama      String
   sks       Int
   semester  Int
   jenis     String
-  createdAt TimestamptzString @default(now())
+  createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
 }
 
 model KalenderAkademik {
-  id             Int      @id @default(autoincrement())
+  id             Int                        @id @default(autoincrement())
   kegiatan       String
   tanggalMulai   String
   tanggalSelesai String
-  createdAt      TimestamptzString @default(now())
+  createdAt      TimestamptzString          @default(now())
   updatedAt      temporal.updatedAtString()
 }
 
 model InformasiAkademik {
-  id        Int      @id @default(autoincrement())
+  id        Int                        @id @default(autoincrement())
   judul     String
   deskripsi String
-  createdAt TimestamptzString @default(now())
+  createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
 }
 
@@ -75,11 +75,11 @@ model AdminUser {
 }
 
 model AdminSession {
-  id        Int                        @id @default(autoincrement())
+  id        Int               @id @default(autoincrement())
   userId    Int
-  tokenHash String                     @unique
+  tokenHash String            @unique
   expiresAt TimestamptzString
-  createdAt TimestamptzString         @default(now())
+  createdAt TimestamptzString @default(now())
 }
 
 model AuditLog {
@@ -90,4 +90,16 @@ model AuditLog {
   entityId  Int
   details   String
   createdAt TimestamptzString @default(now())
+}
+
+model Profil {
+  id                Int                        @id @default(autoincrement())
+  sejarah           String
+  visi              String
+  misi              String
+  struktur          String?
+  akreditasi        String?
+  dokumenAkreditasi String?
+  createdAt         TimestamptzString          @default(now())
+  updatedAt         temporal.updatedAtString()
 }
