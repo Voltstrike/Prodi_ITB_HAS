@@ -1,38 +1,41 @@
 import { db } from "@/prisma/db";
 import Link from "next/link";
-import HapusDosenButton from "./components/HapusDosenButton";
+import DosenList from "./components/DosenList";
 
 export default async function AdminDosenPage() {
     const dosen = await db.orm.public.Dosen.all();
 
     return (
-        <main>
-            <h1>Data Dosen</h1>
-            <p>Kelola data dosen Program Studi Magister Manajemen</p>
+        <div className="space-y-8">
+            <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">
+                        Data Dosen
+                    </h1>
 
-            <div>
-                <Link href="/admin/dosen/tambah">
-                    Tambah Dosen
-                </Link>
-            </div>
+                    <p className="mt-1 text-sm text-slate-600">
+                        Kelola data dosen Program Studi Magister Manajemen.
+                    </p>
+                </div>
 
-            <div>
-                {dosen.map((item) => (
-                    <article key={item.id}>
-                        <h2>{item.nama}</h2>
-                        <p>NIDN: {item.nidn}</p>
-                        <p>S1: {item.pendidikanS1 ?? "-"}</p>
-                        <p>S2: {item.pendidikanS2 ?? "-"}</p>
-                        <p>S3: {item.pendidikanS3 ?? "-"}</p>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                    <Link
+                        href="/admin/dosen/import"
+                        className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Import Excel
+                    </Link>
 
-                        <Link href={`/admin/dosen/${item.id}`}>
-                            Edit
-                        </Link>
+                    <Link
+                        href="/admin/dosen/tambah"
+                        className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800"
+                    >
+                        Tambah Dosen
+                    </Link>
+                </div>
+            </section>
 
-                        <HapusDosenButton slug={item.slug} />
-                    </article>
-                ))}
-            </div>
-        </main>
+            <DosenList dosen={dosen} />
+        </div>
     );
 }

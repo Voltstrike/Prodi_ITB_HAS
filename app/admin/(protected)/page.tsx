@@ -149,14 +149,14 @@ export default async function AdminPage() {
                     <div className="rounded-xl border border-slate-200 bg-white p-6">
                         <h2 className="font-semibold text-slate-900">
                             Aktivitas Terbaru
-                        </h2>
+                         </h2>
 
                         {recentActivity.length === 0 ? (
                             <p className="mt-4 text-sm text-slate-500">
                                 Belum ada aktivitas administrasi.
                             </p>
                         ) : (
-                            <div className="mt-4 divide-y divide-slate-100">
+                            <div className="mt-4 max-h-80 divide-y divide-slate-100 overflow-y-auto pr-2">
                                 {recentActivity.map((activity) => (
                                     <div
                                         key={activity.id}
