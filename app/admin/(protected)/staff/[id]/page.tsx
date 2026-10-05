@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
 type Staff = {
@@ -19,6 +20,7 @@ export default function EditStaffPage({
     const [staffId, setStaffId] = useState<string | null>(null);
     const [staff, setStaff] = useState<Staff | null>(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         params.then(({ id }) => {
@@ -29,7 +31,7 @@ export default function EditStaffPage({
                     if (!response.ok) {
                         const error = await response.json();
                         throw new Error(
-                            error.message ?? "Gagal mengambil data staff"
+                            error.message ?? "Gagal mengambil data staff",
                         );
                     }
 
@@ -46,14 +48,14 @@ export default function EditStaffPage({
         });
     }, [params]);
 
-    async function handleSubmit(
-        event: FormEvent<HTMLFormElement>
-    ) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (!staffId) {
+        if (!staffId || saving) {
             return;
         }
+
+        setSaving(true);
 
         const form = new FormData(event.currentTarget);
 
@@ -81,6 +83,7 @@ export default function EditStaffPage({
         if (!response.ok) {
             const error = await response.json();
             alert(error.message ?? "Gagal mengubah staff");
+            setSaving(false);
             return;
         }
 
@@ -89,7 +92,20 @@ export default function EditStaffPage({
     }
 
     if (loading) {
-        return <main>Memuat data staff...</main>;
+        return (
+            <div className="space-y-6">
+                <div>
+                    <div className="h-4 w-36 animate-pulse rounded bg-slate-200" />
+                    <div className="mt-4 h-8 w-48 animate-pulse rounded bg-slate-200" />
+                    <div className="mt-2 h-4 w-80 animate-pulse rounded bg-slate-200" />
+                </div>
+
+                <div className="space-y-6">
+                    <div className="h-56 animate-pulse rounded-xl bg-slate-200" />
+                    <div className="h-48 animate-pulse rounded-xl bg-slate-200" />
+                </div>
+            </div>
+        );
     }
 
     if (!staff) {
@@ -97,57 +113,182 @@ export default function EditStaffPage({
     }
 
     return (
-        <main>
-            <h1>Edit Staff</h1>
+        <div className="mx-auto max-w-4xl space-y-8 pb-24 sm:pb-0">
+            <section>
+                <Link
+                    href="/admin/staff"
+                    className="inline-flex items-center text-sm font-medium text-blue-700 hover:text-blue-800"
+                >
+                    ← Kembali ke Data Staff
+                </Link>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nama</label>
-                    <input
-                        name="nama"
-                        defaultValue={staff.nama}
-                        required
-                    />
+                <div className="mt-4">
+                    <h1 className="text-2xl font-bold text-slate-900">
+                        Edit Staff
+                    </h1>
+                    <p className="mt-1 text-sm text-slate-600">
+                        Perbarui informasi staff Program Studi Magister
+                        Manajemen.
+                    </p>
                 </div>
+            </section>
 
-                <div>
-                    <label>Pendidikan</label>
-                    <input
-                        name="pendidikan"
-                        defaultValue={staff.pendidikan ?? ""}
-                        placeholder="Latar belakang pendidikan"
-                    />
+            <form
+                id="edit-staff-form"
+                onSubmit={handleSubmit}
+                className="space-y-6"
+            >
+                <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div className="border-b border-slate-100 px-6 py-5">
+                        <h2 className="font-semibold text-slate-900">
+                            Informasi Dasar
+                        </h2>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Informasi utama staff.
+                        </p>
+                    </div>
+
+                    <div className="grid gap-5 p-6 sm:grid-cols-2">
+                        <div className="sm:col-span-2">
+                            <label
+                                htmlFor="nama"
+                                className="block text-sm font-medium text-slate-700"
+                            >
+                                Nama Lengkap
+                            </label>
+
+                            <input
+                                id="nama"
+                                name="nama"
+                                defaultValue={staff.nama}
+                                required
+                                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="jabatan"
+                                className="block text-sm font-medium text-slate-700"
+                            >
+                                Jabatan
+                            </label>
+
+                            <input
+                                id="jabatan"
+                                name="jabatan"
+                                defaultValue={staff.jabatan}
+                                required
+                                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="pendidikan"
+                                className="block text-sm font-medium text-slate-700"
+                            >
+                                Pendidikan
+                            </label>
+
+                            <input
+                                id="pendidikan"
+                                name="pendidikan"
+                                defaultValue={staff.pendidikan ?? ""}
+                                placeholder="Latar belakang pendidikan"
+                                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+
+                        <div className="sm:col-span-2">
+                            <label
+                                htmlFor="lingkupKerja"
+                                className="block text-sm font-medium text-slate-700"
+                            >
+                                Lingkup Kerja
+                            </label>
+
+                            <input
+                                id="lingkupKerja"
+                                name="lingkupKerja"
+                                defaultValue={staff.lingkupKerja ?? ""}
+                                placeholder="Masukkan lingkup kerja"
+                                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            />
+                        </div>
+                    </div>
+                </section>
+
+                <section className="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div className="border-b border-slate-100 px-6 py-5">
+                        <h2 className="font-semibold text-slate-900">
+                            Profil
+                        </h2>
+                        <p className="mt-1 text-sm text-slate-500">
+                            Informasi tambahan staff.
+                        </p>
+                    </div>
+
+                    <div className="p-6">
+                        <label
+                            htmlFor="foto"
+                            className="block text-sm font-medium text-slate-700"
+                        >
+                            URL Foto
+                        </label>
+
+                        <input
+                            id="foto"
+                            name="foto"
+                            defaultValue={staff.foto ?? ""}
+                            placeholder="https://..."
+                            className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        />
+
+                        <p className="mt-2 text-xs text-slate-500">
+                            Upload foto akan kita tambahkan setelah storage
+                            hosting ditentukan.
+                        </p>
+                    </div>
+                </section>
+
+                <div className="hidden justify-end gap-3 sm:flex">
+                    <Link
+                        href="/admin/staff"
+                        className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Batal
+                    </Link>
+
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                    </button>
                 </div>
-
-                <div>
-                    <label>Jabatan</label>
-                    <input
-                        name="jabatan"
-                        defaultValue={staff.jabatan}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Lingkup Kerja</label>
-                    <input
-                        name="lingkupKerja"
-                        defaultValue={staff.lingkupKerja ?? ""}
-                        placeholder="Lingkup kerja"
-                    />
-                </div>
-
-                <div>
-                    <label>Foto</label>
-                    <input
-                        name="foto"
-                        defaultValue={staff.foto ?? ""}
-                        placeholder="URL/path foto"
-                    />
-                </div>
-
-                <button type="submit">Simpan Perubahan</button>
             </form>
-        </main>
+
+            <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 p-3 shadow-[0_-4px_16px_rgba(15,23,42,0.08)] backdrop-blur sm:hidden">
+                <div className="mx-auto flex max-w-4xl gap-3">
+                    <Link
+                        href="/admin/staff"
+                        className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    >
+                        Batal
+                    </Link>
+
+                    <button
+                        type="submit"
+                        form="edit-staff-form"
+                        disabled={saving}
+                        className="flex flex-1 items-center justify-center rounded-lg bg-blue-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                    </button>
+                </div>
+            </div>
+        </div>
     );
 }
