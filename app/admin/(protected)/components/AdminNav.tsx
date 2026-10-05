@@ -23,6 +23,13 @@ export default function AdminNav() {
                     </Link>
 
                     <Link
+                        href="/admin/profil"
+                        className="text-sm font-medium text-slate-600 hover:text-blue-700"
+                    >
+                        Profil
+                    </Link>
+
+                    <Link
                         href="/admin/dosen"
                         className="text-sm font-medium text-slate-600 hover:text-blue-700"
                     >

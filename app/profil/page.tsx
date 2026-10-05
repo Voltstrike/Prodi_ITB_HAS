@@ -1,7 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { db } from "@/prisma/db";
 
-export default function ProfilPage() {
+export default async function ProfilPage() {
+  const profil = (await db.orm.public.Profil.all())[0] ?? null;
+
   return (
     <main>
       <Navbar />
@@ -27,9 +30,9 @@ export default function ProfilPage() {
             Sejarah
           </h2>
 
-          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
-            Informasi mengenai sejarah berdirinya dan perkembangan
-            Program Studi Magister Manajemen.
+          <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
+            {profil?.sejarah ||
+              "Informasi mengenai sejarah Program Studi Magister Manajemen belum tersedia."}
           </p>
         </div>
       </section>
@@ -47,8 +50,9 @@ export default function ProfilPage() {
                 Visi
               </h3>
 
-              <p className="mt-3 leading-relaxed text-slate-600">
-                Visi Program Studi Magister Manajemen.
+              <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
+                {profil?.visi ||
+                  "Visi Program Studi Magister Manajemen belum tersedia."}
               </p>
             </div>
 
@@ -57,8 +61,9 @@ export default function ProfilPage() {
                 Misi
               </h3>
 
-              <p className="mt-3 leading-relaxed text-slate-600">
-                Misi Program Studi Magister Manajemen.
+              <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
+                {profil?.misi ||
+                  "Misi Program Studi Magister Manajemen belum tersedia."}
               </p>
             </div>
           </div>
@@ -72,9 +77,16 @@ export default function ProfilPage() {
             Struktur Organisasi
           </h2>
 
-          <p className="mt-4 leading-relaxed text-slate-600">
-            Struktur organisasi Program Studi Magister Manajemen.
-          </p>
+          {profil?.struktur ? (
+            <p className="mt-4 whitespace-pre-line leading-relaxed text-slate-600">
+              {profil.struktur}
+            </p>
+          ) : (
+            <p className="mt-4 leading-relaxed text-slate-600">
+              Struktur organisasi Program Studi Magister Manajemen belum
+              tersedia.
+            </p>
+          )}
 
           <div className="mt-8 flex min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-500">
             Struktur Organisasi
@@ -89,9 +101,9 @@ export default function ProfilPage() {
             Akreditasi
           </h2>
 
-          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
-            Informasi mengenai status dan dokumen akreditasi
-            Program Studi Magister Manajemen.
+          <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
+            {profil?.akreditasi ||
+              "Informasi mengenai akreditasi Program Studi Magister Manajemen belum tersedia."}
           </p>
         </div>
       </section>
