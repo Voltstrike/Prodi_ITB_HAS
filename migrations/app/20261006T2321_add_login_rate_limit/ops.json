@@ -1,0 +1,83 @@
+[
+  {
+    "id": "table.loginRateLimit",
+    "label": "Create table \"loginRateLimit\"",
+    "summary": "Creates table \"loginRateLimit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "loginRateLimit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"loginRateLimit\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"loginRateLimit\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"loginRateLimit\"",
+        "sql": "CREATE TABLE \"public\".\"loginRateLimit\" (\n  \"count\" int4 NOT NULL,\n  \"firstAttemptAt\" timestamptz NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"key\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"loginRateLimit\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"loginRateLimit\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.loginRateLimit.loginRateLimit_key_key",
+    "label": "Add unique constraint on \"loginRateLimit\" (key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "loginRateLimit_key_key",
+        "table": "loginRateLimit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"loginRateLimit_key_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "loginRateLimit_key_key",
+          "public",
+          "\"public\".\"loginRateLimit\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"loginRateLimit_key_key\"",
+        "sql": "ALTER TABLE \"public\".\"loginRateLimit\" ADD CONSTRAINT \"loginRateLimit_key_key\" UNIQUE (\"key\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"loginRateLimit_key_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "loginRateLimit_key_key",
+          "public",
+          "\"public\".\"loginRateLimit\""
+        ]
+      }
+    ]
+  }
+]

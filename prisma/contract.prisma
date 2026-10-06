@@ -103,3 +103,11 @@ model Profil {
   createdAt         TimestamptzString          @default(now())
   updatedAt         temporal.updatedAtString()
 }
+
+model LoginRateLimit {
+  id             Int               @id @default(autoincrement())
+  key            String            @unique
+  count          Int
+  firstAttemptAt TimestamptzString
+  updatedAt      temporal.updatedAtString()
+}

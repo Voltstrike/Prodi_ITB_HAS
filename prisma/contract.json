@@ -36,6 +36,10 @@
       "model": "Kurikulum",
       "namespace": "public"
     },
+    "loginRateLimit": {
+      "model": "LoginRateLimit",
+      "namespace": "public"
+    },
     "profil": {
       "model": "Profil",
       "namespace": "public"
@@ -715,6 +719,67 @@
               },
               "namespaceId": "public",
               "table": "kurikulum"
+            }
+          },
+          "LoginRateLimit": {
+            "fields": {
+              "count": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "firstAttemptAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "key": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "count": {
+                  "column": "count"
+                },
+                "firstAttemptAt": {
+                  "column": "firstAttemptAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "key": {
+                  "column": "key"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "loginRateLimit"
             }
           },
           "Profil": {
@@ -1398,6 +1463,53 @@
                 }
               ]
             },
+            "loginRateLimit": {
+              "columns": {
+                "count": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "firstAttemptAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "key": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "key"
+                  ]
+                }
+              ]
+            },
             "profil": {
               "columns": {
                 "akreditasi": {
@@ -1529,10 +1641,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "d37055a58a11543fcf6d146b72f223d639c593475a78a6aa1f5e648c87439ab6"
+    "storageHash": "8ec48a632d3db18aeee5d2d92e2e1bbc24d27874100760dd3071a23c44e48e45"
   },
   "execution": {
-    "executionHash": "fa6fe9c45fd0ebad09318dfbfe60e29dd6b1d60625d24a740b5a29776e6a1aba",
+    "executionHash": "54d441e95587f6b699066ecea379a43b919ae3a24403c78fb964ecd6597b07b2",
     "mutations": {
       "defaults": [
         {
@@ -1623,6 +1735,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "kurikulum"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "loginRateLimit"
           }
         },
         {
