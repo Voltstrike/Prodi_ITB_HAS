@@ -1,3 +1,4 @@
+import { generateDosenSlug } from "@/lib/dosen/slug";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { createAuditLog } from "@/lib/audit/log";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -8,14 +9,6 @@ const MAX_IMPORT_ROWS = 500;
 const MAX_NAMA_LENGTH = 200;
 const MAX_NIDN_LENGTH = 32;
 const MAX_PENDIDIKAN_LENGTH = 500;
-
-function generateSlug(nama: string) {
-    return nama
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
 
 export async function POST(request: Request) {
     const user = await requireAdminApi();
@@ -56,7 +49,9 @@ export async function POST(request: Request) {
             );
         }
 
-        const dosen = await db.orm.public.Dosen.all();
+        const dosen = await db.orm.public.Dosen
+            .select("nidn", "slug")
+            .all();
 
         const existingNidn = new Set(
             dosen.map((item) => item.nidn)
@@ -155,7 +150,7 @@ export async function POST(request: Request) {
                 const pendidikanS3 =
                     String(row.pendidikanS3 ?? "").trim();
 
-                const baseSlug = generateSlug(nama);
+                const baseSlug = generateDosenSlug(nama);
                 let slug = baseSlug;
                 let suffix = 2;
 

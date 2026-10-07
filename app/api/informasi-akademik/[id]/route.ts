@@ -25,12 +25,10 @@ export async function GET(
             );
         }
 
-        const rows =
+        const informasi =
             await db.orm.public.InformasiAkademik
                 .where({ id: informasiId })
-                .all();
-
-        const informasi = rows[0];
+                .first();
 
         if (!informasi) {
             return Response.json(
@@ -125,12 +123,10 @@ export async function PUT(
             );
         }
 
-        const existingRows =
+        const existing =
             await db.orm.public.InformasiAkademik
                 .where({ id: informasiId })
-                .all();
-
-        const existing = existingRows[0];
+                .first();
 
         if (!existing) {
             return Response.json(
@@ -208,12 +204,10 @@ export async function DELETE(
             );
         }
 
-        const existingRows =
+        const existing =
             await db.orm.public.InformasiAkademik
                 .where({ id: informasiId })
-                .all();
-
-        const existing = existingRows[0];
+                .first();
 
         if (!existing) {
             return Response.json(

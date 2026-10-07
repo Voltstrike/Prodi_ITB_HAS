@@ -60,11 +60,18 @@ export async function POST(request: Request) {
             );
         }
 
-        const dosen = await db.orm.public.Dosen.all();
+        const uniqueNidnList = [...new Set(normalizedNidnList)];
 
-        const existingNidn = dosen
-            .filter((item) => normalizedNidnList.includes(item.nidn))
-            .map((item) => item.nidn);
+        if (uniqueNidnList.length === 0) {
+            return Response.json({ existingNidn: [] });
+        }
+
+        const dosen = await db.orm.public.Dosen
+            .where((d) => d.nidn.in(uniqueNidnList))
+            .select("nidn")
+            .all();
+
+        const existingNidn = dosen.map((item) => item.nidn);
 
         return Response.json({
             existingNidn,

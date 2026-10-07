@@ -89,9 +89,11 @@ export async function POST(request: Request) {
             );
         }
 
-        const kurikulum = await db.orm.public.Kurikulum.all();
+        const duplicate = await db.orm.public.Kurikulum
+            .where({ kode })
+            .first();
 
-        if (kurikulum.some((item) => item.kode === kode)) {
+        if (duplicate) {
             return Response.json(
                 {
                     message: `Kode ${kode} sudah terdaftar`,

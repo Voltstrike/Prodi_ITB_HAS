@@ -13,7 +13,9 @@ const MAX_AKREDITASI_LENGTH = 1_000;
 const MAX_DOKUMEN_AKREDITASI_LENGTH = 2_048;
 
 export async function GET() {
-    const profil = (await db.orm.public.Profil.all())[0] ?? null;
+    const profil = (await db.orm.public.Profil
+        .where({ singletonKey: 1 })
+        .first()) ?? null;
 
     return NextResponse.json(profil);
 }
@@ -86,49 +88,52 @@ export async function PUT(request: Request) {
             );
         }
 
-        const existing = (await db.orm.public.Profil.all())[0];
+        const result = await db.transaction(async (tx) => {
+            const existing = await tx.orm.public.Profil
+                .where({ singletonKey: 1 })
+                .first();
 
-        if (!existing) {
-            const profil = await db.orm.public.Profil.create({
+            const data = {
                 sejarah,
                 visi,
                 misi,
                 struktur,
                 akreditasi,
                 dokumenAkreditasi,
-            });
+            };
+
+            if (!existing) {
+                const profil = await tx.orm.public.Profil.create(data);
+
+                await createAuditLog({
+                    userId: admin.id,
+                    action: "CREATE",
+                    entity: "Profil",
+                    entityId: profil.id,
+                    details: "Membuat profil program studi.",
+                    dbClient: tx,
+                });
+
+                return { profil, status: 201 };
+            }
+
+            const profil = await tx.orm.public.Profil
+                .where({ id: existing.id })
+                .update(data);
 
             await createAuditLog({
                 userId: admin.id,
-                action: "CREATE",
+                action: "UPDATE",
                 entity: "Profil",
-                entityId: profil.id,
-                details: "Membuat profil program studi.",
+                entityId: existing.id,
+                details: "Memperbarui profil program studi.",
+                dbClient: tx,
             });
 
-            return NextResponse.json(profil, { status: 201 });
-        }
-
-        const profil = await db.orm.public.Profil
-            .where({ id: existing.id })
-            .update({
-                sejarah,
-                visi,
-                misi,
-                struktur,
-                akreditasi,
-                dokumenAkreditasi,
-            });
-
-        await createAuditLog({
-            userId: admin.id,
-            action: "UPDATE",
-            entity: "Profil",
-            entityId: existing.id,
-            details: "Memperbarui profil program studi.",
+            return { profil, status: 200 };
         });
 
-        return NextResponse.json(profil);
+        return NextResponse.json(result.profil, { status: result.status });
     } catch (error) {
         console.error("PUT /api/profil error:", error);
 

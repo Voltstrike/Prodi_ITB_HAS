@@ -4,11 +4,11 @@ const WINDOW_MS = 15 * 60 * 1000;
 const MAX_FAILED_ATTEMPTS = 5;
 
 async function getRecord(key: string) {
-    const rows = await db.orm.public.LoginRateLimit
+    const record = await db.orm.public.LoginRateLimit
         .where({ key })
-        .all();
+        .first();
 
-    return rows[0] ?? null;
+    return record ?? null;
 }
 
 function getRateLimitState(

@@ -1,3 +1,4 @@
+import { generateDosenSlug } from "@/lib/dosen/slug";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -7,14 +8,6 @@ const MAX_DOSEN_BODY_BYTES = 32 * 1024;
 const MAX_NAMA_LENGTH = 200;
 const MAX_NIDN_LENGTH = 32;
 const MAX_PENDIDIKAN_LENGTH = 500;
-
-function generateSlug(nama: string) {
-    return nama
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
 
 export async function GET() {
     const dosen = await db.orm.public.Dosen.all();
@@ -70,9 +63,11 @@ export async function POST(request: Request) {
             );
         }
 
-        const dosen = await db.orm.public.Dosen.all();
+        const duplicate = await db.orm.public.Dosen
+            .where({ nidn })
+            .first();
 
-        if (dosen.some((item) => item.nidn === nidn)) {
+        if (duplicate) {
             return Response.json(
                 {
                     message: `NIDN ${nidn} sudah terdaftar`,
@@ -81,15 +76,15 @@ export async function POST(request: Request) {
             );
         }
 
-        const existingSlugs = new Set(
-            dosen.map((item) => item.slug)
-        );
-
-        const baseSlug = generateSlug(nama);
+        const baseSlug = generateDosenSlug(nama);
         let slug = baseSlug;
         let suffix = 2;
 
-        while (existingSlugs.has(slug)) {
+        while (
+            await db.orm.public.Dosen
+                .where({ slug })
+                .first()
+        ) {
             slug = `${baseSlug}-${suffix}`;
             suffix += 1;
         }

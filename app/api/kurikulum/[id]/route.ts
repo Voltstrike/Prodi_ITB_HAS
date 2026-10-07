@@ -13,11 +13,18 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const kurikulum = await db.orm.public.Kurikulum.all();
+    const kurikulumId = Number(id);
 
-    const item = kurikulum.find(
-        (kurikulum) => kurikulum.id === Number(id)
-    );
+    if (!Number.isSafeInteger(kurikulumId) || kurikulumId <= 0) {
+        return Response.json(
+            { message: "ID kurikulum tidak valid" },
+            { status: 400 }
+        );
+    }
+
+    const item = await db.orm.public.Kurikulum
+        .where({ id: kurikulumId })
+        .first();
 
     if (!item) {
         return Response.json(
@@ -46,7 +53,7 @@ export async function PUT(
         const { id } = await params;
         const kurikulumId = Number(id);
 
-        if (!Number.isInteger(kurikulumId)) {
+        if (!Number.isSafeInteger(kurikulumId) || kurikulumId <= 0) {
             return Response.json(
                 { message: "ID kurikulum tidak valid" },
                 { status: 400 }
@@ -117,11 +124,9 @@ export async function PUT(
             );
         }
 
-        const kurikulum = await db.orm.public.Kurikulum.all();
-
-        const item = kurikulum.find(
-            (kurikulum) => kurikulum.id === kurikulumId
-        );
+        const item = await db.orm.public.Kurikulum
+            .where({ id: kurikulumId })
+            .first();
 
         if (!item) {
             return Response.json(
@@ -130,13 +135,11 @@ export async function PUT(
             );
         }
 
-        const duplicate = kurikulum.find(
-            (kurikulum) =>
-                kurikulum.kode === kode &&
-                kurikulum.id !== kurikulumId
-        );
+        const duplicate = await db.orm.public.Kurikulum
+            .where({ kode })
+            .first();
 
-        if (duplicate) {
+        if (duplicate && duplicate.id !== kurikulumId) {
             return Response.json(
                 {
                     message: `Kode ${kode} sudah terdaftar`,
@@ -197,18 +200,16 @@ export async function DELETE(
         const { id } = await params;
         const kurikulumId = Number(id);
 
-        if (!Number.isInteger(kurikulumId)) {
+        if (!Number.isSafeInteger(kurikulumId) || kurikulumId <= 0) {
             return Response.json(
                 { message: "ID kurikulum tidak valid" },
                 { status: 400 }
             );
         }
 
-        const kurikulum = await db.orm.public.Kurikulum.all();
-
-        const item = kurikulum.find(
-            (kurikulum) => kurikulum.id === kurikulumId
-        );
+        const item = await db.orm.public.Kurikulum
+            .where({ id: kurikulumId })
+            .first();
 
         if (!item) {
             return Response.json(

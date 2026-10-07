@@ -12,19 +12,18 @@ function slugify(value: string) {
 }
 
 export async function generateUniqueBeritaSlug(title: string) {
-    const baseSlug = slugify(title);
-
-    const berita = await db.orm.public.Berita.all();
-
-    if (!berita.some((item) => item.slug === baseSlug)) {
-        return baseSlug;
-    }
-
+    const baseSlug = slugify(title) || "berita";
+    let slug = baseSlug;
     let counter = 2;
 
-    while (berita.some((item) => item.slug === `${baseSlug}-${counter}`)) {
+    while (
+        await db.orm.public.Berita
+            .where({ slug })
+            .first()
+    ) {
+        slug = `${baseSlug}-${counter}`;
         counter++;
     }
 
-    return `${baseSlug}-${counter}`;
+    return slug;
 }
