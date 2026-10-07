@@ -3,7 +3,7 @@ model Dosen {
   id           Int                        @id @default(autoincrement())
   nama         String
   slug         String                     @unique
-  nidn         String
+  nidn         String                     @unique
   foto         String?
   pendidikanS1 String?
   pendidikanS2 String?
