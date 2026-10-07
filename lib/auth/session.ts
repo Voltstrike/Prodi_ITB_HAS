@@ -42,10 +42,9 @@ export async function getSession() {
 
     const tokenHash = hashToken(token);
 
-    const sessions = await db.orm.public.AdminSession.all();
-    const session = sessions.find(
-        (item) => item.tokenHash === tokenHash
-    );
+    const session = await db.orm.public.AdminSession
+        .where({ tokenHash })
+        .first();
 
     if (!session) {
         return null;
@@ -59,8 +58,9 @@ export async function getSession() {
         return null;
     }
 
-    const users = await db.orm.public.AdminUser.all();
-    const user = users.find((item) => item.id === session.userId);
+    const user = await db.orm.public.AdminUser
+        .where({ id: session.userId })
+        .first();
 
     if (!user) {
         return null;
@@ -76,10 +76,9 @@ export async function deleteSession() {
     if (token) {
         const tokenHash = hashToken(token);
 
-        const sessions = await db.orm.public.AdminSession.all();
-        const session = sessions.find(
-            (item) => item.tokenHash === tokenHash
-        );
+        const session = await db.orm.public.AdminSession
+            .where({ tokenHash })
+            .first();
 
         if (session) {
             await db.orm.public.AdminSession

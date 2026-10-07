@@ -22,8 +22,9 @@ export async function GET(
 ) {
     const { slug } = await params;
 
-    const berita = await db.orm.public.Berita.all();
-    const item = berita.find((b) => b.slug === slug);
+    const item = await db.orm.public.Berita
+        .where({ slug })
+        .first();
 
     if (!item) {
         return Response.json(
@@ -94,8 +95,9 @@ export async function PUT(
             );
         }
 
-        const berita = await db.orm.public.Berita.all();
-        const item = berita.find((b) => b.slug === slug);
+        const item = await db.orm.public.Berita
+            .where({ slug })
+            .first();
 
         if (!item) {
             return Response.json(
@@ -158,8 +160,9 @@ export async function DELETE(
     const { slug } = await params;
 
     try {
-        const berita = await db.orm.public.Berita.all();
-        const item = berita.find((b) => b.slug === slug);
+        const item = await db.orm.public.Berita
+            .where({ slug })
+            .first();
 
         if (!item) {
             return Response.json(

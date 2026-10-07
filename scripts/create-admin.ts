@@ -51,7 +51,9 @@ const rl = createInterface({ input, output });
 
 
     const nama = await rl.question("Nama staff: ");
-    const email = await rl.question("Email staff: ");
+    const email = (
+        await rl.question("Email staff: ")
+    ).trim().toLowerCase();
 
     rl.close();
 

@@ -22,12 +22,10 @@ export async function GET(
             );
         }
 
-        const kalenderRows =
+        const kalender =
             await db.orm.public.KalenderAkademik
                 .where({ id: kalenderId })
-                .all();
-
-        const kalender = kalenderRows[0];
+                .first();
 
         if (!kalender) {
             return Response.json(
@@ -122,12 +120,10 @@ export async function PUT(
             );
         }
 
-        const existingRows =
+        const existing =
             await db.orm.public.KalenderAkademik
                 .where({ id: kalenderId })
-                .all();
-        
-        const existing = existingRows[0];
+                .first();
 
         if (!existing) {
             return Response.json(
@@ -197,12 +193,10 @@ export async function DELETE(
             );
         }
 
-        const existingRows =
+        const existing =
             await db.orm.public.KalenderAkademik
                 .where({ id: kalenderId })
-                .all();
-        
-        const existing = existingRows[0];   
+                .first();   
 
         if (!existing) {
             return Response.json(

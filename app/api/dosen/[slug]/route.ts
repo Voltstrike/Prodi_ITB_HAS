@@ -16,8 +16,9 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  const dosen = await db.orm.public.Dosen.all();
-  const item = dosen.find((dosen) => dosen.slug === slug);
+  const item = await db.orm.public.Dosen
+      .where({ slug })
+      .first();
 
   if (!item) {
     return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
@@ -84,10 +85,9 @@ export async function PUT(
             );
         }
 
-        const dosen = await db.orm.public.Dosen.all();
-        const item = dosen.find(
-            (dosen) => dosen.slug === slug
-        );
+        const item = await db.orm.public.Dosen
+            .where({ slug })
+            .first();
 
         if (!item) {
             return Response.json(
@@ -96,13 +96,14 @@ export async function PUT(
             );
         }
 
-        const duplicate = dosen.find(
-            (dosen) =>
-                dosen.nidn === nidn &&
-                dosen.id !== item.id
-        );
+        const duplicate = await db.orm.public.Dosen
+            .where({ nidn })
+            .first();
 
-        if (duplicate) {
+        const hasDuplicate =
+            duplicate && duplicate.id !== item.id;
+
+        if (hasDuplicate) {
             return Response.json(
                 {
                     message: `NIDN ${nidn} sudah terdaftar`,
@@ -164,10 +165,9 @@ export async function DELETE(
     try {
         const { slug } = await params;
 
-        const dosen = await db.orm.public.Dosen.all();
-        const item = dosen.find(
-            (dosen) => dosen.slug === slug
-        );
+        const item = await db.orm.public.Dosen
+            .where({ slug })
+            .first();
 
         if (!item) {
             return Response.json(

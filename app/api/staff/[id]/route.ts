@@ -24,8 +24,9 @@ export async function GET(
         );
     }
 
-    const staff = await db.orm.public.Staff.all();
-    const item = staff.find((staff) => staff.id === staffId);
+    const item = await db.orm.public.Staff
+        .where({ id: staffId })
+        .first();
 
     if (!item) {
         return Response.json(
@@ -98,8 +99,9 @@ export async function PUT(
             );
         }
 
-        const staff = await db.orm.public.Staff.all();
-        const item = staff.find((staff) => staff.id === staffId);
+        const item = await db.orm.public.Staff
+            .where({ id: staffId })
+            .first();
 
         if (!item) {
             return Response.json(
@@ -167,8 +169,9 @@ export async function DELETE(
             );
         }
 
-        const staff = await db.orm.public.Staff.all();
-        const item = staff.find((staff) => staff.id === staffId);
+        const item = await db.orm.public.Staff
+            .where({ id: staffId })
+            .first();
 
         if (!item) {
             return Response.json(

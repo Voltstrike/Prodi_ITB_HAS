@@ -59,11 +59,9 @@ export async function POST(request: Request) {
         );
     }
 
-    const users = await db.orm.public.AdminUser.all();
-
-    const user = users.find(
-        (item) => item.email.toLowerCase() === rateLimitKey
-    );
+    const user = await db.orm.public.AdminUser
+        .where({ email: rateLimitKey })
+        .first();
 
     if (!user) {
         return Response.json(
