@@ -5,24 +5,19 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 export default async function AdminPage() {
     const user = await requireAdmin();
 
-    const [dosen, staff, berita, kurikulum, auditLogs, adminUsers] =
+    const [dosen, staff, berita, auditLogs, adminUsers] =
         await Promise.all([
             db.orm.public.Dosen.all(),
             db.orm.public.Staff.all(),
             db.orm.public.Berita.all(),
-            db.orm.public.Kurikulum.all(),
-            db.orm.public.AuditLog.all(),
-            db.orm.public.AdminUser.all(),
+            db.orm.public.AuditLog
+                .orderBy([(log) => log.createdAt.desc(), (log) => log.id.desc()])
+                .limit(5)
+                .all(),
+            db.orm.public.AdminUser.select("id", "nama").all(),
         ]);
 
-    const recentActivity = auditLogs
-        .sort(
-            (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime(),
-        )
-        .slice(0, 5)
-        .map((log) => ({
+    const recentActivity = auditLogs.map((log) => ({
             ...log,
             userName:
                 adminUsers.find((user) => user.id === log.userId)?.nama ??
