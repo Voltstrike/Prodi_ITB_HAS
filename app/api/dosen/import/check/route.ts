@@ -1,5 +1,10 @@
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_CHECK_BODY_BYTES = 128 * 1024;
+const MAX_NIDN_ITEMS = 1_000;
+const MAX_NIDN_LENGTH = 32;
 
 export async function POST(request: Request) {
     const user = await requireAdminApi();
@@ -12,9 +17,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_CHECK_BODY_BYTES
+        );
 
-        const nidnList = body.nidnList;
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const nidnList = bodyResult.body.nidnList;
 
         if (!Array.isArray(nidnList)) {
             return Response.json(
@@ -23,9 +35,30 @@ export async function POST(request: Request) {
             );
         }
 
+        if (nidnList.length > MAX_NIDN_ITEMS) {
+            return Response.json(
+                {
+                    message:
+                        `Pemeriksaan maksimal ${MAX_NIDN_ITEMS} NIDN sekali proses`,
+                },
+                { status: 400 }
+            );
+        }
+
         const normalizedNidnList = nidnList
             .map((nidn: unknown) => String(nidn ?? "").trim())
             .filter(Boolean);
+
+        if (
+            normalizedNidnList.some(
+                (nidn) => nidn.length > MAX_NIDN_LENGTH
+            )
+        ) {
+            return Response.json(
+                { message: "NIDN melebihi batas panjang" },
+                { status: 400 }
+            );
+        }
 
         const dosen = await db.orm.public.Dosen.all();
 

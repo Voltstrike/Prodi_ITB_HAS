@@ -1,6 +1,11 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_KALENDER_BODY_BYTES = 8 * 1024;
+const MAX_KEGIATAN_LENGTH = 500;
+const MAX_TANGGAL_LENGTH = 64;
 
 export async function GET() {
     const kalenderAkademik =
@@ -20,7 +25,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_KALENDER_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const kegiatan = String(
             body.kegiatan ?? ""
@@ -44,6 +58,17 @@ export async function POST(request: Request) {
                     message:
                         "Kegiatan, tanggal mulai, dan tanggal selesai wajib diisi",
                 },
+                { status: 400 }
+            );
+        }
+
+        if (
+            kegiatan.length > MAX_KEGIATAN_LENGTH ||
+            tanggalMulai.length > MAX_TANGGAL_LENGTH ||
+            tanggalSelesai.length > MAX_TANGGAL_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }

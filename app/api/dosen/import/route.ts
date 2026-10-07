@@ -1,6 +1,13 @@
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { createAuditLog } from "@/lib/audit/log";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_IMPORT_BODY_BYTES = 512 * 1024;
+const MAX_IMPORT_ROWS = 500;
+const MAX_NAMA_LENGTH = 200;
+const MAX_NIDN_LENGTH = 32;
+const MAX_PENDIDIKAN_LENGTH = 500;
 
 function generateSlug(nama: string) {
     return nama
@@ -21,12 +28,30 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
-        const rows = body.rows;
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_IMPORT_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const rows = bodyResult.body.rows;
 
         if (!Array.isArray(rows) || rows.length === 0) {
             return Response.json(
                 { message: "Data import tidak boleh kosong" },
+                { status: 400 }
+            );
+        }
+
+        if (rows.length > MAX_IMPORT_ROWS) {
+            return Response.json(
+                {
+                    message:
+                        `Import maksimal ${MAX_IMPORT_ROWS} baris sekali proses`,
+                },
                 { status: 400 }
             );
         }
@@ -40,20 +65,49 @@ export async function POST(request: Request) {
         const batchNidn = new Set<string>();
 
         for (const row of rows) {
-            const nama = String(row.nama ?? "").trim();
-            const nidn = String(row.nidn ?? "").trim();
+            if (
+                !row ||
+                typeof row !== "object" ||
+                Array.isArray(row)
+            ) {
+                return Response.json(
+                    { message: "Format baris import tidak valid" },
+                    { status: 400 }
+                );
+            }
+
+            const item = row as Record<string, unknown>;
+
+            const nama = String(item.nama ?? "").trim();
+            const nidn = String(item.nidn ?? "").trim();
             const pendidikanS1 =
-                String(row.pendidikanS1 ?? "").trim();
+                String(item.pendidikanS1 ?? "").trim();
             const pendidikanS2 =
-                String(row.pendidikanS2 ?? "").trim();
+                String(item.pendidikanS2 ?? "").trim();
             const pendidikanS3 =
-                String(row.pendidikanS3 ?? "").trim();
+                String(item.pendidikanS3 ?? "").trim();
 
             if (!nama || !nidn) {
                 return Response.json(
                     {
                         message:
                             "Nama dan NIDN wajib diisi",
+                    },
+                    { status: 400 }
+                );
+            }
+
+            if (
+                nama.length > MAX_NAMA_LENGTH ||
+                nidn.length > MAX_NIDN_LENGTH ||
+                pendidikanS1.length > MAX_PENDIDIKAN_LENGTH ||
+                pendidikanS2.length > MAX_PENDIDIKAN_LENGTH ||
+                pendidikanS3.length > MAX_PENDIDIKAN_LENGTH
+            ) {
+                return Response.json(
+                    {
+                        message:
+                            "Salah satu field import melebihi batas panjang",
                     },
                     { status: 400 }
                 );

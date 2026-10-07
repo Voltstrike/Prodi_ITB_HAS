@@ -1,6 +1,12 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_DOSEN_BODY_BYTES = 32 * 1024;
+const MAX_NAMA_LENGTH = 200;
+const MAX_NIDN_LENGTH = 32;
+const MAX_PENDIDIKAN_LENGTH = 500;
 
 function generateSlug(nama: string) {
     return nama
@@ -27,7 +33,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_DOSEN_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const nama = String(body.nama ?? "").trim();
         const nidn = String(body.nidn ?? "").trim();
@@ -38,6 +53,19 @@ export async function POST(request: Request) {
         if (!nama || !nidn) {
             return Response.json(
                 { message: "Nama dan NIDN wajib diisi" },
+                { status: 400 }
+            );
+        }
+
+        if (
+            nama.length > MAX_NAMA_LENGTH ||
+            nidn.length > MAX_NIDN_LENGTH ||
+            pendidikanS1.length > MAX_PENDIDIKAN_LENGTH ||
+            pendidikanS2.length > MAX_PENDIDIKAN_LENGTH ||
+            pendidikanS3.length > MAX_PENDIDIKAN_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }

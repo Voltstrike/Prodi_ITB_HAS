@@ -1,6 +1,14 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_STAFF_BODY_BYTES = 32 * 1024;
+const MAX_NAMA_LENGTH = 200;
+const MAX_PENDIDIKAN_LENGTH = 500;
+const MAX_JABATAN_LENGTH = 200;
+const MAX_LINGKUP_KERJA_LENGTH = 2000;
+const MAX_FOTO_LENGTH = 2048;
 
 export async function GET() {
     const staff = await db.orm.public.Staff.all();
@@ -19,7 +27,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_STAFF_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const nama = String(body.nama ?? "").trim();
         const pendidikan = String(body.pendidikan ?? "").trim();
@@ -30,6 +47,19 @@ export async function POST(request: Request) {
         if (!nama || !jabatan) {
             return Response.json(
                 { message: "Nama dan jabatan wajib diisi" },
+                { status: 400 }
+            );
+        }
+
+        if (
+            nama.length > MAX_NAMA_LENGTH ||
+            pendidikan.length > MAX_PENDIDIKAN_LENGTH ||
+            jabatan.length > MAX_JABATAN_LENGTH ||
+            lingkupKerja.length > MAX_LINGKUP_KERJA_LENGTH ||
+            foto.length > MAX_FOTO_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }

@@ -1,6 +1,14 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_BERITA_BODY_BYTES = 256 * 1024;
+const MAX_TITLE_LENGTH = 300;
+const MAX_DATE_LENGTH = 64;
+const MAX_DESCRIPTION_LENGTH = 5_000;
+const MAX_IMAGE_LENGTH = 2_048;
+const MAX_CONTENT_LENGTH = 100_000;
 
 interface BeritaDetailRouteProps {
     params: Promise<{
@@ -43,7 +51,16 @@ export async function PUT(
     const { slug } = await params;
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_BERITA_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const title = String(body.title ?? "").trim();
         const date = String(body.date ?? "").trim();
@@ -60,6 +77,19 @@ export async function PUT(
         ) {
             return Response.json(
                 { message: "Semua field wajib diisi" },
+                { status: 400 }
+            );
+        }
+
+        if (
+            title.length > MAX_TITLE_LENGTH ||
+            date.length > MAX_DATE_LENGTH ||
+            description.length > MAX_DESCRIPTION_LENGTH ||
+            image.length > MAX_IMAGE_LENGTH ||
+            content.length > MAX_CONTENT_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }

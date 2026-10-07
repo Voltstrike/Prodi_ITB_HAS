@@ -5,16 +5,29 @@ import {
     clearLoginFailures,
     recordLoginFailure,
 } from "@/lib/auth/rate-limit";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
 
 const MAX_EMAIL_LENGTH = 254;
 const MAX_PASSWORD_LENGTH = 128;
+const MAX_LOGIN_BODY_BYTES = 4 * 1024;
 
 export async function POST(request: Request) {
-    const body = await request.json();
+    const bodyResult = await readJsonObjectBody(
+        request,
+        MAX_LOGIN_BODY_BYTES
+    );
 
-    const email = body.email?.toString().trim() ?? "";
-    const password = body.password?.toString() ?? "";
+    if (!bodyResult.ok) {
+        return bodyResult.response;
+    }
+
+    const body = bodyResult.body;
+
+    const email =
+        typeof body.email === "string" ? body.email.trim() : "";
+    const password =
+        typeof body.password === "string" ? body.password : "";
 
     if (
         !email ||

@@ -1,6 +1,11 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_INFORMASI_BODY_BYTES = 32 * 1024;
+const MAX_JUDUL_LENGTH = 300;
+const MAX_DESKRIPSI_LENGTH = 10_000;
 
 export async function GET() {
     try {
@@ -35,7 +40,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_INFORMASI_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const judul = String(
             body.judul ?? ""
@@ -51,6 +65,16 @@ export async function POST(request: Request) {
                     message:
                         "Judul dan deskripsi wajib diisi",
                 },
+                { status: 400 }
+            );
+        }
+
+        if (
+            judul.length > MAX_JUDUL_LENGTH ||
+            deskripsi.length > MAX_DESKRIPSI_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }

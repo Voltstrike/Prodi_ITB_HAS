@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { db } from "@/prisma/db";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { createAuditLog } from "@/lib/audit/log";
+import { readJsonObjectBody } from "@/lib/http/json";
+
+const MAX_PROFIL_BODY_BYTES = 256 * 1024;
+const MAX_SEJARAH_LENGTH = 20_000;
+const MAX_VISI_LENGTH = 10_000;
+const MAX_MISI_LENGTH = 20_000;
+const MAX_STRUKTUR_LENGTH = 50_000;
+const MAX_AKREDITASI_LENGTH = 1_000;
+const MAX_DOKUMEN_AKREDITASI_LENGTH = 2_048;
 
 export async function GET() {
     const profil = (await db.orm.public.Profil.all())[0] ?? null;
@@ -20,7 +29,16 @@ export async function PUT(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_PROFIL_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const sejarah =
             typeof body.sejarah === "string" ? body.sejarah.trim() : "";
@@ -49,6 +67,21 @@ export async function PUT(request: Request) {
                 {
                     error: "Sejarah, visi, dan misi wajib diisi.",
                 },
+                { status: 400 },
+            );
+        }
+
+        if (
+            sejarah.length > MAX_SEJARAH_LENGTH ||
+            visi.length > MAX_VISI_LENGTH ||
+            misi.length > MAX_MISI_LENGTH ||
+            (struktur?.length ?? 0) > MAX_STRUKTUR_LENGTH ||
+            (akreditasi?.length ?? 0) > MAX_AKREDITASI_LENGTH ||
+            (dokumenAkreditasi?.length ?? 0) >
+                MAX_DOKUMEN_AKREDITASI_LENGTH
+        ) {
+            return NextResponse.json(
+                { error: "Salah satu field melebihi batas panjang." },
                 { status: 400 },
             );
         }

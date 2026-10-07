@@ -1,6 +1,12 @@
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
+import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
+
+const MAX_KURIKULUM_BODY_BYTES = 8 * 1024;
+const MAX_KODE_LENGTH = 50;
+const MAX_NAMA_LENGTH = 300;
+const MAX_JENIS_LENGTH = 20;
 
 export async function GET() {
     const kurikulum = await db.orm.public.Kurikulum.all();
@@ -19,7 +25,16 @@ export async function POST(request: Request) {
     }
 
     try {
-        const body = await request.json();
+        const bodyResult = await readJsonObjectBody(
+            request,
+            MAX_KURIKULUM_BODY_BYTES
+        );
+
+        if (!bodyResult.ok) {
+            return bodyResult.response;
+        }
+
+        const body = bodyResult.body;
 
         const kode = String(body.kode ?? "").trim();
         const nama = String(body.nama ?? "").trim();
@@ -33,6 +48,17 @@ export async function POST(request: Request) {
                     message:
                         "Kode, nama, SKS, semester, dan jenis wajib diisi",
                 },
+                { status: 400 }
+            );
+        }
+
+        if (
+            kode.length > MAX_KODE_LENGTH ||
+            nama.length > MAX_NAMA_LENGTH ||
+            jenis.length > MAX_JENIS_LENGTH
+        ) {
+            return Response.json(
+                { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
         }
