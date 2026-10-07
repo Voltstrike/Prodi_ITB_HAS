@@ -1,3 +1,4 @@
+import { toStaffDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -35,7 +36,7 @@ export async function GET(
         );
     }
 
-    return Response.json(item);
+    return Response.json(toStaffDto(item));
 }
 
 export async function PUT(
@@ -122,6 +123,10 @@ export async function PUT(
                         foto: foto || null,
                     });
 
+            if (!staffUpdated) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: user.id,
                 action: "UPDATE",
@@ -134,7 +139,7 @@ export async function PUT(
             return staffUpdated;
         });
 
-        return Response.json(updated);
+        return Response.json(toStaffDto(updated));
     } catch (error) {
         console.error("UPDATE STAFF ERROR:", error);
 

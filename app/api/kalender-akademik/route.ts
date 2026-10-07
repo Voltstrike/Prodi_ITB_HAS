@@ -1,3 +1,4 @@
+import { toKalenderAkademikDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -11,7 +12,7 @@ export async function GET() {
     const kalenderAkademik =
         await db.orm.public.KalenderAkademik.all();
 
-    return Response.json(kalenderAkademik);
+    return Response.json(kalenderAkademik.map(toKalenderAkademikDto));
 }
 
 export async function POST(request: Request) {
@@ -93,7 +94,7 @@ export async function POST(request: Request) {
             return kegiatanBaru;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toKalenderAkademikDto(created), { status: 201 });
     } catch (error) {
         console.error(
             "CREATE KALENDER AKADEMIK ERROR:",

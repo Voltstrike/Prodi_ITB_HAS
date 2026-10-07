@@ -1,3 +1,4 @@
+import { toDosenDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -24,7 +25,7 @@ export async function GET(
     return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
   }
 
-  return Response.json(item);
+  return Response.json(toDosenDto(item));
 }
 
 export async function PUT(
@@ -126,6 +127,10 @@ export async function PUT(
                         profil: profil || null,
                     });
 
+            if (!dosenUpdated) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: user.id,
                 action: "UPDATE",
@@ -138,7 +143,7 @@ export async function PUT(
             return dosenUpdated;
         });
 
-        return Response.json(updated);
+        return Response.json(toDosenDto(updated));
     } catch (error) {
         console.error("UPDATE DOSEN ERROR:", error);
 

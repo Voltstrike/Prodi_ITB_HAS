@@ -1,3 +1,4 @@
+import { toBeritaDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { generateUniqueBeritaSlug } from "@/lib/berita/slug";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
@@ -13,7 +14,7 @@ const MAX_CONTENT_LENGTH = 100_000;
 
 export async function GET() {
     const berita = await db.orm.public.Berita.all();
-    return Response.json(berita);
+    return Response.json(berita.map(toBeritaDto));
 }
 
 export async function POST(request: Request) {
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
             return beritaBaru;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toBeritaDto(created), { status: 201 });
     } catch (error) {
         console.error("CREATE BERITA ERROR:", error);
 

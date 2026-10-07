@@ -1,3 +1,4 @@
+import { toInformasiAkademikDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -40,7 +41,7 @@ export async function GET(
             );
         }
 
-        return Response.json(informasi);
+        return Response.json(toInformasiAkademikDto(informasi));
     } catch (error) {
         console.error(
             "GET INFORMASI AKADEMIK ERROR:",
@@ -147,6 +148,10 @@ export async function PUT(
                         deskripsi,
                     });
 
+            if (!informasi) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: user.id,
                 action: "UPDATE",
@@ -160,7 +165,7 @@ export async function PUT(
             return informasi;
         });
 
-        return Response.json(updated);
+        return Response.json(toInformasiAkademikDto(updated));
     } catch (error) {
         console.error(
             "UPDATE INFORMASI AKADEMIK ERROR:",

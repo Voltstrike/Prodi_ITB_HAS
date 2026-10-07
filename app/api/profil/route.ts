@@ -1,3 +1,4 @@
+import { toProfilDto } from "@/lib/http/dto";
 import { NextResponse } from "next/server";
 import { db } from "@/prisma/db";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
@@ -17,7 +18,7 @@ export async function GET() {
         .where({ singletonKey: 1 })
         .first()) ?? null;
 
-    return NextResponse.json(profil);
+    return NextResponse.json(profil ? toProfilDto(profil) : null);
 }
 
 export async function PUT(request: Request) {
@@ -121,6 +122,10 @@ export async function PUT(request: Request) {
                 .where({ id: existing.id })
                 .update(data);
 
+            if (!profil) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: admin.id,
                 action: "UPDATE",
@@ -133,7 +138,7 @@ export async function PUT(request: Request) {
             return { profil, status: 200 };
         });
 
-        return NextResponse.json(result.profil, { status: result.status });
+        return NextResponse.json(toProfilDto(result.profil), { status: result.status });
     } catch (error) {
         console.error("PUT /api/profil error:", error);
 

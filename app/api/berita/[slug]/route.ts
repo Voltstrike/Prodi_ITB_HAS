@@ -1,3 +1,4 @@
+import { toBeritaDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -33,7 +34,7 @@ export async function GET(
         );
     }
 
-    return Response.json(item);
+    return Response.json(toBeritaDto(item));
 }
 
 export async function PUT(
@@ -133,7 +134,7 @@ export async function PUT(
             return beritaUpdated;
         });
 
-        return Response.json(updated);
+        return Response.json(toBeritaDto(updated));
     } catch (error) {
         console.error("UPDATE BERITA ERROR:", error);
 

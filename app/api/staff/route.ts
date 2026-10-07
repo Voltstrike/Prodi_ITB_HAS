@@ -1,3 +1,4 @@
+import { toStaffDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -13,7 +14,7 @@ const MAX_FOTO_LENGTH = 2048;
 export async function GET() {
     const staff = await db.orm.public.Staff.all();
 
-    return Response.json(staff);
+    return Response.json(staff.map(toStaffDto));
 }
 
 export async function POST(request: Request) {
@@ -85,7 +86,7 @@ export async function POST(request: Request) {
             return staffBaru;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toStaffDto(created), { status: 201 });
     } catch (error) {
         console.error("CREATE STAFF ERROR:", error);
 

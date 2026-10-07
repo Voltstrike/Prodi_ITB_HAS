@@ -1,3 +1,4 @@
+import { toKalenderAkademikDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -34,7 +35,7 @@ export async function GET(
             );
         }
 
-        return Response.json(kalender);
+        return Response.json(toKalenderAkademikDto(kalender));
     } catch (error) {
         console.error(
             "GET KALENDER AKADEMIK ERROR:",
@@ -142,6 +143,10 @@ export async function PUT(
                         tanggalSelesai,
                     });
 
+            if (!kalender) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: user.id,
                 action: "UPDATE",
@@ -155,7 +160,7 @@ export async function PUT(
             return kalender;
         });
 
-        return Response.json(updated);
+        return Response.json(toKalenderAkademikDto(updated));
     } catch (error) {
         console.error(
             "UPDATE KALENDER AKADEMIK ERROR:",

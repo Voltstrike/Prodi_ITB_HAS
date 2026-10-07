@@ -1,3 +1,4 @@
+import { toDosenDto } from "@/lib/http/dto";
 import { generateDosenSlug } from "@/lib/dosen/slug";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
@@ -12,7 +13,7 @@ const MAX_PENDIDIKAN_LENGTH = 500;
 export async function GET() {
     const dosen = await db.orm.public.Dosen.all();
 
-    return Response.json(dosen);
+    return Response.json(dosen.map(toDosenDto));
 }
 
 export async function POST(request: Request) {
@@ -111,7 +112,7 @@ export async function POST(request: Request) {
             return dosenBaru;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toDosenDto(created), { status: 201 });
     } catch (error) {
         console.error("CREATE DOSEN ERROR:", error);
 

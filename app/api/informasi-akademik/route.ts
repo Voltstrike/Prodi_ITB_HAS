@@ -1,3 +1,4 @@
+import { toInformasiAkademikDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -12,7 +13,7 @@ export async function GET() {
         const informasiAkademik =
             await db.orm.public.InformasiAkademik.all();
 
-        return Response.json(informasiAkademik);
+        return Response.json(informasiAkademik.map(toInformasiAkademikDto));
     } catch (error) {
         console.error(
             "GET INFORMASI AKADEMIK ERROR:",
@@ -99,7 +100,7 @@ export async function POST(request: Request) {
             return informasi;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toInformasiAkademikDto(created), { status: 201 });
     } catch (error) {
         console.error(
             "CREATE INFORMASI AKADEMIK ERROR:",

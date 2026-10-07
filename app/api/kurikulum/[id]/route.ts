@@ -1,3 +1,4 @@
+import { toKurikulumDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -33,7 +34,7 @@ export async function GET(
         );
     }
 
-    return Response.json(item);
+    return Response.json(toKurikulumDto(item));
 }
 
 export async function PUT(
@@ -160,6 +161,10 @@ export async function PUT(
                         jenis,
                     });
 
+            if (!mataKuliah) {
+                throw new Error("Data tidak ditemukan saat update.");
+            }
+
             await createAuditLog({
                 userId: user.id,
                 action: "UPDATE",
@@ -172,7 +177,7 @@ export async function PUT(
             return mataKuliah;
         });
 
-        return Response.json(updated);
+        return Response.json(toKurikulumDto(updated));
     } catch (error) {
         console.error("UPDATE KURIKULUM ERROR:", error);
 

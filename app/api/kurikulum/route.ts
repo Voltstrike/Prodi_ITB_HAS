@@ -1,3 +1,4 @@
+import { toKurikulumDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
@@ -11,7 +12,7 @@ const MAX_JENIS_LENGTH = 20;
 export async function GET() {
     const kurikulum = await db.orm.public.Kurikulum.all();
 
-    return Response.json(kurikulum);
+    return Response.json(kurikulum.map(toKurikulumDto));
 }
 
 export async function POST(request: Request) {
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
             return mataKuliah;
         });
 
-        return Response.json(created, { status: 201 });
+        return Response.json(toKurikulumDto(created), { status: 201 });
     } catch (error) {
         console.error("CREATE KURIKULUM ERROR:", error);
 
