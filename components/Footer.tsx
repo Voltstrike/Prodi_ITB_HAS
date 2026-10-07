@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-[#1E3A8A] px-6 py-8 text-slate-300">
@@ -23,27 +25,27 @@ export default function Footer() {
 
           <ul className="mt-2 space-y-1 text-sm">
             <li>
-              <a href="/" className="hover:text-white">
+              <Link href="/" className="hover:text-white">
                 Beranda
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="/profil" className="hover:text-white">
+              <Link href="/profil" className="hover:text-white">
                 Profil
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="/akademik" className="hover:text-white">
+              <Link href="/akademik" className="hover:text-white">
                 Akademik
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="/berita" className="hover:text-white">
+              <Link href="/berita" className="hover:text-white">
                 Berita
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

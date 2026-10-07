@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ export default function Navbar() {
         <div className="flex h-20 items-center justify-between">
 
           {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-bold text-[#1E3A8A]">
               MM
             </div>
@@ -25,53 +26,53 @@ export default function Navbar() {
                 ITB Haji Agus Salim
               </p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-7 md:flex">
-            <a
+            <Link
               href="/"
               className="text-sm font-medium text-white transition hover:text-blue-200"
             >
               Beranda
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/profil"
               className="text-sm text-blue-100 transition hover:text-white"
             >
               Profil
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/akademik"
               className="text-sm text-blue-100 transition hover:text-white"
             >
               Akademik
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/dosen"
               className="text-sm text-blue-100 transition hover:text-white"
             >
               Dosen & Staff
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/berita"
               className="text-sm text-blue-100 transition hover:text-white"
             >
               Berita
-            </a>
+            </Link>
           </div>
 
           {/* Desktop CTA */}
-          <a
+          <Link
             href="/pendaftaran"
             className="hidden rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-[#1E3A8A] transition hover:bg-blue-100 md:block"
           >
             Pendaftaran
-          </a>
+          </Link>
 
           {/* Mobile Menu Button */}
           <button
@@ -91,47 +92,47 @@ export default function Navbar() {
         {isOpen && (
           <div className="border-t border-blue-800 py-4 md:hidden">
             <div className="flex flex-col gap-1">
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/"
                 className="rounded-lg px-4 py-3 text-sm text-white transition hover:bg-blue-800"
               >
                 Beranda
-              </a>
+              </Link>
 
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/profil"
                 className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
               >
                 Profil
-              </a>
+              </Link>
 
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/akademik"
                 className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
               >
                 Akademik
-              </a>
+              </Link>
 
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/dosen"
                 className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
               >
                 Dosen & Staff
-              </a>
+              </Link>
 
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/berita"
                 className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
               >
                 Berita
-              </a>
+              </Link>
 
-              <a
+              <Link onClick={() => setIsOpen(false)}
                 href="/pendaftaran"
                 className="mt-2 rounded-lg bg-white px-4 py-3 text-center text-sm font-medium text-[#1E3A8A] transition hover:bg-blue-100"
               >
                 Pendaftaran
-              </a>
+              </Link>
             </div>
           </div>
         )}
