@@ -94,6 +94,7 @@ model AuditLog {
 
 model Profil {
   id                Int                        @id @default(autoincrement())
+  singletonKey      Int                        @default(1) @unique
   sejarah           String
   visi              String
   misi              String
@@ -102,6 +103,8 @@ model Profil {
   dokumenAkreditasi String?
   createdAt         TimestamptzString          @default(now())
   updatedAt         temporal.updatedAtString()
+
+  @@check(expression: "\"singletonKey\" = 1", name: "profil_singleton_key")
 }
 
 model LoginRateLimit {

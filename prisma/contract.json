@@ -826,6 +826,13 @@
                   "kind": "scalar"
                 }
               },
+              "singletonKey": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "struktur": {
                 "nullable": true,
                 "type": {
@@ -868,6 +875,9 @@
                 },
                 "sejarah": {
                   "column": "sejarah"
+                },
+                "singletonKey": {
+                  "column": "singletonKey"
                 },
                 "struktur": {
                   "column": "struktur"
@@ -1516,6 +1526,13 @@
               ]
             },
             "profil": {
+              "checks": [
+                {
+                  "expression": "\"singletonKey\" = 1",
+                  "name": "profil_singleton_key_dbdbc99e",
+                  "prefix": "profil_singleton_key"
+                }
+              ],
               "columns": {
                 "akreditasi": {
                   "codecId": "pg/text@1",
@@ -1555,6 +1572,15 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "singletonKey": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 1
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
                 "struktur": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -1578,7 +1604,13 @@
                   "id"
                 ]
               },
-              "uniques": []
+              "uniques": [
+                {
+                  "columns": [
+                    "singletonKey"
+                  ]
+                }
+              ]
             },
             "staff": {
               "columns": {
@@ -1646,7 +1678,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "dd5cf1224215b638d9ff65ef3fd6f1f3a1a3e637ef4811cd36bcb33ca9d96033"
+    "storageHash": "844d5916c1dcf1c23ab547ce4d21f2ae704767ab0135da47f529d00af39a1fcf"
   },
   "execution": {
     "executionHash": "54d441e95587f6b699066ecea379a43b919ae3a24403c78fb964ecd6597b07b2",

@@ -1,0 +1,128 @@
+[
+  {
+    "id": "column.public.profil.singletonKey",
+    "label": "Add column \"singletonKey\" to \"profil\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "singletonKey",
+        "table": "profil"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"singletonKey\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "profil",
+          "singletonKey"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"singletonKey\"",
+        "sql": "ALTER TABLE \"public\".\"profil\" ADD COLUMN \"singletonKey\" int4 DEFAULT 1 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"singletonKey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "profil",
+          "singletonKey"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.profil.profil_singleton_key_dbdbc99e",
+    "label": "Add check constraint \"profil_singleton_key_dbdbc99e\" on \"profil\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "profil_singleton_key_dbdbc99e",
+        "table": "profil"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"profil_singleton_key_dbdbc99e\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profil_singleton_key_dbdbc99e",
+          "public",
+          "\"public\".\"profil\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"profil_singleton_key_dbdbc99e\"",
+        "sql": "ALTER TABLE \"public\".\"profil\" ADD CONSTRAINT \"profil_singleton_key_dbdbc99e\" CHECK (\"singletonKey\" = 1)"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"profil_singleton_key_dbdbc99e\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profil_singleton_key_dbdbc99e",
+          "public",
+          "\"public\".\"profil\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.profil.profil_singletonKey_key",
+    "label": "Add unique constraint on \"profil\" (singletonKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "profil_singletonKey_key",
+        "table": "profil"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"profil_singletonKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profil_singletonKey_key",
+          "public",
+          "\"public\".\"profil\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"profil_singletonKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"profil\" ADD CONSTRAINT \"profil_singletonKey_key\" UNIQUE (\"singletonKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"profil_singletonKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profil_singletonKey_key",
+          "public",
+          "\"public\".\"profil\""
+        ]
+      }
+    ]
+  }
+]
