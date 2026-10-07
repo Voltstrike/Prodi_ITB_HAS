@@ -53,27 +53,6 @@ export async function POST(request: Request) {
     );
 
     if (!user) {
-        const failureLimit =
-            await recordLoginFailure(rateLimitKey);
-
-        if (!failureLimit.allowed) {
-            return new Response(
-                JSON.stringify({
-                    message:
-                        "Terlalu banyak percobaan login. Silakan coba lagi nanti.",
-                }),
-                {
-                    status: 429,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Retry-After": String(
-                            failureLimit.retryAfterSeconds
-                        ),
-                    },
-                }
-            );
-        }
-
         return Response.json(
             { message: "Email atau password salah" },
             { status: 401 }
