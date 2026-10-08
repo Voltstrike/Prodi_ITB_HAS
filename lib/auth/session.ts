@@ -1,3 +1,5 @@
+import { createSessionRecord } from "@/lib/auth/session-record";
+import { isAdminRole } from "@/lib/auth/roles";
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { db } from "@/prisma/db";
@@ -9,19 +11,25 @@ function hashToken(token: string) {
     return createHash("sha256").update(token).digest("hex");
 }
 
-export async function createSession(userId: number) {
+export async function createSession(
+    userId: number,
+    verifiedPasswordHash: string,
+): Promise<boolean> {
+    const cookieStore = await cookies();
     const token = randomBytes(32).toString("hex");
     const tokenHash = hashToken(token);
-
     const expiresAt = new Date(Date.now() + SESSION_DURATION);
 
-    await db.orm.public.AdminSession.create({
+    const created = await createSessionRecord({
         userId,
+        verifiedPasswordHash,
         tokenHash,
         expiresAt: expiresAt.toISOString(),
     });
 
-    const cookieStore = await cookies();
+    if (!created) {
+        return false;
+    }
 
     cookieStore.set(SESSION_COOKIE, token, {
         httpOnly: true,
@@ -30,6 +38,8 @@ export async function createSession(userId: number) {
         path: "/",
         expires: expiresAt,
     });
+
+    return true;
 }
 
 export async function getSession() {
@@ -62,7 +72,7 @@ export async function getSession() {
         .where({ id: session.userId })
         .first();
 
-    if (!user) {
+    if (!user || !user.isActive || !isAdminRole(user.role)) {
         return null;
     }
 

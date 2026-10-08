@@ -1,3 +1,4 @@
+import { isAdminRole } from "@/lib/auth/roles";
 import { getSession } from "@/lib/auth/session";
 
 export async function requireAdminApi() {
@@ -7,7 +8,7 @@ export async function requireAdminApi() {
         return null;
     }
 
-    if (user.role !== "ADMIN") {
+    if (!isAdminRole(user.role)) {
         return null;
     }
 

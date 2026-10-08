@@ -1,3 +1,4 @@
+import { isAdminRole } from "@/lib/auth/roles";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 
@@ -9,7 +10,7 @@ export async function requireAdmin() {
         redirect("/admin/login");
     }
 
-    if (user.role !== "ADMIN") {
+    if (!isAdminRole(user.role)) {
         redirect("/admin/login");
     }
 

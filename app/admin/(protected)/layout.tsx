@@ -14,6 +14,7 @@ export default async function ProtectedAdminLayout({
                 user={{
                     nama: user.nama,
                     email: user.email,
+                    role: user.role,
                 }}
             />
 

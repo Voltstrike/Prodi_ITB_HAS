@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { isSuperAdminRole } from "@/lib/auth/roles";
 import { useState } from "react";
 import LogoutButton from "./LogoutButton";
 
 type AdminUser = {
     nama: string;
     email: string;
+    role: string;
 };
 
 export default function AdminNav({ user }: { user: AdminUser }) {
@@ -184,6 +186,20 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 </Link>
                             </div>
                         </div>
+                        {isSuperAdminRole(user.role) && (
+                            <div className="pt-4">
+                                <p className="px-4 pb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                    Pengaturan
+                                </p>
+                                <Link
+                                    href="/admin/akun"
+                                    onClick={closeMenu}
+                                    className="block rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Kelola Akun
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </nav>
 
@@ -240,7 +256,7 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 </p>
 
                                 <p className="text-xs text-slate-500">
-                                    Administrator
+                                    {isSuperAdminRole(user.role) ? "Super Admin" : "Administrator"}
                                 </p>
                             </div>
 

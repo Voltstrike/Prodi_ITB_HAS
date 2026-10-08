@@ -1,3 +1,4 @@
+import { isAdminRole } from "@/lib/auth/roles";
 import { verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import {
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
         .where({ email: rateLimitKey })
         .first();
 
-    if (!user) {
+    if (!user || !user.isActive || !isAdminRole(user.role)) {
         return Response.json(
             { message: "Email atau password salah" },
             { status: 401 }
@@ -103,9 +104,19 @@ export async function POST(request: Request) {
         );
     }
 
-    await clearLoginFailures(rateLimitKey);
+    const sessionCreated = await createSession(
+        user.id,
+        user.passwordHash,
+    );
 
-    await createSession(user.id);
+    if (!sessionCreated) {
+        return Response.json(
+            { message: "Email atau password salah" },
+            { status: 401 }
+        );
+    }
+
+    await clearLoginFailures(rateLimitKey);
 
     return Response.json({
         message: "Login berhasil",

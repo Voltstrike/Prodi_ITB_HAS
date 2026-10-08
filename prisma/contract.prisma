@@ -70,6 +70,7 @@ model AdminUser {
   email        String                     @unique
   passwordHash String
   role         String
+  isActive     Boolean                    @default(true)
   createdAt    TimestamptzString          @default(now())
   updatedAt    temporal.updatedAtString()
 }
