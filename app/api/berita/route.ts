@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toBeritaDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { generateUniqueBeritaSlug } from "@/lib/berita/slug";
@@ -18,6 +19,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const user = await requireAdminApi();
 
     if (!user) {

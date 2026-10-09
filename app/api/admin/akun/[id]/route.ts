@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { db } from "@/prisma/db";
 import { requireSuperAdminApi } from "@/lib/auth/require-super-admin-api";
 import { hashPassword } from "@/lib/auth/password";
@@ -5,7 +6,6 @@ import { createAuditLog } from "@/lib/audit/log";
 import { readJsonObjectBody } from "@/lib/http/json";
 import {
     AccountMutationError,
-    isSameOriginRequest,
     toAccountDto,
     validateAccountPassword,
 } from "@/lib/admin/accounts";
@@ -14,12 +14,14 @@ export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> },
 ) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const admin = await requireSuperAdminApi();
     if (!admin) {
         return Response.json({ message: "Akses ditolak" }, { status: 403 });
-    }
-    if (!isSameOriginRequest(request)) {
-        return Response.json({ message: "Origin tidak diizinkan" }, { status: 403 });
     }
 
     try {

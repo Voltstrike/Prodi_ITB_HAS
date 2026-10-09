@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { generateDosenSlug } from "@/lib/dosen/slug";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { createAuditLog } from "@/lib/audit/log";
@@ -11,6 +12,11 @@ const MAX_NIDN_LENGTH = 32;
 const MAX_PENDIDIKAN_LENGTH = 500;
 
 export async function POST(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const user = await requireAdminApi();
 
     if (!user) {

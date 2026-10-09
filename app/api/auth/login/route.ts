@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { isAdminRole } from "@/lib/auth/roles";
 import { verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
@@ -14,6 +15,11 @@ const MAX_PASSWORD_LENGTH = 128;
 const MAX_LOGIN_BODY_BYTES = 4 * 1024;
 
 export async function POST(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const bodyResult = await readJsonObjectBody(
         request,
         MAX_LOGIN_BODY_BYTES

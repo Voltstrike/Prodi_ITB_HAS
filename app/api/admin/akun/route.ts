@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { getAccountsPage } from "@/lib/admin/account-list";
 import { db } from "@/prisma/db";
 import { requireSuperAdminApi } from "@/lib/auth/require-super-admin-api";
@@ -6,7 +7,6 @@ import { createAuditLog } from "@/lib/audit/log";
 import { readJsonObjectBody } from "@/lib/http/json";
 import {
     hasSqlState,
-    isSameOriginRequest,
     toAccountDto,
     validateAccount,
     validateAccountPassword,
@@ -34,12 +34,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const admin = await requireSuperAdminApi();
     if (!admin) {
         return Response.json({ message: "Akses ditolak" }, { status: 403 });
-    }
-    if (!isSameOriginRequest(request)) {
-        return Response.json({ message: "Origin tidak diizinkan" }, { status: 403 });
     }
 
     try {

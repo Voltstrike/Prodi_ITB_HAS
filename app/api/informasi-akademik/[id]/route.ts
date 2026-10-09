@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toInformasiAkademikDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
@@ -62,6 +63,11 @@ export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const user = await requireAdminApi();
 
     if (!user) {
@@ -186,6 +192,11 @@ export async function DELETE(
     _request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const originError = requireSameOriginRequest(_request);
+    if (originError) {
+        return originError;
+    }
+
     const user = await requireAdminApi();
 
     if (!user) {

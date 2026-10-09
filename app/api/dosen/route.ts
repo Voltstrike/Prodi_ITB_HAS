@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toDosenDto } from "@/lib/http/dto";
 import { generateDosenSlug } from "@/lib/dosen/slug";
 import { createAuditLog } from "@/lib/audit/log";
@@ -17,6 +18,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const user = await requireAdminApi();
 
     if (!user) {

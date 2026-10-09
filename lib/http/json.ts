@@ -89,6 +89,22 @@ export async function readJsonObjectBody(
     request: Request,
     maxBytes: number
 ): Promise<JsonObjectBodyResult> {
+    const mediaType = request.headers
+        .get("content-type")
+        ?.split(";")[0]
+        .trim()
+        .toLowerCase();
+
+    if (mediaType !== "application/json") {
+        return {
+            ok: false,
+            response: Response.json(
+                { message: "Content-Type harus application/json" },
+                { status: 415 },
+            ),
+        };
+    }
+
     try {
         const body = await readJsonBody(request, maxBytes);
 

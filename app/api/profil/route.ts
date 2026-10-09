@@ -1,3 +1,4 @@
+import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toProfilDto } from "@/lib/http/dto";
 import { NextResponse } from "next/server";
 import { db } from "@/prisma/db";
@@ -22,6 +23,11 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+    const originError = requireSameOriginRequest(request);
+    if (originError) {
+        return originError;
+    }
+
     const admin = await requireAdminApi();
 
     if (!admin){

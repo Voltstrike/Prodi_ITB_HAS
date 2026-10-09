@@ -34,14 +34,6 @@ export function validateAccountPassword(password: string): string | null {
     return null;
 }
 
-export function isSameOriginRequest(request: Request): boolean {
-    if (request.headers.get("sec-fetch-site") === "cross-site") {
-        return false;
-    }
-    const origin = request.headers.get("origin");
-    return origin === null || origin === new URL(request.url).origin;
-}
-
 export function hasSqlState(error: unknown, state: string): boolean {
     const pending: unknown[] = [error];
     const seen = new Set<object>();
