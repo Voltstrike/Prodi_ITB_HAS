@@ -14,6 +14,29 @@ const MAX_EMAIL_LENGTH = 254;
 const MAX_PASSWORD_LENGTH = 128;
 const MAX_LOGIN_BODY_BYTES = 4 * 1024;
 
+async function loginFailureResponse(key: string) {
+    const limit = await recordLoginFailure(key);
+
+    if (!limit.allowed) {
+        return Response.json(
+            {
+                message: "Terlalu banyak percobaan login. Silakan coba lagi nanti.",
+            },
+            {
+                status: 429,
+                headers: {
+                    "Retry-After": String(limit.retryAfterSeconds),
+                },
+            },
+        );
+    }
+
+    return Response.json(
+        { message: "Email atau password salah" },
+        { status: 401 },
+    );
+}
+
 export async function POST(request: Request) {
     const originError = requireSameOriginRequest(request);
     if (originError) {
@@ -71,10 +94,7 @@ export async function POST(request: Request) {
         .first();
 
     if (!user || !user.isActive || !isAdminRole(user.role)) {
-        return Response.json(
-            { message: "Email atau password salah" },
-            { status: 401 }
-        );
+        return loginFailureResponse(rateLimitKey);
     }
 
     const passwordValid = await verifyPassword(
@@ -83,31 +103,7 @@ export async function POST(request: Request) {
     );
 
     if (!passwordValid) {
-        const failureLimit =
-            await recordLoginFailure(rateLimitKey);
-
-        if (!failureLimit.allowed) {
-            return new Response(
-                JSON.stringify({
-                    message:
-                        "Terlalu banyak percobaan login. Silakan coba lagi nanti.",
-                }),
-                {
-                    status: 429,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Retry-After": String(
-                            failureLimit.retryAfterSeconds
-                        ),
-                    },
-                }
-            );
-        }
-
-        return Response.json(
-            { message: "Email atau password salah" },
-            { status: 401 }
-        );
+        return loginFailureResponse(rateLimitKey);
     }
 
     const sessionCreated = await createSession(
@@ -116,10 +112,7 @@ export async function POST(request: Request) {
     );
 
     if (!sessionCreated) {
-        return Response.json(
-            { message: "Email atau password salah" },
-            { status: 401 }
-        );
+        return loginFailureResponse(rateLimitKey);
     }
 
     await clearLoginFailures(rateLimitKey);
