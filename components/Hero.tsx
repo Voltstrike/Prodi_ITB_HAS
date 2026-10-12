@@ -38,11 +38,11 @@ export default function Hero() {
         {/* Image */}
         <div>
           <div className="aspect-4/3 overflow-hidden rounded-2xl bg-slate-200">
-            <img
-              src="/hero.jpg"
-              alt="Kegiatan Program Studi Magister Manajemen"
-              className="h-full w-full object-cover"
-            />
+            <div
+              className="flex aspect-4/3 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
+            >
+              Foto kegiatan kampus belum tersedia
+            </div>
           </div>
         </div>
 

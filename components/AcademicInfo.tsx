@@ -59,11 +59,11 @@ export default function AcademicInfo() {
               key={item.title}
               className="overflow-hidden rounded-xl border border-slate-200 bg-white"
             >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="aspect-16/10 w-full object-cover"
-              />
+              <div
+                className="flex aspect-16/10 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
+              >
+                Foto akademik belum tersedia
+              </div>
 
               <div className="p-5">
                 <h3 className="text-lg font-semibold text-slate-900">

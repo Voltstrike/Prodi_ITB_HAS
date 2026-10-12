@@ -5,11 +5,11 @@ export default function About() {
         
         {/* Image */}
         <div className="overflow-hidden rounded-2xl">
-          <img
-            src="/about.jpg"
-            alt="Kegiatan Program Studi Magister Manajemen"
-            className="aspect-4/3 h-full w-full object-cover"
-          />
+          <div
+            className="flex aspect-4/3 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
+          >
+            Foto program studi belum tersedia
+          </div>
         </div>
 
         {/* Content */}
