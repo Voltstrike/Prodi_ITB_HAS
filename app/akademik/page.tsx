@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function AkademikPage() {
   const kurikulum = await db.orm.public.Kurikulum.all();
   const kalenderAkademik = await db.orm.public.KalenderAkademik.all();
@@ -40,7 +42,7 @@ export default async function AkademikPage() {
       </section>
 
       {/* Kurikulum */}
-      <section className="bg-slate-50">
+      <section id="kurikulum" className="scroll-mt-24 bg-slate-50">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-2xl font-bold text-slate-900">
             Kurikulum
@@ -83,7 +85,7 @@ export default async function AkademikPage() {
       </section>
 
       {/* Kalender Akademik */}
-      <section className="bg-white">
+      <section id="kalender-akademik" className="scroll-mt-24 bg-white">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-2xl font-bold text-slate-900">
             Kalender Akademik

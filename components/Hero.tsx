@@ -27,7 +27,7 @@ export default function Hero() {
             </a>
 
             <a
-              href="/kontak"
+              href="#kontak"
               className="rounded-md border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700"
             >
               Hubungi Kami

@@ -51,7 +51,7 @@ export default function Footer() {
         </div>
 
         {/* Contact */}
-        <div>
+        <div id="kontak" className="scroll-mt-24">
           <h3 className="font-semibold text-white">
             Kontak
           </h3>

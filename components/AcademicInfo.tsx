@@ -4,14 +4,14 @@ const academicInfo = [
     description:
       "Informasi mengenai struktur kurikulum dan mata kuliah Program Studi Magister Manajemen.",
     image: "/academic-kurikulum.jpg",
-    href: "/akademik/kurikulum",
+    href: "/akademik#kurikulum",
   },
   {
     title: "Kalender Akademik",
     description:
       "Jadwal dan informasi penting kegiatan akademik selama tahun perkuliahan.",
     image: "/academic-kalender.jpg",
-    href: "/akademik/kalender",
+    href: "/akademik#kalender-akademik",
   },
   {
     title: "Pendaftaran",
