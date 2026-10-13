@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -17,6 +19,8 @@ export default function EditStaffPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [staffId, setStaffId] = useState<string | null>(null);
     const [staff, setStaff] = useState<Staff | null>(null);
     const [loading, setLoading] = useState(true);
@@ -43,10 +47,10 @@ export default function EditStaffPage({
                 })
                 .catch((error) => {
                     alert(error.message);
-                    window.location.href = "/admin/staff";
+                    router.replace("/admin/staff");
                 });
         });
-    }, [params]);
+    }, [params, router]);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -88,7 +92,8 @@ export default function EditStaffPage({
         }
 
         alert("Staff berhasil diubah");
-        window.location.href = "/admin/staff";
+        router.push("/admin/staff");
+        router.refresh();
     }
 
     if (loading) {

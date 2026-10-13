@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { FormEvent, useEffect, useState } from "react";
 
 interface KalenderAkademik {
@@ -14,6 +16,8 @@ export default function EditKalenderPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [kalender, setKalender] =
         useState<KalenderAkademik | null>(null);
 
@@ -94,8 +98,8 @@ export default function EditKalenderPage({
             "Kalender akademik berhasil diubah"
         );
 
-        window.location.href =
-            "/admin/akademik/kalender";
+        router.push("/admin/akademik/kalender");
+        router.refresh();
     }
 
     if (loading) {

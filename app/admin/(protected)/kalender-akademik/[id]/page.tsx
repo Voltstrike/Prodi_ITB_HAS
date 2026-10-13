@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -15,6 +17,8 @@ export default function EditKalenderAkademikPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [id, setId] = useState("");
     const [kegiatan, setKegiatan] = useState("");
     const [tanggalMulai, setTanggalMulai] = useState("");
@@ -90,7 +94,8 @@ export default function EditKalenderAkademikPage({
                 return;
             }
 
-            window.location.href = "/admin/kalender-akademik";
+            router.push("/admin/kalender-akademik");
+            router.refresh();
         } catch {
             alert("Terjadi kesalahan saat menyimpan perubahan.");
         } finally {

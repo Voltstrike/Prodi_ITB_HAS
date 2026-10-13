@@ -1,8 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { FormEvent } from "react";
 
 export default function TambahKalenderPage() {
+    const router = useRouter();
+
     async function handleSubmit(
         event: FormEvent<HTMLFormElement>
     ) {
@@ -49,8 +53,8 @@ export default function TambahKalenderPage() {
             "Kalender akademik berhasil ditambahkan"
         );
 
-        window.location.href =
-            "/admin/akademik/kalender";
+        router.push("/admin/akademik/kalender");
+        router.refresh();
     }
 
     return (

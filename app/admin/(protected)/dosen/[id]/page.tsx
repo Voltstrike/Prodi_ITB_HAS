@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -20,6 +22,8 @@ export default function EditDosenPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [dosen, setDosen] = useState<Dosen | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -91,7 +95,8 @@ export default function EditDosenPage({
         }
 
         alert("Data dosen berhasil diubah");
-        window.location.href = "/admin/dosen";
+        router.push("/admin/dosen");
+        router.refresh();
     }
 
     if (loading) {

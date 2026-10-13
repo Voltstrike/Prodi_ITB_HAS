@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { FormEvent, useEffect, useState } from "react";
 
 interface Kurikulum {
@@ -16,6 +18,8 @@ export default function EditKurikulumPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [kurikulum, setKurikulum] =
         useState<Kurikulum | null>(null);
 
@@ -95,8 +99,8 @@ export default function EditKurikulumPage({
 
         alert("Mata kuliah berhasil diubah");
 
-        window.location.href =
-            "/admin/akademik/kurikulum";
+        router.push("/admin/akademik/kurikulum");
+        router.refresh();
     }
 
     return (

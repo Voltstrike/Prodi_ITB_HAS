@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 interface HapusDosenButtonProps {
     slug: string;
 }
@@ -7,6 +9,8 @@ interface HapusDosenButtonProps {
 export default function HapusDosenButton({
     slug,
 }: HapusDosenButtonProps) {
+    const router = useRouter();
+
     async function handleDelete() {
         const yakin = window.confirm(
             "Yakin ingin menghapus data dosen ini?"
@@ -27,7 +31,8 @@ export default function HapusDosenButton({
         }
 
         alert("Data dosen berhasil dihapus");
-        window.location.href = "/admin/dosen";
+        router.push("/admin/dosen");
+        router.refresh();
     }
 
     return (

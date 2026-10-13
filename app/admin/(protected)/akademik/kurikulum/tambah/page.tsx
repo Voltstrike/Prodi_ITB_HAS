@@ -1,8 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { FormEvent } from "react";
 
 export default function TambahKurikulumPage() {
+    const router = useRouter();
+
     async function handleSubmit(
         event: FormEvent<HTMLFormElement>
     ) {
@@ -43,8 +47,8 @@ export default function TambahKurikulumPage() {
 
         alert("Mata kuliah berhasil ditambahkan");
 
-        window.location.href =
-            "/admin/akademik/kurikulum";
+        router.push("/admin/akademik/kurikulum");
+        router.refresh();
     }
 
     return (

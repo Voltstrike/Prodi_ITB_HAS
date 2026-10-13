@@ -1,9 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function TambahKalenderAkademikPage() {
+    const router = useRouter();
+
     const [kegiatan, setKegiatan] = useState("");
     const [tanggalMulai, setTanggalMulai] = useState("");
     const [tanggalSelesai, setTanggalSelesai] = useState("");
@@ -44,7 +48,8 @@ export default function TambahKalenderAkademikPage() {
                 return;
             }
 
-            window.location.href = "/admin/kalender-akademik";
+            router.push("/admin/kalender-akademik");
+            router.refresh();
         } catch {
             alert("Terjadi kesalahan saat menambahkan kegiatan.");
         } finally {

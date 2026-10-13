@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -14,6 +16,8 @@ export default function EditInformasiAkademikPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [id, setId] = useState("");
     const [judul, setJudul] = useState("");
     const [deskripsi, setDeskripsi] = useState("");
@@ -91,7 +95,8 @@ export default function EditInformasiAkademikPage({
                 return;
             }
 
-            window.location.href = "/admin/informasi-akademik";
+            router.push("/admin/informasi-akademik");
+            router.refresh();
         } catch {
             alert(
                 "Terjadi kesalahan saat menyimpan perubahan.",

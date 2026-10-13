@@ -1,6 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 export default function LogoutButton() {
+    const router = useRouter();
+
     async function handleLogout() {
         const response = await fetch("/api/auth/logout", {
             method: "POST",
@@ -11,7 +15,8 @@ export default function LogoutButton() {
             return;
         }
 
-        window.location.href = "/admin/login";
+        router.replace("/admin/login");
+        router.refresh();
     }
 
     return (

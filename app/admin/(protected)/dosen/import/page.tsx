@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { ChangeEvent, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -25,6 +27,8 @@ function generateSlug(nama: string) {
 }
 
 export default function ImportDosenPage() {
+    const router = useRouter();
+
     const [fileName, setFileName] = useState("");
     const [rows, setRows] = useState<PreviewRow[]>([]);
     const [error, setError] = useState("");
@@ -345,7 +349,8 @@ export default function ImportDosenPage() {
                     <button
                         type="button"
                         onClick={() => {
-                            window.location.href = "/admin/dosen";
+                            router.push("/admin/dosen");
+                            router.refresh();
                         }}
                         className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                     >
@@ -496,8 +501,8 @@ export default function ImportDosenPage() {
                         <button
                             type="button"
                             onClick={() => {
-                                window.location.href =
-                                    "/admin/dosen";
+                                router.push("/admin/dosen");
+                                router.refresh();
                             }}
                             className="rounded-lg bg-green-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-green-800"
                         >

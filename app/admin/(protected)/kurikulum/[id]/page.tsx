@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -17,6 +19,8 @@ export default function EditKurikulumPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const router = useRouter();
+
     const [kurikulumId, setKurikulumId] = useState<string | null>(null);
     const [kurikulum, setKurikulum] = useState<Kurikulum | null>(null);
     const [loading, setLoading] = useState(true);
@@ -44,10 +48,10 @@ export default function EditKurikulumPage({
                 })
                 .catch((error) => {
                     alert(error.message);
-                    window.location.href = "/admin/kurikulum";
+                    router.replace("/admin/kurikulum");
                 });
         });
-    }, [params]);
+    }, [params, router]);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -89,7 +93,8 @@ export default function EditKurikulumPage({
         }
 
         alert("Mata kuliah berhasil diubah");
-        window.location.href = "/admin/kurikulum";
+        router.push("/admin/kurikulum");
+        router.refresh();
     }
 
     if (loading) {

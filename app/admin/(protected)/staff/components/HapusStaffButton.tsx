@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 interface HapusStaffButtonProps {
     id: number;
 }
@@ -7,6 +9,8 @@ interface HapusStaffButtonProps {
 export default function HapusStaffButton({
     id,
 }: HapusStaffButtonProps) {
+    const router = useRouter();
+
     async function handleDelete() {
         const yakin = window.confirm(
             "Yakin ingin menghapus data staff ini?"
@@ -27,7 +31,8 @@ export default function HapusStaffButton({
         }
 
         alert("Data staff berhasil dihapus");
-        window.location.href = "/admin/staff";
+        router.push("/admin/staff");
+        router.refresh();
     }
 
     return (

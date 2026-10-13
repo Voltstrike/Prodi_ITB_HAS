@@ -1,6 +1,5 @@
 import { db } from "@/prisma/db";
 import Link from "next/link";
-import HpausKurikulumButton from "./components/HapusKurikulumButton"
 import HapusKurikulumButton from "./components/HapusKurikulumButton";
 
 export default async function AdminKurikulumPage() {

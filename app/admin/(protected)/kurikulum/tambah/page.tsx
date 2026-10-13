@@ -1,9 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function TambahKurikulumPage() {
+    const router = useRouter();
+
     const [saving, setSaving] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -46,7 +50,8 @@ export default function TambahKurikulumPage() {
         }
 
         alert("Mata kuliah berhasil ditambahkan");
-        window.location.href = "/admin/kurikulum";
+        router.push("/admin/kurikulum");
+        router.refresh();
     }
 
     return (

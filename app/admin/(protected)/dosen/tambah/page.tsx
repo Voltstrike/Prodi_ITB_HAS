@@ -1,9 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function TambahDosenPage() {
+    const router = useRouter();
+
     const [saving, setSaving] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -48,7 +52,8 @@ export default function TambahDosenPage() {
         }
 
         alert("Dosen berhasil ditambahkan");
-        window.location.href = "/admin/dosen";
+        router.push("/admin/dosen");
+        router.refresh();
     }
 
     return (

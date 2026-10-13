@@ -1,9 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function TambahInformasiAkademikPage() {
+    const router = useRouter();
+
     const [judul, setJudul] = useState("");
     const [deskripsi, setDeskripsi] = useState("");
     const [loading, setLoading] = useState(false);
@@ -37,7 +41,8 @@ export default function TambahInformasiAkademikPage() {
                 return;
             }
 
-            window.location.href = "/admin/informasi-akademik";
+            router.push("/admin/informasi-akademik");
+            router.refresh();
         } catch {
             alert("Terjadi kesalahan saat menambahkan informasi akademik.");
         } finally {
