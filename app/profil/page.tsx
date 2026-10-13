@@ -2,6 +2,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfilPage() {
   const profil = (await db.orm.public.Profil.all())[0] ?? null;
 

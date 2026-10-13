@@ -4,6 +4,8 @@ import Footer from "@/components/Footer";
 import DosenCarousel from "./components/DosenCarousel";
 import StaffCarousel from "./components/StaffCarousel";
 
+export const dynamic = "force-dynamic";
+
 export default async function DosenPage() {
   const dosen = await db.orm.public.Dosen.all();
   const staff = await db.orm.public.Staff.all();
