@@ -1,7 +1,13 @@
 import Link from "next/link";
-import { berita } from "@/data/berita";
+import { db } from "@/prisma/db";
 
-export default function News() {
+export default async function News() {
+  const berita = await db.orm.public.Berita
+    .select("id", "title", "date", "description", "slug")
+    .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
+    .limit(3)
+    .all();
+
   return (
     <section className="bg-slate-50 px-6 py-16">
       <div className="mx-auto max-w-6xl">
@@ -33,6 +39,17 @@ export default function News() {
 
         {/* News Cards */}
         <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {berita.length === 0 && (
+            <div className="rounded-xl border border-slate-200 bg-white px-6 py-12 text-center md:col-span-3">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Belum ada berita
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Informasi dan kegiatan terbaru akan ditampilkan di sini.
+              </p>
+            </div>
+          )}
+
           {berita.map((item) => (
             <article
               key={item.id}

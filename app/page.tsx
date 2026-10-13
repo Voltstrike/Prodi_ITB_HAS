@@ -6,6 +6,8 @@ import News from "@/components/News";
 import Documents from "@/components/Documents";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <main>
