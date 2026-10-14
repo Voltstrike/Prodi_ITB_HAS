@@ -42,6 +42,12 @@ export async function createSession(
     return true;
 }
 
+export async function getSessionTokenHash(): Promise<string | null> {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(SESSION_COOKIE)?.value;
+    return token ? hashToken(token) : null;
+}
+
 export async function getSession() {
     const cookieStore = await cookies();
     const token = cookieStore.get(SESSION_COOKIE)?.value;

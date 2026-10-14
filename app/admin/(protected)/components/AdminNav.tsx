@@ -228,7 +228,7 @@ export default function AdminNav({ user }: { user: AdminUser }) {
 
                                     <Link
                                         href="/admin/profil-akun"
-                                        onClick={() => setAccountOpen(false)}
+                                        onClick={closeMenu}
                                         className="mt-1 block rounded-lg px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
                                     >
                                         Edit Profil
