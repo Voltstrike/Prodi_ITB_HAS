@@ -1,3 +1,5 @@
+import { WHATSAPP_URL } from "@/lib/contact";
+
 export default function Hero() {
   return (
     <section className="px-6 py-16">
@@ -27,10 +29,13 @@ export default function Hero() {
             </a>
 
             <a
-              href="#kontak"
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-md border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700"
             >
               Hubungi Kami
+              <span className="sr-only"> (WhatsApp, terbuka di tab baru)</span>
             </a>
           </div>
         </div>
