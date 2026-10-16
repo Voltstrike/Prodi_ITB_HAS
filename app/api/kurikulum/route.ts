@@ -1,3 +1,4 @@
+import { parsePositiveInt32 } from "@/lib/http/positive-int32";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toKurikulumDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
@@ -45,11 +46,11 @@ export async function POST(request: Request) {
 
         const kode = String(body.kode ?? "").trim();
         const nama = String(body.nama ?? "").trim();
-        const sks = Number(body.sks);
-        const semester = Number(body.semester);
+        const sks = parsePositiveInt32(body.sks);
+        const semester = parsePositiveInt32(body.semester);
         const jenis = String(body.jenis ?? "").trim();
 
-        if (!kode || !nama || !sks || !semester || !jenis) {
+        if (!kode || !nama || !jenis) {
             return Response.json(
                 {
                     message:
@@ -70,14 +71,14 @@ export async function POST(request: Request) {
             );
         }
 
-        if (!Number.isInteger(sks) || sks <= 0) {
+        if (sks === null) {
             return Response.json(
                 { message: "SKS harus berupa bilangan bulat positif" },
                 { status: 400 }
             );
         }
 
-        if (!Number.isInteger(semester) || semester <= 0) {
+        if (semester === null) {
             return Response.json(
                 {
                     message:
