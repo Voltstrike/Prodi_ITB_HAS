@@ -5,7 +5,7 @@ import { db } from "@/prisma/db";
 export const dynamic = "force-dynamic";
 
 export default async function ProfilPage() {
-  const profil = (await db.orm.public.Profil.all())[0] ?? null;
+  const profil = await db.orm.public.Profil.first();
 
   return (
     <main>
@@ -33,7 +33,7 @@ export default async function ProfilPage() {
           </h2>
 
           <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
-            {profil?.sejarah ||
+            {profil?.sejarah?.trim() ||
               "Informasi mengenai sejarah Program Studi Magister Manajemen belum tersedia."}
           </p>
         </div>
@@ -53,7 +53,7 @@ export default async function ProfilPage() {
               </h3>
 
               <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
-                {profil?.visi ||
+                {profil?.visi?.trim() ||
                   "Visi Program Studi Magister Manajemen belum tersedia."}
               </p>
             </div>
@@ -64,7 +64,7 @@ export default async function ProfilPage() {
               </h3>
 
               <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
-                {profil?.misi ||
+                {profil?.misi?.trim() ||
                   "Misi Program Studi Magister Manajemen belum tersedia."}
               </p>
             </div>
@@ -79,9 +79,9 @@ export default async function ProfilPage() {
             Struktur Organisasi
           </h2>
 
-          {profil?.struktur ? (
+          {profil?.struktur?.trim() ? (
             <p className="mt-4 whitespace-pre-line leading-relaxed text-slate-600">
-              {profil.struktur}
+              {profil.struktur.trim()}
             </p>
           ) : (
             <p className="mt-4 leading-relaxed text-slate-600">
@@ -89,10 +89,6 @@ export default async function ProfilPage() {
               tersedia.
             </p>
           )}
-
-          <div className="mt-8 flex min-h-64 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-500">
-            Struktur Organisasi
-          </div>
         </div>
       </section>
 
@@ -104,7 +100,7 @@ export default async function ProfilPage() {
           </h2>
 
           <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
-            {profil?.akreditasi ||
+            {profil?.akreditasi?.trim() ||
               "Informasi mengenai akreditasi Program Studi Magister Manajemen belum tersedia."}
           </p>
         </div>
