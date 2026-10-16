@@ -1,3 +1,4 @@
+import { parseImageSource } from "@/lib/images/source";
 import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toBeritaDto } from "@/lib/http/dto";
@@ -61,6 +62,13 @@ export async function POST(request: Request) {
         const date = String(body.date ?? "").trim();
         const description = String(body.description ?? "").trim();
         const image = String(body.image ?? "").trim();
+
+        if (image && parseImageSource(image) === null) {
+            return Response.json(
+                { message: "Gambar berita harus berupa path lokal /... atau URL HTTP/HTTPS yang valid." },
+                { status: 400 },
+            );
+        }
         const content = String(body.content ?? "").trim();
 
         if (

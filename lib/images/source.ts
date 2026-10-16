@@ -14,6 +14,7 @@ export function parseImageSource(value: unknown): string | null {
 
     try {
         const url = new URL(source, "https://image-source.invalid");
+        if (local && url.pathname.startsWith("//")) return null;
         if (
             !["http:", "https:"].includes(url.protocol) ||
             url.username || url.password

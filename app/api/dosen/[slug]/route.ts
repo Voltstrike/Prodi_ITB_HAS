@@ -1,3 +1,4 @@
+import { parseImageSource } from "@/lib/images/source";
 import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toDosenDto } from "@/lib/http/dto";
@@ -77,6 +78,13 @@ export async function PUT(
         const nama = String(body.nama ?? "").trim();
         const nidn = String(body.nidn ?? "").trim();
         const foto = String(body.foto ?? "").trim();
+
+        if (foto && parseImageSource(foto) === null) {
+            return Response.json(
+                { message: "Foto harus berupa path lokal /... atau URL HTTP/HTTPS yang valid." },
+                { status: 400 },
+            );
+        }
         const pendidikanS1 = String(body.pendidikanS1 ?? "").trim();
         const pendidikanS2 = String(body.pendidikanS2 ?? "").trim();
         const pendidikanS3 = String(body.pendidikanS3 ?? "").trim();

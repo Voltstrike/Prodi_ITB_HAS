@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
@@ -62,9 +62,14 @@ export default async function BeritaDetailPage({
 
             {item.image?.trim() && (
               <div className="bg-slate-100">
-                <Image
+                <ImageWithFallback
                   src={item.image}
                   alt={item.title}
+                  fallback={
+                    <div className="flex aspect-16/10 w-full items-center justify-center bg-blue-50 p-6 text-sm font-semibold text-blue-800">
+                      MM ITB HAS
+                    </div>
+                  }
                   width={1200}
                   height={750}
                   unoptimized

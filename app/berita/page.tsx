@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -98,9 +98,14 @@ export default async function BeritaPage({
                     >
                       <div className="relative aspect-16/10 overflow-hidden bg-blue-50">
                         {item.image?.trim() ? (
-                          <Image
+                          <ImageWithFallback
                             src={item.image}
                             alt={item.title}
+                            fallback={
+                              <div className="flex h-full items-center justify-center text-sm font-semibold tracking-wide text-blue-800">
+                                MM ITB HAS
+                              </div>
+                            }
                             fill
                             unoptimized
                             sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"

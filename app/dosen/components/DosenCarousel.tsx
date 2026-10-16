@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { useRef } from "react";
 
@@ -57,8 +57,9 @@ export default function DosenCarousel({
           >
             <Link href={`/dosen/${item.slug}`}>
               <div className="flex justify-center bg-slate-50 p-6">
-                <Image
-                  src={item.foto || "/dosen/default.jpg"}
+                <ImageWithFallback
+                  src={item.foto}
+                  fallbackSrc="/dosen/default.jpg"
                   alt={item.nama}
                   width={200}
                   height={200}
