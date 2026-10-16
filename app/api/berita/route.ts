@@ -1,3 +1,4 @@
+import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toBeritaDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
@@ -44,6 +45,17 @@ export async function POST(request: Request) {
         }
 
         const body = bodyResult.body;
+
+        const textTypeError = validateTextFieldTypes(body, [
+            "title",
+            "date",
+            "description",
+            "image",
+            "content",
+        ]);
+        if (textTypeError) {
+            return Response.json({ message: textTypeError }, { status: 400 });
+        }
 
         const title = String(body.title ?? "").trim();
         const date = String(body.date ?? "").trim();

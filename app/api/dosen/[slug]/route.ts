@@ -1,3 +1,4 @@
+import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toDosenDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
@@ -59,6 +60,19 @@ export async function PUT(
         }
 
         const body = bodyResult.body;
+
+        const textTypeError = validateTextFieldTypes(body, [
+            "nama",
+            "nidn",
+            "foto",
+            "pendidikanS1",
+            "pendidikanS2",
+            "pendidikanS3",
+            "profil",
+        ]);
+        if (textTypeError) {
+            return Response.json({ message: textTypeError }, { status: 400 });
+        }
 
         const nama = String(body.nama ?? "").trim();
         const nidn = String(body.nidn ?? "").trim();

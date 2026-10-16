@@ -1,3 +1,4 @@
+import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { parsePositiveInt32 } from "@/lib/http/positive-int32";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toKurikulumDto } from "@/lib/http/dto";
@@ -43,6 +44,15 @@ export async function POST(request: Request) {
         }
 
         const body = bodyResult.body;
+
+        const textTypeError = validateTextFieldTypes(body, [
+            "kode",
+            "nama",
+            "jenis",
+        ]);
+        if (textTypeError) {
+            return Response.json({ message: textTypeError }, { status: 400 });
+        }
 
         const kode = String(body.kode ?? "").trim();
         const nama = String(body.nama ?? "").trim();

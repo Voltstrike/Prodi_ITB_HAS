@@ -1,3 +1,5 @@
+import { parseImageSource } from "@/lib/images/source";
+import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toStaffDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
@@ -80,11 +82,29 @@ export async function PUT(
 
         const body = bodyResult.body;
 
+        const textTypeError = validateTextFieldTypes(body, [
+            "nama",
+            "pendidikan",
+            "jabatan",
+            "lingkupKerja",
+            "foto",
+        ]);
+        if (textTypeError) {
+            return Response.json({ message: textTypeError }, { status: 400 });
+        }
+
         const nama = String(body.nama ?? "").trim();
         const pendidikan = String(body.pendidikan ?? "").trim();
         const jabatan = String(body.jabatan ?? "").trim();
         const lingkupKerja = String(body.lingkupKerja ?? "").trim();
         const foto = String(body.foto ?? "").trim();
+
+        if (foto && parseImageSource(foto) === null) {
+            return Response.json(
+                { message: "Foto harus berupa path lokal /... atau URL HTTP/HTTPS yang valid." },
+                { status: 400 },
+            );
+        }
 
         if (!nama || !jabatan) {
             return Response.json(

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import StaffPhoto from "./StaffPhoto";
 import { useRef } from "react";
 
 type Staff = {
@@ -53,13 +53,7 @@ export default function StaffCarousel({
             className="min-w-[280px] flex-1 overflow-hidden rounded-xl border border-slate-200 bg-white sm:min-w-[320px] lg:min-w-[calc((100%-3rem)/3)]"
           >
             <div className="flex justify-center bg-slate-50 p-6">
-              <Image
-                src={item.foto || "/dosen/default.jpg"}
-                alt={item.nama}
-                width={200}
-                height={200}
-                className="h-48 w-48 rounded-lg object-cover"
-              />
+              <StaffPhoto foto={item.foto} nama={item.nama} />
             </div>
 
             <div className="p-6">
