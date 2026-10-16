@@ -95,7 +95,7 @@ export async function PATCH(
 
             await tx.orm.public.AdminSession
                 .where({ userId: accountId })
-                .delete();
+                .deleteAll();
             await tx.orm.public.LoginRateLimit
                 .where({ key: target.email.toLowerCase() })
                 .delete();

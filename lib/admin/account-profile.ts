@@ -103,7 +103,7 @@ export async function updateOwnAccountProfile({
             if (emailChanged) {
                 await tx.orm.public.AdminSession
                     .where({ userId })
-                    .delete();
+                    .deleteAll();
             }
 
             await createAuditLog({
