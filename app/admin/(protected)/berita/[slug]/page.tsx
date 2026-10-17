@@ -1,5 +1,6 @@
 "use client";
 
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -20,10 +21,10 @@ export default function EditBeritaPage() {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         async function loadBerita() {
@@ -41,7 +42,6 @@ export default function EditBeritaPage() {
                 setTitle(data.title);
                 setDate(data.date);
                 setDescription(data.description);
-                setImage(data.image);
                 setContent(data.content);
             } catch {
                 alert("Gagal mengambil data berita.");
@@ -56,6 +56,17 @@ export default function EditBeritaPage() {
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        if(!berita || saving || uploading){
+            return;
+        }
+
+        const form = new FormData(event.currentTarget);
+        const image = form.get("image")?.toString().trim() ?? "";
+
+        if (!image) {
+            alert("Pilih gambar berita terlebih dahulu.");
+            return;
+        }
 
         setSaving(true);
 
@@ -178,18 +189,14 @@ export default function EditBeritaPage() {
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700">
-                            Gambar
-                        </label>
-                        <input
-                            type="text"
-                            value={image}
-                            onChange={(event) => setImage(event.target.value)}
-                            required
-                            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600"
-                        />
-                    </div>
+                    <ImageUploadField
+                        key={berita.slug}
+                        name="image"
+                        label="Gambar Berita"
+                        initialValue={berita.image ?? ""}
+                        disabled={saving}
+                        onUploadingChange={setUploading}
+                    />
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700">
@@ -217,7 +224,7 @@ export default function EditBeritaPage() {
 
                         <button
                             type="submit"
-                            disabled={saving}
+                            disabled={saving || uploading}
                             className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {saving ? "Menyimpan..." : "Simpan Perubahan"}

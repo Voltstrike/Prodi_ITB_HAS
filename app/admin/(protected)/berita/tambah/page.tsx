@@ -2,19 +2,31 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import ImageUploadField from "@/components/admin/ImageUploadField";
 export default function TambahBeritaPage() {
     const router = useRouter();
 
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
+    const [uploading, setUploading] = useState(false);
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        if (loading || uploading) {
+            return;
+        }
+
+        const form = new FormData(event.currentTarget);
+        const image = form.get("image")?.toString().trim() ?? "";
+
+        if (!image){
+            alert("Pilih gambar berita terlebih dahulu.");
+            return;
+        }
+
 
         setLoading(true);
 
@@ -109,19 +121,12 @@ export default function TambahBeritaPage() {
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700">
-                            Gambar
-                        </label>
-                        <input
-                            type="text"
-                            value={image}
-                            onChange={(event) => setImage(event.target.value)}
-                            placeholder="/uploads/berita/nama-file.jpg"
-                            required
-                            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600"
-                        />
-                    </div>
+                    <ImageUploadField
+                        name="image"
+                        label="Gambar Berita"
+                        disabled={loading}
+                        onUploadingChange={setUploading}
+                    />
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700">
@@ -149,7 +154,7 @@ export default function TambahBeritaPage() {
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || uploading}
                             className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             {loading ? "Menyimpan..." : "Simpan Berita"}

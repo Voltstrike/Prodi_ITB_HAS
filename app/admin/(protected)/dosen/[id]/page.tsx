@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -27,6 +27,7 @@ export default function EditDosenPage({
     const [dosen, setDosen] = useState<Dosen | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         async function loadDosen() {
@@ -52,7 +53,7 @@ export default function EditDosenPage({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (!dosen || saving) {
+        if (!dosen || saving || uploading) {
             return;
         }
 
@@ -276,25 +277,14 @@ export default function EditDosenPage({
                     </div>
 
                     <div className="space-y-5 p-6">
-                        <div>
-                            <label
-                                htmlFor="foto"
-                                className="block text-sm font-medium text-slate-700"
-                            >
-                                URL Foto
-                            </label>
-                            <input
-                                id="foto"
-                                name="foto"
-                                defaultValue={dosen.foto ?? ""}
-                                placeholder="https://..."
-                                className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                            />
-                            <p className="mt-2 text-xs text-slate-500">
-                                Upload foto akan kita tambahkan setelah
-                                storage hosting ditentukan.
-                            </p>
-                        </div>
+                        <ImageUploadField
+                            key={dosen.id}
+                            name="foto"
+                            label="Foto Dosen"
+                            initialValue={dosen.foto ?? ""}
+                            disabled={saving}
+                            onUploadingChange={setUploading}
+                        />
 
                         <div>
                             <label
@@ -326,7 +316,7 @@ export default function EditDosenPage({
 
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {saving ? "Menyimpan..." : "Simpan Perubahan"}

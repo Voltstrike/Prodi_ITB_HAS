@@ -5,12 +5,14 @@ import { generateDosenSlug } from "@/lib/dosen/slug";
 import { createAuditLog } from "@/lib/audit/log";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
+import { parseImageSource } from "@/lib/images/source";
 import { db } from "@/prisma/db";
 
 const MAX_DOSEN_BODY_BYTES = 32 * 1024;
 const MAX_NAMA_LENGTH = 200;
 const MAX_NIDN_LENGTH = 32;
 const MAX_PENDIDIKAN_LENGTH = 500;
+const MAX_FOTO_LENGTH = 2_048;
 
 export async function GET() {
     const dosen = await db.orm.public.Dosen.all();
@@ -48,6 +50,7 @@ export async function POST(request: Request) {
         const textTypeError = validateTextFieldTypes(body, [
             "nama",
             "nidn",
+            "foto",
             "pendidikanS1",
             "pendidikanS2",
             "pendidikanS3",
@@ -58,6 +61,7 @@ export async function POST(request: Request) {
 
         const nama = String(body.nama ?? "").trim();
         const nidn = String(body.nidn ?? "").trim();
+        const foto = String(body.foto ?? "").trim();
         const pendidikanS1 = String(body.pendidikanS1 ?? "").trim();
         const pendidikanS2 = String(body.pendidikanS2 ?? "").trim();
         const pendidikanS3 = String(body.pendidikanS3 ?? "").trim();
@@ -72,6 +76,7 @@ export async function POST(request: Request) {
         if (
             nama.length > MAX_NAMA_LENGTH ||
             nidn.length > MAX_NIDN_LENGTH ||
+            foto.length > MAX_FOTO_LENGTH ||
             pendidikanS1.length > MAX_PENDIDIKAN_LENGTH ||
             pendidikanS2.length > MAX_PENDIDIKAN_LENGTH ||
             pendidikanS3.length > MAX_PENDIDIKAN_LENGTH
@@ -80,6 +85,13 @@ export async function POST(request: Request) {
                 { message: "Salah satu field melebihi batas panjang" },
                 { status: 400 }
             );
+        }
+
+        if (foto && parseImageSource(foto) === null){
+            return Response.json(
+                { message: "Foto haruss berupa path lokal /... atau URL HTTP/HTTPS yang valid."},
+                { status: 400 }
+            )
         }
 
         const duplicate = await db.orm.public.Dosen
@@ -112,7 +124,8 @@ export async function POST(request: Request) {
             const dosenBaru = await tx.orm.public.Dosen.create({
                 nama,
                 slug,
-                nidn,           
+                nidn,
+                foto: foto || null,
                 pendidikanS1: pendidikanS1 || null,
                 pendidikanS2: pendidikanS2 || null,
                 pendidikanS3: pendidikanS3 || null,

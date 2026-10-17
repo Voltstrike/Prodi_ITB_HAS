@@ -3,17 +3,19 @@
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import { FormEvent, useState } from "react";
 
 export default function TambahStaffPage() {
     const router = useRouter();
 
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (saving) {
+        if (saving || uploading) {
             return;
         }
 
@@ -170,24 +172,12 @@ export default function TambahStaffPage() {
                     </div>
 
                     <div className="p-6">
-                        <label
-                            htmlFor="foto"
-                            className="block text-sm font-medium text-slate-700"
-                        >
-                            URL Foto
-                        </label>
-
-                        <input
-                            id="foto"
+                        <ImageUploadField
                             name="foto"
-                            placeholder="https://..."
-                            className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            label="Foto Staff"
+                            disabled={saving}
+                            onUploadingChange={setUploading}
                         />
-
-                        <p className="mt-2 text-xs text-slate-500">
-                            Upload foto akan kita tambahkan setelah storage
-                            hosting ditentukan.
-                        </p>
                     </div>
                 </section>
 
@@ -201,10 +191,10 @@ export default function TambahStaffPage() {
 
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Tambahkan Staff"}
+                        {uploading ? "Mengunggah foto..." : saving ? "Menyimpan..." : "Tambahkan Staff"}
                     </button>
                 </div>
             </form>
@@ -221,10 +211,10 @@ export default function TambahStaffPage() {
                     <button
                         type="submit"
                         form="tambah-staff-form"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="flex flex-1 items-center justify-center rounded-lg bg-blue-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Tambah Staff"}
+                        {uploading ? "Mengunggah foto..." : saving ? "Menyimpan..." : "Tambah Staff"}
                     </button>
                 </div>
             </div>

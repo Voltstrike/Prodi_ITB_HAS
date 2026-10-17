@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 
@@ -9,11 +9,12 @@ export default function TambahDosenPage() {
     const router = useRouter();
 
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (saving) {
+        if (saving || uploading) {
             return;
         }
 
@@ -23,6 +24,7 @@ export default function TambahDosenPage() {
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
+        const foto = form.get("foto")?.toString() ?? "";
         const pendidikanS1 =
             form.get("pendidikanS1")?.toString() ?? "";
         const pendidikanS2 =
@@ -38,6 +40,7 @@ export default function TambahDosenPage() {
             body: JSON.stringify({
                 nama,
                 nidn,
+                foto,
                 pendidikanS1,
                 pendidikanS2,
                 pendidikanS3,
@@ -189,6 +192,15 @@ export default function TambahDosenPage() {
                     </div>
                 </section>
 
+                <section className="rounded-xl border border-slate-200 bg-white p-6">
+                    <ImageUploadField
+                        name="foto"
+                        label="Foto Dosen"
+                        disabled={saving}
+                        onUploadingChange={setUploading}
+                    />
+                </section>
+
                 {/* Actions */}
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <Link
@@ -200,10 +212,10 @@ export default function TambahDosenPage() {
 
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Tambahkan Dosen"}
+                        {uploading ? "Mengunggah foto..." : saving? "Menyimpan..." : "Tambahkan Dosen"}
                     </button>
                 </div>
             </form>

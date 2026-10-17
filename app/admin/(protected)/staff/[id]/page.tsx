@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
+import ImageUploadField from "@/components/admin/ImageUploadField";
 import { FormEvent, useEffect, useState } from "react";
 
 type Staff = {
@@ -25,6 +26,7 @@ export default function EditStaffPage({
     const [staff, setStaff] = useState<Staff | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         params.then(({ id }) => {
@@ -55,7 +57,7 @@ export default function EditStaffPage({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (!staffId || saving) {
+        if (!staffId || saving || uploading) {
             return;
         }
 
@@ -235,25 +237,14 @@ export default function EditStaffPage({
                     </div>
 
                     <div className="p-6">
-                        <label
-                            htmlFor="foto"
-                            className="block text-sm font-medium text-slate-700"
-                        >
-                            URL Foto
-                        </label>
-
-                        <input
-                            id="foto"
+                        <ImageUploadField
+                            key={staff.id}
                             name="foto"
-                            defaultValue={staff.foto ?? ""}
-                            placeholder="https://..."
-                            className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                            label="Foto Staff"
+                            initialValue={staff.foto ?? ""}
+                            disabled={saving}
+                            onUploadingChange={setUploading}
                         />
-
-                        <p className="mt-2 text-xs text-slate-500">
-                            Upload foto akan kita tambahkan setelah storage
-                            hosting ditentukan.
-                        </p>
                     </div>
                 </section>
 
@@ -267,10 +258,10 @@ export default function EditStaffPage({
 
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                        {uploading ? "Mengunggah foto..." : saving ? "Menyimpan..." : "Simpan Perubahan"}
                     </button>
                 </div>
             </form>
@@ -287,10 +278,10 @@ export default function EditStaffPage({
                     <button
                         type="submit"
                         form="edit-staff-form"
-                        disabled={saving}
+                        disabled={saving || uploading}
                         className="flex flex-1 items-center justify-center rounded-lg bg-blue-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                        {uploading ? "Mengunggah foto..." : saving ? "Menyimpan..." : "Simpan Perubahan"}
                     </button>
                 </div>
             </div>
