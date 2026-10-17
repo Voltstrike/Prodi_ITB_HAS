@@ -98,6 +98,7 @@ export function toProfilDto(row: ProfilRow) {
         visi: row.visi,
         misi: row.misi,
         struktur: row.struktur,
+        strukturOrganisasi: row.strukturOrganisasi,
         akreditasi: row.akreditasi,
         dokumenAkreditasi: row.dokumenAkreditasi,
         createdAt: row.createdAt,

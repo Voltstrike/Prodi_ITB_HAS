@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'e8fcd2b10468ca2981299b6aaef8dc26e060a1266883473fe854c17b0d0cd2f3'>;
+  StorageHashBase<'6f96652b8d54ba5b5f57167fb784ed0d1b3f5ea69945373c0a6587fee45c200f'>;
 export type ExecutionHash =
   ExecutionHashBase<'54d441e95587f6b699066ecea379a43b919ae3a24403c78fb964ecd6597b07b2'>;
 export type ProfileHash =
@@ -331,6 +331,7 @@ export type FieldOutputTypes = {
       readonly visi: CodecTypes['pg/text@1']['output'];
       readonly misi: CodecTypes['pg/text@1']['output'];
       readonly struktur: CodecTypes['pg/text@1']['output'] | null;
+      readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['output'] | null;
       readonly akreditasi: CodecTypes['pg/text@1']['output'] | null;
       readonly dokumenAkreditasi: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -439,6 +440,7 @@ export type FieldInputTypes = {
       readonly visi: CodecTypes['pg/text@1']['input'];
       readonly misi: CodecTypes['pg/text@1']['input'];
       readonly struktur: CodecTypes['pg/text@1']['input'] | null;
+      readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['input'] | null;
       readonly akreditasi: CodecTypes['pg/text@1']['input'] | null;
       readonly dokumenAkreditasi: CodecTypes['pg/text@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -549,6 +551,7 @@ export type StorageColumnTypes = {
       readonly sejarah: CodecTypes['pg/text@1']['output'];
       readonly singletonKey: CodecTypes['pg/int4@1']['output'];
       readonly struktur: CodecTypes['pg/text@1']['output'] | null;
+      readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly visi: CodecTypes['pg/text@1']['output'];
     };
@@ -657,6 +660,7 @@ export type StorageColumnInputTypes = {
       readonly sejarah: CodecTypes['pg/text@1']['input'];
       readonly singletonKey: CodecTypes['pg/int4@1']['input'];
       readonly struktur: CodecTypes['pg/text@1']['input'] | null;
+      readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly visi: CodecTypes['pg/text@1']['input'];
     };
@@ -777,6 +781,7 @@ export namespace Models {
     visi: CodecTypes['pg/text@1']['output'];
     misi: CodecTypes['pg/text@1']['output'];
     struktur: CodecTypes['pg/text@1']['output'] | null;
+    strukturOrganisasi: CodecTypes['pg/jsonb@1']['output'] | null;
     akreditasi: CodecTypes['pg/text@1']['output'] | null;
     dokumenAkreditasi: CodecTypes['pg/text@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -1348,6 +1353,11 @@ type ContractBase = Omit<
                 readonly struktur: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly strukturOrganisasi: {
+                  readonly nativeType: 'jsonb';
+                  readonly codecId: 'pg/jsonb@1';
                   readonly nullable: true;
                 };
                 readonly akreditasi: {
@@ -1991,6 +2001,10 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly strukturOrganisasi: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/jsonb@1' };
+              };
               readonly akreditasi: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -2025,6 +2039,7 @@ type ContractBase = Omit<
                 readonly visi: { readonly column: 'visi' };
                 readonly misi: { readonly column: 'misi' };
                 readonly struktur: { readonly column: 'struktur' };
+                readonly strukturOrganisasi: { readonly column: 'strukturOrganisasi' };
                 readonly akreditasi: { readonly column: 'akreditasi' };
                 readonly dokumenAkreditasi: { readonly column: 'dokumenAkreditasi' };
                 readonly createdAt: { readonly column: 'createdAt' };

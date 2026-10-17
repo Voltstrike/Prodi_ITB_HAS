@@ -884,6 +884,13 @@
                   "kind": "scalar"
                 }
               },
+              "strukturOrganisasi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/jsonb@1",
+                  "kind": "scalar"
+                }
+              },
               "updatedAt": {
                 "nullable": false,
                 "type": {
@@ -925,6 +932,9 @@
                 },
                 "struktur": {
                   "column": "struktur"
+                },
+                "strukturOrganisasi": {
+                  "column": "strukturOrganisasi"
                 },
                 "updatedAt": {
                   "column": "updatedAt"
@@ -1695,6 +1705,11 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "strukturOrganisasi": {
+                  "codecId": "pg/jsonb@1",
+                  "nativeType": "jsonb",
+                  "nullable": true
+                },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "nativeType": "timestamptz",
@@ -1787,7 +1802,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "e8fcd2b10468ca2981299b6aaef8dc26e060a1266883473fe854c17b0d0cd2f3"
+    "storageHash": "6f96652b8d54ba5b5f57167fb784ed0d1b3f5ea69945373c0a6587fee45c200f"
   },
   "execution": {
     "executionHash": "54d441e95587f6b699066ecea379a43b919ae3a24403c78fb964ecd6597b07b2",

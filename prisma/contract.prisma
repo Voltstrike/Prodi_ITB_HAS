@@ -102,6 +102,7 @@ model Profil {
   visi              String
   misi              String
   struktur          String?
+  strukturOrganisasi Jsonb?
   akreditasi        String?
   dokumenAkreditasi String?
   createdAt         TimestamptzString          @default(now())

@@ -1,15 +1,25 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import OrganizationEditor from "./components/OrganizationEditor";
+import { validateOrganizationStructure, type OrganizationStructure } from "@/lib/organization/structure";
 
 type Profil = {
     sejarah: string;
     visi: string;
     misi: string;
     struktur: string | null;
+    strukturOrganisasi: OrganizationStructure | null;
     akreditasi: string | null;
     dokumenAkreditasi: string | null;
 };
+
+function readOrganizationStructure(value: unknown): OrganizationStructure | null {
+    if (value === null || value === undefined) return null;
+    const parsed = validateOrganizationStructure(value);
+    if (!parsed.ok) throw new Error("Bagan tersimpan tidak dapat dibaca. Hubungi pengelola website.");
+    return parsed.value;
+}
 
 export default function ProfilPage() {
     const [form, setForm] = useState<Profil>({
@@ -17,11 +27,14 @@ export default function ProfilPage() {
         visi: "",
         misi: "",
         struktur: "",
+        strukturOrganisasi: null,
         akreditasi: "",
         dokumenAkreditasi: "",
     });
 
     const [loading, setLoading] = useState(true);
+    const [loaded, setLoaded] = useState(false);
+    const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -29,7 +42,7 @@ export default function ProfilPage() {
     useEffect(() => {
         async function loadProfil() {
             try {
-                const response = await fetch("/api/profil");
+                const response = await fetch("/api/profil", { cache: "no-store" });
 
                 if (!response.ok) {
                     throw new Error("Gagal memuat profil.");
@@ -43,10 +56,13 @@ export default function ProfilPage() {
                         visi: data.visi ?? "",
                         misi: data.misi ?? "",
                         struktur: data.struktur ?? "",
+                        strukturOrganisasi: readOrganizationStructure(data.strukturOrganisasi),
                         akreditasi: data.akreditasi ?? "",
                         dokumenAkreditasi: data.dokumenAkreditasi ?? "",
                     });
+                    setBaseUpdatedAt(typeof data.updatedAt === "string" ? data.updatedAt : null);
                 }
+                setLoaded(true);
             } catch (err) {
                 setError(
                     err instanceof Error
@@ -61,7 +77,7 @@ export default function ProfilPage() {
         loadProfil();
     }, []);
 
-    function updateField(field: keyof Profil, value: string) {
+    function updateField(field: Exclude<keyof Profil, "strukturOrganisasi">, value: string) {
         setForm((current) => ({
             ...current,
             [field]: value,
@@ -79,6 +95,29 @@ export default function ProfilPage() {
             return;
         }
 
+        if (!loaded) {
+            setError("Profil belum berhasil dimuat. Muat ulang halaman sebelum menyimpan.");
+            return;
+        }
+
+        const { strukturOrganisasi, ...textFields } = form;
+        let organization = strukturOrganisasi;
+
+        if (organization !== null) {
+            const parsed = validateOrganizationStructure(organization);
+            if (!parsed.ok) {
+                setError(parsed.error);
+                return;
+            }
+            organization = parsed.value;
+        }
+
+        const payload = {
+            ...textFields,
+            baseUpdatedAt,
+            ...(organization !== null ? { strukturOrganisasi: organization } : {}),
+        };
+
         setSaving(true);
 
         try {
@@ -87,13 +126,13 @@ export default function ProfilPage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(form),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error ?? "Gagal menyimpan profil.");
+                throw new Error(data.error ?? data.message ?? "Gagal menyimpan profil.");
             }
 
             setForm({
@@ -101,9 +140,11 @@ export default function ProfilPage() {
                 visi: data.visi ?? "",
                 misi: data.misi ?? "",
                 struktur: data.struktur ?? "",
+                strukturOrganisasi: readOrganizationStructure(data.strukturOrganisasi),
                 akreditasi: data.akreditasi ?? "",
                 dokumenAkreditasi: data.dokumenAkreditasi ?? "",
             });
+            setBaseUpdatedAt(typeof data.updatedAt === "string" ? data.updatedAt : null);
 
             setSuccess("Profil berhasil disimpan.");
         } catch (err) {
@@ -161,6 +202,7 @@ export default function ProfilPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                <fieldset disabled={saving || !loaded} className="min-w-0 space-y-6">
                 <section className="rounded-xl border border-slate-200 bg-white p-6">
                     <div className="mb-6">
                         <h2 className="text-base font-semibold text-slate-900">
@@ -242,24 +284,15 @@ export default function ProfilPage() {
                     </div>
 
                     <div className="space-y-6">
-                        <div>
-                            <label
-                                htmlFor="struktur"
-                                className="mb-2 block text-sm font-medium text-slate-700"
-                            >
-                                Struktur Organisasi
-                            </label>
-                            <textarea
-                                id="struktur"
-                                value={form.struktur ?? ""}
-                                onChange={(event) =>
-                                    updateField("struktur", event.target.value)
-                                }
-                                rows={8}
-                                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                                placeholder="Masukkan informasi struktur organisasi..."
-                            />
-                        </div>
+                        <OrganizationEditor
+                            value={form.strukturOrganisasi}
+                            legacyText={form.struktur}
+                            disabled={saving || !loaded}
+                            onChange={(strukturOrganisasi) => setForm((current) => ({
+                                ...current,
+                                strukturOrganisasi,
+                            }))}
+                        />
 
                         <div>
                             <label
@@ -310,7 +343,7 @@ export default function ProfilPage() {
                 <div className="hidden justify-end gap-3 lg:flex">
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || !loaded}
                         className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {saving ? "Menyimpan..." : "Simpan Perubahan"}
@@ -320,12 +353,13 @@ export default function ProfilPage() {
                 <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white p-4 shadow-lg lg:hidden">
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || !loaded}
                         className="w-full rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {saving ? "Menyimpan..." : "Simpan Perubahan"}
                     </button>
                 </div>
+                </fieldset>
             </form>
         </div>
     );

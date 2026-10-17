@@ -1,3 +1,6 @@
+import OrganizationChart from "@/components/OrganizationChart";
+import { validateOrganizationStructure } from "@/lib/organization/structure";
+import { getOrganizationPeople } from "@/lib/organization/people";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
@@ -6,6 +9,9 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilPage() {
   const profil = await db.orm.public.Profil.first();
+  const parsed = validateOrganizationStructure(profil?.strukturOrganisasi);
+  const organization = parsed.ok ? parsed.value : null;
+  const organizationPeople = organization ? await getOrganizationPeople(organization) : [];
 
   return (
     <main>
@@ -79,7 +85,11 @@ export default async function ProfilPage() {
             Struktur Organisasi
           </h2>
 
-          {profil?.struktur?.trim() ? (
+          {organization ? (
+            <div className="mt-8 min-w-0">
+              <OrganizationChart structure={organization} people={organizationPeople} />
+            </div>
+          ) : profil?.struktur?.trim() ? (
             <p className="mt-4 whitespace-pre-line leading-relaxed text-slate-600">
               {profil.struktur.trim()}
             </p>
