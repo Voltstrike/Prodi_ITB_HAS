@@ -118,3 +118,31 @@ model LoginRateLimit {
   firstAttemptAt TimestamptzString
   updatedAt      temporal.updatedAtString()
 }
+
+model KegiatanProdi {
+  id           Int               @id @default(autoincrement())
+  judul        String
+  slug         String            @unique
+  jenis        String
+  tahun        Int
+  dosenId      Int
+  dosen        Dosen @relation(fields: [dosenId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  ringkasan    String
+  uraian       String
+  foto         String?
+  tautanHasil  String?
+  createdAt    TimestamptzString  @default(now())
+  updatedAt    temporal.updatedAtString()
+
+  @@check(expression: "\"jenis\" IN ('PENELITIAN', 'PENGABDIAN')", name: "kegiatan_prodi_jenis")
+}
+
+model DosenMataKuliah {
+  id           Int @id @default(autoincrement())
+  dosenId      Int
+  kurikulumId  Int
+  dosen        Dosen @relation(fields: [dosenId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  kurikulum    Kurikulum @relation(fields: [kurikulumId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([dosenId, kurikulumId])
+}

@@ -1,3 +1,5 @@
+import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
+import { parseMataKuliahIds } from "@/lib/dosen/mata-kuliah";
 import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toDosenDto } from "@/lib/http/dto";
@@ -15,9 +17,17 @@ const MAX_PENDIDIKAN_LENGTH = 500;
 const MAX_FOTO_LENGTH = 2_048;
 
 export async function GET() {
-    const dosen = await db.orm.public.Dosen.all();
+    const [dosen, mataKuliah] = await Promise.all([
+        db.orm.public.Dosen.all(),
+        getMataKuliahDosen(),
+    ]);
 
-    return Response.json(dosen.map(toDosenDto));
+    return Response.json(
+        dosen.map((item) => ({
+            ...toDosenDto(item),
+            mataKuliah: mataKuliah.get(item.id) ?? [],
+        })),
+    );
 }
 
 export async function POST(request: Request) {
@@ -46,6 +56,16 @@ export async function POST(request: Request) {
         }
 
         const body = bodyResult.body;
+        const mataKuliahIds = parseMataKuliahIds(
+           body.mataKuliahIds === undefined ? [] : body.mataKuliahIds,
+        );
+
+        if (mataKuliahIds === null) {
+            return Response.json(
+               { message: "Pilihan mata kuliah tidak valid." },
+               { status: 400 },
+            );
+        }
 
         const textTypeError = validateTextFieldTypes(body, [
             "nama",
@@ -94,6 +114,19 @@ export async function POST(request: Request) {
             )
         }
 
+        const kurikulum = await db.orm.public.Kurikulum
+            .select("id")
+            .all();
+
+        const idTerdaftar = new Set(kurikulum.map((item) => item.id));
+
+        if (mataKuliahIds.some((id) => !idTerdaftar.has(id))) {
+            return Response.json(
+                { message: "Salah satu mata kuliah tidak ditemukan." },
+                { status: 400 },
+            );
+        }
+
         const duplicate = await db.orm.public.Dosen
             .where({ nidn })
             .first();
@@ -130,6 +163,13 @@ export async function POST(request: Request) {
                 pendidikanS2: pendidikanS2 || null,
                 pendidikanS3: pendidikanS3 || null,
             });
+
+            for (const kurikulumId of mataKuliahIds) {
+                await tx.orm.public.DosenMataKuliah.create({
+                    dosenId: dosenBaru.id,
+                    kurikulumId,
+                });
+            }
 
             await createAuditLog({
                 userId: user.id,

@@ -1,9 +1,13 @@
 "use client";
 
+
 import { useRouter } from "next/navigation";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import MataKuliahField from "@/components/admin/MataKuliahField";
+import { useMataKuliahOptions } from "@/components/admin/useMataKuliahOptions";
+import type { MataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
 
 interface Dosen {
     id: number;
@@ -11,6 +15,7 @@ interface Dosen {
     nama: string;
     nidn: string;
     foto: string | null;
+    mataKuliah: MataKuliahDosen[];
     pendidikanS1: string | null;
     pendidikanS2: string | null;
     pendidikanS3: string | null;
@@ -24,6 +29,7 @@ export default function EditDosenPage({
 }) {
     const router = useRouter();
 
+    const mataKuliah = useMataKuliahOptions();
     const [dosen, setDosen] = useState<Dosen | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -53,13 +59,15 @@ export default function EditDosenPage({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (!dosen || saving || uploading) {
+        if (!dosen || saving || uploading || mataKuliah.options === null) {
             return;
         }
 
         setSaving(true);
 
         const form = new FormData(event.currentTarget);
+        const mataKuliahIds = form.getAll("mataKuliahIds")
+            .map((value) => Number(value));
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
@@ -81,6 +89,7 @@ export default function EditDosenPage({
                 nama,
                 nidn,
                 foto,
+                mataKuliahIds,
                 pendidikanS1,
                 pendidikanS2,
                 pendidikanS3,
@@ -305,6 +314,15 @@ export default function EditDosenPage({
                     </div>
                 </section>
 
+                <MataKuliahField
+                    key={dosen.id}
+                    options={mataKuliah.options}
+                    error={mataKuliah.error}
+                    onRetry={mataKuliah.retry}
+                    initialIds={dosen.mataKuliah.map((item) => item.id)}
+                    disabled={saving || uploading}
+                />
+
                 {/* Actions */}
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <Link
@@ -316,7 +334,7 @@ export default function EditDosenPage({
 
                     <button
                         type="submit"
-                        disabled={saving || uploading}
+                        disabled={saving || uploading || mataKuliah.options === null}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {saving ? "Menyimpan..." : "Simpan Perubahan"}

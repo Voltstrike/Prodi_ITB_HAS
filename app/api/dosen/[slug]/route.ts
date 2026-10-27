@@ -1,3 +1,5 @@
+import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
+import { parseMataKuliahIds } from "@/lib/dosen/mata-kuliah";
 import { parseImageSource } from "@/lib/images/source";
 import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
@@ -28,7 +30,12 @@ export async function GET(
     return Response.json({ message: "Dosen tidak ditemukan" }, { status: 404 });
   }
 
-  return Response.json(toDosenDto(item));
+  const mataKuliah = await getMataKuliahDosen(item.id);
+
+  return Response.json({
+    ...toDosenDto(item),
+    mataKuliah: mataKuliah.get(item.id) ?? [],
+  });
 }
 
 export async function PUT(
@@ -61,6 +68,16 @@ export async function PUT(
         }
 
         const body = bodyResult.body;
+
+        const mataKuliahIds = body.mataKuliahIds === undefined
+            ? undefined
+            : parseMataKuliahIds(body.mataKuliahIds);
+        if (mataKuliahIds === null) {
+            return Response.json(
+                { message: "Pilihan mata kuliah tidak valid." },
+                { status: 400},
+            );
+        }
 
         const textTypeError = validateTextFieldTypes(body, [
             "nama",
@@ -141,6 +158,21 @@ export async function PUT(
             );
         }
 
+        if (mataKuliahIds !== undefined) {
+            const kurikulum = await db.orm.public.Kurikulum
+                .select("id")
+                .all();
+
+            const idTerdaftar = new Set(kurikulum.map((item) => item.id));
+
+            if (mataKuliahIds.some((id) => !idTerdaftar.has(id))) {
+                return Response.json(
+                    { message: "Salah satu mata kuliah tidak ditemukan." },
+                    { status: 400 },
+                );
+            }
+         }
+
         const updated = await db.transaction(async (tx) => {
             const dosenUpdated =
                 await tx.orm.public.Dosen
@@ -157,6 +189,18 @@ export async function PUT(
 
             if (!dosenUpdated) {
                 throw new Error("Data tidak ditemukan saat update.");
+            }
+
+            if (mataKuliahIds !== undefined) {
+                await tx.orm.public.DosenMataKuliah
+                    .where({ dosenId: item.id})
+                    .deleteAll();
+                for (const kurikulumId of mataKuliahIds) {
+                    await tx.orm.public.DosenMataKuliah.create({
+                        dosenId: item.id,
+                        kurikulumId,
+                    });
+                }
             }
 
             await createAuditLog({

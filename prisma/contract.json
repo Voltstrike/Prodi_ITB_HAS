@@ -24,12 +24,20 @@
       "model": "Dosen",
       "namespace": "public"
     },
+    "dosenMataKuliah": {
+      "model": "DosenMataKuliah",
+      "namespace": "public"
+    },
     "informasiAkademik": {
       "model": "InformasiAkademik",
       "namespace": "public"
     },
     "kalenderAkademik": {
       "model": "KalenderAkademik",
+      "namespace": "public"
+    },
+    "kegiatanProdi": {
+      "model": "KegiatanProdi",
       "namespace": "public"
     },
     "kurikulum": {
@@ -542,6 +550,80 @@
               "table": "dosen"
             }
           },
+          "DosenMataKuliah": {
+            "fields": {
+              "dosenId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "kurikulumId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "dosen": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "dosenId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Dosen",
+                  "namespace": "public"
+                }
+              },
+              "kurikulum": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "kurikulumId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Kurikulum",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "dosenId": {
+                  "column": "dosenId"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "kurikulumId": {
+                  "column": "kurikulumId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "dosenMataKuliah"
+            }
+          },
           "InformasiAkademik": {
             "fields": {
               "createdAt": {
@@ -672,6 +754,154 @@
               },
               "namespaceId": "public",
               "table": "kalenderAkademik"
+            }
+          },
+          "KegiatanProdi": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "dosenId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "foto": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "jenis": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "judul": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "ringkasan": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "slug": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tahun": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "tautanHasil": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "uraian": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "dosen": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "dosenId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Dosen",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "dosenId": {
+                  "column": "dosenId"
+                },
+                "foto": {
+                  "column": "foto"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "jenis": {
+                  "column": "jenis"
+                },
+                "judul": {
+                  "column": "judul"
+                },
+                "ringkasan": {
+                  "column": "ringkasan"
+                },
+                "slug": {
+                  "column": "slug"
+                },
+                "tahun": {
+                  "column": "tahun"
+                },
+                "tautanHasil": {
+                  "column": "tautanHasil"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "uraian": {
+                  "column": "uraian"
+                }
+              },
+              "namespaceId": "public",
+              "table": "kegiatanProdi"
             }
           },
           "Kurikulum": {
@@ -1436,6 +1666,98 @@
                 }
               ]
             },
+            "dosenMataKuliah": {
+              "columns": {
+                "dosenId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "kurikulumId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "onUpdate": "cascade",
+                  "source": {
+                    "columns": [
+                      "dosenId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dosenMataKuliah"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dosen"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "onUpdate": "cascade",
+                  "source": {
+                    "columns": [
+                      "kurikulumId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dosenMataKuliah"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "kurikulum"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "dosenId"
+                  ],
+                  "name": "dosenMataKuliah_dosenId_idx_395e7029",
+                  "prefix": "dosenMataKuliah_dosenId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "kurikulumId"
+                  ],
+                  "name": "dosenMataKuliah_kurikulumId_idx_2ad0dca9",
+                  "prefix": "dosenMataKuliah_kurikulumId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "dosenId",
+                    "kurikulumId"
+                  ]
+                }
+              ]
+            },
             "informasiAkademik": {
               "columns": {
                 "createdAt": {
@@ -1530,6 +1852,127 @@
                 ]
               },
               "uniques": []
+            },
+            "kegiatanProdi": {
+              "checks": [
+                {
+                  "expression": "\"jenis\" IN ('PENELITIAN', 'PENGABDIAN')",
+                  "name": "kegiatan_prodi_jenis_bed1f6bd",
+                  "prefix": "kegiatan_prodi_jenis"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "dosenId": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "foto": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "jenis": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "judul": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "ringkasan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "slug": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tahun": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "tautanHasil": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "uraian": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "restrict",
+                  "onUpdate": "cascade",
+                  "source": {
+                    "columns": [
+                      "dosenId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "kegiatanProdi"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "dosen"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "dosenId"
+                  ],
+                  "name": "kegiatanProdi_dosenId_idx_395e7029",
+                  "prefix": "kegiatanProdi_dosenId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "slug"
+                  ]
+                }
+              ]
             },
             "kurikulum": {
               "columns": {
@@ -1802,10 +2245,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "6f96652b8d54ba5b5f57167fb784ed0d1b3f5ea69945373c0a6587fee45c200f"
+    "storageHash": "9c136552c5e895399a23730ec3b8c8456c832f9c391ca2664db32d6d09f3f9ed"
   },
   "execution": {
-    "executionHash": "54d441e95587f6b699066ecea379a43b919ae3a24403c78fb964ecd6597b07b2",
+    "executionHash": "7042710be1a0f590c85bc1a0728a8cc26b69b7258d2639cac64f2317a506176a",
     "mutations": {
       "defaults": [
         {
@@ -1881,6 +2324,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "kalenderAkademik"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "kegiatanProdi"
           }
         },
         {

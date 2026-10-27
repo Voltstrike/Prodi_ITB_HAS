@@ -3,6 +3,7 @@
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { useRef } from "react";
+import type { MataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
 
 type Dosen = {
   id: number;
@@ -10,6 +11,7 @@ type Dosen = {
   slug: string;
   nidn: string;
   foto: string | null;
+  mataKuliah: MataKuliahDosen[];
   pendidikanS1: string | null;
   pendidikanS2: string | null;
   pendidikanS3: string | null;
@@ -81,6 +83,28 @@ export default function DosenCarousel({
                   <p>S2: {item.pendidikanS2 || "-"}</p>
                   <p>S3: {item.pendidikanS3 || "-"}</p>
                 </div>
+
+                {item.mataKuliah.length > 0 && (
+                  <div className="mt-4 border-t border-slate-100 pt-4">
+                    <p className="text-sm font-semibold text-slate-900">
+                      Mata Kuliah yang Diajarkan
+                    </p>
+
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                      {item.mataKuliah.slice(0, 3).map((mataKuliah) => (
+                        <li key={mataKuliah.id} className="break-words">
+                          {mataKuliah.nama}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {item.mataKuliah.length > 3 && (
+                      <p className="mt-2 text-xs text-slate-500">
+                        +{item.mataKuliah.length - 3} mata kuliah lainnya
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <p className="mt-5 text-sm font-medium text-blue-700">
                   Lihat Profil →

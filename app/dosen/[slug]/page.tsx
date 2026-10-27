@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { db } from "@/prisma/db";
+import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
 
 export const metadata: Metadata = {
   title: "Profil Dosen | Magister Manajemen ITB HAS",
@@ -31,6 +32,9 @@ export default async function DosenDetailPage({
   if (!item) {
     notFound();
   }
+
+  const mataKuliah = await getMataKuliahDosen(item.id);
+  const daftarMataKuliah = mataKuliah.get(item.id) ?? [];
 
   const pendidikan = [
     { jenjang: "S1", keterangan: item.pendidikanS1 },
@@ -126,6 +130,42 @@ export default async function DosenDetailPage({
                   </div>
                 ))}
               </dl>
+            </section>
+            <section
+              aria-labelledby="mata-kuliah-dosen"
+              className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8"
+            >
+              <h2
+                id="mata-kuliah-dosen"
+                className="text-2xl font-bold text-slate-900"
+              >
+                Mata Kuliah yang Diajarkan
+              </h2>
+
+              {daftarMataKuliah.length > 0 ? (
+                <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {daftarMataKuliah.map((mataKuliah) => (
+                    <li
+                      key={mataKuliah.id}
+                      className="min-w-0 rounded-lg bg-slate-50 p-4"
+                    >
+                      <p className="text-xs font-semibold text-blue-700">
+                        {mataKuliah.kode}
+                      </p>
+                      <h3 className="mt-2 break-words font-semibold text-slate-900">
+                        {mataKuliah.nama}
+                      </h3>
+                      <p className="mt-2 text-sm text-slate-500">
+                        Semester {mataKuliah.semester} · {mataKuliah.sks} SKS
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-4 text-slate-600">
+                  Informasi mata kuliah yang diajarkan belum tersedia.
+                </p>
+              )}
             </section>
 
             <section

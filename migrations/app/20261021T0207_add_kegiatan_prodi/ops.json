@@ -1,0 +1,164 @@
+[
+  {
+    "id": "table.kegiatanProdi",
+    "label": "Create table \"kegiatanProdi\"",
+    "summary": "Creates table \"kegiatanProdi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "kegiatanProdi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"kegiatanProdi\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"kegiatanProdi\"",
+        "sql": "CREATE TABLE \"public\".\"kegiatanProdi\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"dosenId\" int4 NOT NULL,\n  \"foto\" text,\n  \"id\" SERIAL NOT NULL,\n  \"jenis\" text NOT NULL,\n  \"judul\" text NOT NULL,\n  \"ringkasan\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"tahun\" int4 NOT NULL,\n  \"tautanHasil\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"uraian\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"kegiatan_prodi_jenis_bed1f6bd\" CHECK (\"jenis\" IN ('PENELITIAN', 'PENGABDIAN'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"kegiatanProdi\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.kegiatanProdi.kegiatanProdi_slug_key",
+    "label": "Add unique constraint on \"kegiatanProdi\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "kegiatanProdi_slug_key",
+        "table": "kegiatanProdi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"kegiatanProdi_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kegiatanProdi_slug_key",
+          "public",
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"kegiatanProdi_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"kegiatanProdi\" ADD CONSTRAINT \"kegiatanProdi_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"kegiatanProdi_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kegiatanProdi_slug_key",
+          "public",
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.kegiatanProdi.kegiatanProdi_dosenId_idx_395e7029",
+    "label": "Create index \"kegiatanProdi_dosenId_idx_395e7029\" on \"kegiatanProdi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "kegiatanProdi_dosenId_idx_395e7029",
+        "table": "kegiatanProdi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"kegiatanProdi_dosenId_idx_395e7029\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kegiatanProdi_dosenId_idx_395e7029\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"kegiatanProdi_dosenId_idx_395e7029\"",
+        "sql": "CREATE INDEX \"kegiatanProdi_dosenId_idx_395e7029\" ON \"public\".\"kegiatanProdi\" (\"dosenId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"kegiatanProdi_dosenId_idx_395e7029\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kegiatanProdi_dosenId_idx_395e7029\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.kegiatanProdi.kegiatanProdi_dosenId_fkey",
+    "label": "Add foreign key \"kegiatanProdi_dosenId_fkey\" on \"kegiatanProdi\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "kegiatanProdi_dosenId_fkey",
+        "table": "kegiatanProdi"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"kegiatanProdi_dosenId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kegiatanProdi_dosenId_fkey",
+          "public",
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"kegiatanProdi_dosenId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"kegiatanProdi\"\nADD CONSTRAINT \"kegiatanProdi_dosenId_fkey\"\nFOREIGN KEY (\"dosenId\")\nREFERENCES \"public\".\"dosen\" (\"id\")\nON DELETE RESTRICT\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"kegiatanProdi_dosenId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kegiatanProdi_dosenId_fkey",
+          "public",
+          "\"public\".\"kegiatanProdi\""
+        ]
+      }
+    ]
+  }
+]

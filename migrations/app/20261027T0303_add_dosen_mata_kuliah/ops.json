@@ -1,0 +1,245 @@
+[
+  {
+    "id": "table.dosenMataKuliah",
+    "label": "Create table \"dosenMataKuliah\"",
+    "summary": "Creates table \"dosenMataKuliah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"dosenMataKuliah\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"dosenMataKuliah\"",
+        "sql": "CREATE TABLE \"public\".\"dosenMataKuliah\" (\n  \"dosenId\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"kurikulumId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"dosenMataKuliah\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.dosenMataKuliah.dosenMataKuliah_dosenId_kurikulumId_key",
+    "label": "Add unique constraint on \"dosenMataKuliah\" (dosenId, kurikulumId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "dosenMataKuliah_dosenId_kurikulumId_key",
+        "table": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"dosenMataKuliah_dosenId_kurikulumId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_dosenId_kurikulumId_key",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"dosenMataKuliah_dosenId_kurikulumId_key\"",
+        "sql": "ALTER TABLE \"public\".\"dosenMataKuliah\" ADD CONSTRAINT \"dosenMataKuliah_dosenId_kurikulumId_key\" UNIQUE (\"dosenId\", \"kurikulumId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"dosenMataKuliah_dosenId_kurikulumId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_dosenId_kurikulumId_key",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.dosenMataKuliah.dosenMataKuliah_dosenId_idx_395e7029",
+    "label": "Create index \"dosenMataKuliah_dosenId_idx_395e7029\" on \"dosenMataKuliah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "dosenMataKuliah_dosenId_idx_395e7029",
+        "table": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"dosenMataKuliah_dosenId_idx_395e7029\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah_dosenId_idx_395e7029\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"dosenMataKuliah_dosenId_idx_395e7029\"",
+        "sql": "CREATE INDEX \"dosenMataKuliah_dosenId_idx_395e7029\" ON \"public\".\"dosenMataKuliah\" (\"dosenId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"dosenMataKuliah_dosenId_idx_395e7029\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah_dosenId_idx_395e7029\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.dosenMataKuliah.dosenMataKuliah_kurikulumId_idx_2ad0dca9",
+    "label": "Create index \"dosenMataKuliah_kurikulumId_idx_2ad0dca9\" on \"dosenMataKuliah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "dosenMataKuliah_kurikulumId_idx_2ad0dca9",
+        "table": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"dosenMataKuliah_kurikulumId_idx_2ad0dca9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah_kurikulumId_idx_2ad0dca9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"dosenMataKuliah_kurikulumId_idx_2ad0dca9\"",
+        "sql": "CREATE INDEX \"dosenMataKuliah_kurikulumId_idx_2ad0dca9\" ON \"public\".\"dosenMataKuliah\" (\"kurikulumId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"dosenMataKuliah_kurikulumId_idx_2ad0dca9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"dosenMataKuliah_kurikulumId_idx_2ad0dca9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.dosenMataKuliah.dosenMataKuliah_dosenId_fkey",
+    "label": "Add foreign key \"dosenMataKuliah_dosenId_fkey\" on \"dosenMataKuliah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "dosenMataKuliah_dosenId_fkey",
+        "table": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"dosenMataKuliah_dosenId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_dosenId_fkey",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"dosenMataKuliah_dosenId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"dosenMataKuliah\"\nADD CONSTRAINT \"dosenMataKuliah_dosenId_fkey\"\nFOREIGN KEY (\"dosenId\")\nREFERENCES \"public\".\"dosen\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"dosenMataKuliah_dosenId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_dosenId_fkey",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.dosenMataKuliah.dosenMataKuliah_kurikulumId_fkey",
+    "label": "Add foreign key \"dosenMataKuliah_kurikulumId_fkey\" on \"dosenMataKuliah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "dosenMataKuliah_kurikulumId_fkey",
+        "table": "dosenMataKuliah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"dosenMataKuliah_kurikulumId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_kurikulumId_fkey",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"dosenMataKuliah_kurikulumId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"dosenMataKuliah\"\nADD CONSTRAINT \"dosenMataKuliah_kurikulumId_fkey\"\nFOREIGN KEY (\"kurikulumId\")\nREFERENCES \"public\".\"kurikulum\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"dosenMataKuliah_kurikulumId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dosenMataKuliah_kurikulumId_fkey",
+          "public",
+          "\"public\".\"dosenMataKuliah\""
+        ]
+      }
+    ]
+  }
+]

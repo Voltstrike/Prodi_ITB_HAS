@@ -3,13 +3,23 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DosenCarousel from "./components/DosenCarousel";
 import StaffCarousel from "./components/StaffCarousel";
+import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
+import { toDosenDto } from "@/lib/http/dto";
 
 export const dynamic = "force-dynamic";
 
 export default async function DosenPage() {
-  const dosen = await db.orm.public.Dosen.all();
-  const staff = await db.orm.public.Staff.all();
-  
+  const [dosen, staff, mataKuliah] = await Promise.all([
+    db.orm.public.Dosen.all(),
+    db.orm.public.Staff.all(),
+    getMataKuliahDosen()
+  ]);
+
+  const daftarDosen = dosen.map((item) => ({
+    ...toDosenDto(item),
+    mataKuliah: mataKuliah.get(item.id) ?? [],
+  }));
+
   return (
     <main>
       <Navbar />
@@ -35,7 +45,7 @@ export default async function DosenPage() {
           </h2>
 
           <div className="mt-8">
-            <DosenCarousel dosen={dosen} />
+            <DosenCarousel dosen={daftarDosen} />
           </div>
         </div>
       </section>

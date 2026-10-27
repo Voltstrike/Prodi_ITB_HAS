@@ -1,5 +1,7 @@
 "use client";
 
+import MataKuliahField from "@/components/admin/MataKuliahField";
+import { useMataKuliahOptions } from "@/components/admin/useMataKuliahOptions";
 import { useRouter } from "next/navigation";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import Link from "next/link";
@@ -7,20 +9,22 @@ import { FormEvent, useState } from "react";
 
 export default function TambahDosenPage() {
     const router = useRouter();
-
+    const mataKuliah = useMataKuliahOptions();
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (saving || uploading) {
+        if (saving || uploading || mataKuliah.options == null) {
             return;
         }
 
         setSaving(true);
 
         const form = new FormData(event.currentTarget);
+        const mataKuliahIds = form.getAll("mataKuliahIds")
+            .map((value) => Number(value));
 
         const nama = form.get("nama")?.toString() ?? "";
         const nidn = form.get("nidn")?.toString() ?? "";
@@ -41,6 +45,7 @@ export default function TambahDosenPage() {
                 nama,
                 nidn,
                 foto,
+                mataKuliahIds,
                 pendidikanS1,
                 pendidikanS2,
                 pendidikanS3,
@@ -201,6 +206,13 @@ export default function TambahDosenPage() {
                     />
                 </section>
 
+                <MataKuliahField
+                    options={mataKuliah.options}
+                    error={mataKuliah.error}
+                    onRetry={mataKuliah.retry}
+                    disabled={saving || uploading}
+                />
+
                 {/* Actions */}
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <Link
@@ -212,7 +224,7 @@ export default function TambahDosenPage() {
 
                     <button
                         type="submit"
-                        disabled={saving || uploading}
+                        disabled={saving || uploading || mataKuliah.options === null}
                         className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {uploading ? "Mengunggah foto..." : saving? "Menyimpan..." : "Tambahkan Dosen"}
