@@ -105,3 +105,24 @@ export function toProfilDto(row: ProfilRow) {
         updatedAt: row.updatedAt,
     };
 }
+
+type KegiatanProdiRow = NonNullable<
+    Awaited<ReturnType<typeof db.orm.public.KegiatanProdi.first>>
+>;
+
+export function toKegiatanProdiDto(row: KegiatanProdiRow) {
+    return {
+        id: row.id,
+        judul: row.judul,
+        slug: row.slug,
+        jenis: row.jenis,
+        tahun: row.tahun,
+        dosenId: row.dosenId,
+        ringkasan: row.ringkasan,
+        uraian: row.uraian,
+        foto: row.foto,
+        tautanHasil: row.tautanHasil,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+    };
+}
