@@ -152,6 +152,14 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 >
                                     Berita
                                 </Link>
+
+                                <Link
+                                    href="/admin/kegiatan-prodi"
+                                    onClick={closeMenu}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Kegiatan Prodi
+                                </Link>
                             </div>
                         </div>
 

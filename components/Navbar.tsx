@@ -64,6 +64,13 @@ export default function Navbar() {
             >
               Berita
             </Link>
+
+            <Link
+              href="/kegiatan-prodi"
+              className="whitespace-nowrap text-sm text-blue-100 transition hover:text-white"
+            >
+              Penelitian &amp; Pengabdian
+            </Link>
           </div>
 
           {/* Desktop CTA */}
@@ -125,6 +132,14 @@ export default function Navbar() {
                 className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
               >
                 Berita
+              </Link>
+
+              <Link
+                href="/kegiatan-prodi"
+                onClick={() => setIsOpen(false)}
+                className="rounded-lg px-4 py-3 text-sm text-blue-100 transition hover:bg-blue-800 hover:text-white"
+              >
+                Penelitian &amp; Pengabdian
               </Link>
 
               <Link onClick={() => setIsOpen(false)}
