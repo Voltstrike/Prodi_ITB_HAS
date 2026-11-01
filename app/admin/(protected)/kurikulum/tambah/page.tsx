@@ -1,5 +1,9 @@
 "use client";
 
+import {
+    JENIS_MATA_KULIAH,
+    KONSENTRASI_KURIKULUM,
+} from "@/lib/kurikulum/constants";
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
@@ -26,7 +30,7 @@ export default function TambahKurikulumPage() {
         const sks = Number(form.get("sks"));
         const semester = Number(form.get("semester"));
         const jenis = form.get("jenis")?.toString() ?? "";
-
+        const konsentrasi = form.get("konsentrasi")?.toString() ?? "";
         const response = await fetch("/api/kurikulum", {
             method: "POST",
             headers: {
@@ -38,6 +42,7 @@ export default function TambahKurikulumPage() {
                 sks,
                 semester,
                 jenis,
+                konsentrasi,
             }),
         });
 
@@ -178,9 +183,38 @@ export default function TambahKurikulumPage() {
                                 <option value="" disabled>
                                     Pilih jenis
                                 </option>
-                                <option value="Wajib">Wajib</option>
-                                <option value="Pilihan">Pilihan</option>
+
+                                {JENIS_MATA_KULIAH.map((pilihan) => (
+                                    <option key={pilihan} value={pilihan}>
+                                        {pilihan}
+                                    </option>
+                                ))}
                             </select>
+
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="konsentrasi"
+                                    className="block text-sm font-medium text-slate-700"
+                                >
+                                    Kelompok / Konsentrasi
+                                </label>
+
+                                <select
+                                    id="konsentrasi"
+                                    name="konsentrasi"
+                                    defaultValue=""
+                                    disabled={saving}
+                                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                >
+                                    <option value="">Belum ditentukan</option>
+
+                                    {KONSENTRASI_KURIKULUM.map((pilihan) => (
+                                        <option key={pilihan} value={pilihan}>
+                                            {pilihan}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </section>

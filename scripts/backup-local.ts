@@ -7,6 +7,8 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
+import { dokumenDirectory, readDokumen } from "@/lib/dokumen/storage";
+import { isDokumenFileName } from "@/lib/dokumen/constants";
 
 function run(command: string, args: string[], env = process.env): string {
     const result = spawnSync(command, args, {
@@ -122,11 +124,49 @@ for (const filename of photoNames) {
         flag: "wx",
     });
 }
-
 console.log("Foto dicadangkan:", photoNames.length);
+
+const dokumenBackup = join(backupDirectory, "dokumen");
+await mkdir(dokumenBackup, { mode: 0o700 });
+
+let dokumenNames: string[] = [];
+
+try {
+    dokumenNames = (await readdir(dokumenDirectory()))
+        .filter(isDokumenFileName)
+        .sort();
+} catch (error) {
+    const code =
+        error && typeof error === "object" && "code" in error
+            ? error.code
+            : null;
+
+    if (code !== "ENOENT") {
+        throw error;
+    }
+}
+
+for (const filename of dokumenNames) {
+    const file = await readDokumen(filename);
+
+    if (!file?.data || file.data.length !== file.size) {
+        throw new Error(
+            `Dokumen ${filename} tidak dapat dicadangkan.`,
+        );
+    }
+
+    await writeFile(join(dokumenBackup, filename), file.data, {
+        mode: 0o600,
+        flag: "wx",
+    });
+}
+
+console.log("Dokumen PDF dicadangkan:", dokumenNames.length);
+
 const backupPaths = [
     "database.dump",
     ...photoNames.map((filename) => `media/${filename}`),
+    ...dokumenNames.map((filename) => `dokumen/${filename}`),
 ];
 
 const backupFiles: { path: string; sha256: string }[] = [];
@@ -139,7 +179,7 @@ for (const relativePath of backupPaths) {
 }
 
 const manifest = {
-    version: 1,
+    version: 2,
     database: "mm_itbhas",
     createdAt: new Date().toISOString(),
     gitCommit: run("git", ["rev-parse", "HEAD"]).trim(),
@@ -154,5 +194,13 @@ await writeFile(
     { mode: 0o600, flag: "wx" },
 );
 
+const verification = run(process.execPath, [
+    "--import",
+    "tsx",
+    "scripts/verify-backup.ts",
+    backupDirectory,
+]);
+
+console.log(verification.trim());
 console.log("Paket backup lengkap:", backupDirectory);
 console.log("Berkas data tercatat:", backupFiles.length);

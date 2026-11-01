@@ -20,6 +20,10 @@
       "model": "Berita",
       "namespace": "public"
     },
+    "dokumenKurikulum": {
+      "model": "DokumenKurikulum",
+      "namespace": "public"
+    },
     "dosen": {
       "model": "Dosen",
       "namespace": "public"
@@ -427,6 +431,87 @@
               },
               "namespaceId": "public",
               "table": "berita"
+            }
+          },
+          "DokumenKurikulum": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "filename": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "judul": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "namaAsli": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "ukuran": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "filename": {
+                  "column": "filename"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "judul": {
+                  "column": "judul"
+                },
+                "namaAsli": {
+                  "column": "namaAsli"
+                },
+                "ukuran": {
+                  "column": "ukuran"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "dokumenKurikulum"
             }
           },
           "Dosen": {
@@ -934,6 +1019,13 @@
                   "kind": "scalar"
                 }
               },
+              "konsentrasi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "nama": {
                 "nullable": false,
                 "type": {
@@ -977,6 +1069,9 @@
                 },
                 "kode": {
                   "column": "kode"
+                },
+                "konsentrasi": {
+                  "column": "konsentrasi"
                 },
                 "nama": {
                   "column": "nama"
@@ -1580,6 +1675,67 @@
                 }
               ]
             },
+            "dokumenKurikulum": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "filename": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "judul": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "namaAsli": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "ukuran": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "filename"
+                  ]
+                }
+              ]
+            },
             "dosen": {
               "columns": {
                 "createdAt": {
@@ -2004,6 +2160,11 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "konsentrasi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "nama": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -2245,10 +2406,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "9c136552c5e895399a23730ec3b8c8456c832f9c391ca2664db32d6d09f3f9ed"
+    "storageHash": "1322c7e4b60615b121c8aeb0d6b749cfa032ffe766a2b4e242424f0b111eca87"
   },
   "execution": {
-    "executionHash": "7042710be1a0f590c85bc1a0728a8cc26b69b7258d2639cac64f2317a506176a",
+    "executionHash": "75370672577b86fb496550df69283c4283dba447d0247de9cdad42192a451dcd",
     "mutations": {
       "defaults": [
         {
@@ -2279,6 +2440,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "berita"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "dokumenKurikulum"
           }
         },
         {

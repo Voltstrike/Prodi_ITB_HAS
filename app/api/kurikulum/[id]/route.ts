@@ -3,6 +3,10 @@ import { parsePositiveInt32 } from "@/lib/http/positive-int32";
 import { requireSameOriginRequest } from "@/lib/http/origin";
 import { toKurikulumDto } from "@/lib/http/dto";
 import { createAuditLog } from "@/lib/audit/log";
+import {
+    JENIS_MATA_KULIAH,
+    KONSENTRASI_KURIKULUM,
+} from "@/lib/kurikulum/constants";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
 import { readJsonObjectBody } from "@/lib/http/json";
 import { db } from "@/prisma/db";
@@ -84,6 +88,7 @@ export async function PUT(
             "kode",
             "nama",
             "jenis",
+            "konsentrasi",
         ]);
         if (textTypeError) {
             return Response.json({ message: textTypeError }, { status: 400 });
@@ -94,6 +99,7 @@ export async function PUT(
         const sks = parsePositiveInt32(body.sks);
         const semester = parsePositiveInt32(body.semester);
         const jenis = String(body.jenis ?? "").trim();
+        const konsentrasi = String(body.konsentrasi ?? "").trim() || null;
 
         if (!kode || !nama || !jenis) {
             return Response.json(
@@ -133,12 +139,24 @@ export async function PUT(
             );
         }
 
-        if (!["Wajib", "Pilihan"].includes(jenis)) {
+        if (!JENIS_MATA_KULIAH.some((pilihan) => pilihan === jenis)) {
             return Response.json(
                 {
-                    message: "Jenis harus Wajib atau Pilihan",
+                    message: "Jenis harus Wajib, Pilihan, atau Wajib Pilihan",
                 },
-                { status: 400 }
+                { status: 400 },
+            );
+        }
+
+        if (
+            konsentrasi !== null &&
+            !KONSENTRASI_KURIKULUM.some(
+                (pilihan) => pilihan === konsentrasi,
+            )
+        ) {
+            return Response.json(
+                { message: "Pilihan konsentrasi tidak valid" },
+                { status: 400 },
             );
         }
 
@@ -176,6 +194,9 @@ export async function PUT(
                         sks,
                         semester,
                         jenis,
+                        ...(body.konsentrasi === undefined
+                            ? {}
+                            : { konsentrasi }),
                     });
 
             if (!mataKuliah) {

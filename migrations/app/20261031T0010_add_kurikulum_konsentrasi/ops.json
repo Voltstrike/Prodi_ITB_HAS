@@ -1,0 +1,44 @@
+[
+  {
+    "id": "column.public.kurikulum.konsentrasi",
+    "label": "Add column \"konsentrasi\" to \"kurikulum\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "konsentrasi",
+        "table": "kurikulum"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"konsentrasi\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kurikulum",
+          "konsentrasi"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"konsentrasi\"",
+        "sql": "ALTER TABLE \"public\".\"kurikulum\" ADD COLUMN \"konsentrasi\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"konsentrasi\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kurikulum",
+          "konsentrasi"
+        ]
+      }
+    ]
+  }
+]

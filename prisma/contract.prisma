@@ -43,6 +43,7 @@ model Kurikulum {
   sks       Int
   semester  Int
   jenis     String
+  konsentrasi String?
   createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
 }
@@ -145,4 +146,14 @@ model DosenMataKuliah {
   kurikulum    Kurikulum @relation(fields: [kurikulumId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([dosenId, kurikulumId])
+}
+
+model DokumenKurikulum {
+  id        Int                        @id @default(autoincrement())
+  judul     String
+  filename  String                     @unique
+  namaAsli  String
+  ukuran    Int
+  createdAt TimestamptzString          @default(now())
+  updatedAt temporal.updatedAtString()
 }

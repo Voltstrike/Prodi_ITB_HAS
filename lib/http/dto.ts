@@ -59,6 +59,7 @@ export function toKurikulumDto(row: KurikulumRow) {
         sks: row.sks,
         semester: row.semester,
         jenis: row.jenis,
+        konsentrasi: row.konsentrasi,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
     };
@@ -122,6 +123,26 @@ export function toKegiatanProdiDto(row: KegiatanProdiRow) {
         uraian: row.uraian,
         foto: row.foto,
         tautanHasil: row.tautanHasil,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+    };
+}
+
+type DokumenKurikulumRow = NonNullable<
+    Awaited<
+        ReturnType<typeof db.orm.public.DokumenKurikulum.first>
+    >
+>;
+
+export function toDokumenKurikulumDto(
+    row: DokumenKurikulumRow,
+) {
+    return {
+        id: row.id,
+        judul: row.judul,
+        namaAsli: row.namaAsli,
+        ukuran: row.ukuran,
+        url: `/dokumen/unggahan/${row.filename}`,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
     };

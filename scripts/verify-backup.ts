@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { isMediaFileName } from "@/lib/media/constants";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
+import { isDokumenFileName } from "@/lib/dokumen/constants";
 
 async function hashFile(path: string): Promise<string> {
     const hash = createHash("sha256");
@@ -37,7 +38,7 @@ if (manifest === null || typeof manifest !== "object" || Array.isArray(manifest)
 console.log("Manifest terbaca:", backupDirectory);
 const data = manifest as Record<string, unknown>;
 
-if (data.version !== 1 || data.database !== "mm_itbhas") {
+if ((data.version !== 1 && data.version !== 2)|| data.database !== "mm_itbhas") {
     throw new Error("Versi atau nama database pada manifest tidak sesuai.");
 }
 
@@ -69,9 +70,13 @@ for (const entry of data.files as unknown[]) {
 const paths = new Set<string>();
 
 for (const file of files) {
-    const allowed = file.path === "database.dump" ||
+    const allowed =
+        file.path === "database.dump" ||
         (file.path.startsWith("media/") &&
-            isMediaFileName(file.path.slice(6)));
+            isMediaFileName(file.path.slice(6))) ||
+        (data.version === 2 &&
+            file.path.startsWith("dokumen/") &&
+            isDokumenFileName(file.path.slice(8)));
 
     if (!allowed || paths.has(file.path)) {
         throw new Error("Nama berkas tidak diizinkan atau terduplikasi.");

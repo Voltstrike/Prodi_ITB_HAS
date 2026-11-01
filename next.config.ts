@@ -22,6 +22,21 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/dokumen/kurikulum.pdf",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        ],
+      },
+      {
+        source: "/dokumen/unggahan/:filename",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+        ],
+      },
     ];
   },
 };

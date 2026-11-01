@@ -1,13 +1,64 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
+import Link from "next/link";
+import { KONSENTRASI_KURIKULUM } from "@/lib/kurikulum/constants";
+import { toDokumenKurikulumDto } from "@/lib/http/dto";
 
 export const dynamic = "force-dynamic";
 
-export default async function AkademikPage() {
-  const kurikulum = await db.orm.public.Kurikulum.all();
-  const kalenderAkademik = await db.orm.public.KalenderAkademik.all();
-  const informasiAkademik = await db.orm.public.InformasiAkademik.all();
+export default async function AkademikPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    semester?: string | string[];
+    konsentrasi?: string | string[];
+  }>;
+}) {
+  const [
+    params,
+    kurikulum,
+    kalenderAkademik,
+    informasiAkademik,
+    dokumen,
+  ] = await Promise.all([
+    searchParams,
+    db.orm.public.Kurikulum.all(),
+    db.orm.public.KalenderAkademik.all(),
+    db.orm.public.InformasiAkademik.all(),
+    db.orm.public.DokumenKurikulum
+      .orderBy([
+        (item) => item.createdAt.desc(),
+        (item) => item.id.desc(),
+      ])
+      .all(),
+  ]);
+
+  const daftarDokumen = dokumen.map(toDokumenKurikulumDto);
+
+  const pilihanSemester = [
+    ...new Set(kurikulum.map((item) => item.semester)),
+  ].sort((a, b) => a - b);
+
+  const semester = pilihanSemester.find(
+    (nilai) => String(nilai) === params.semester,
+  );
+
+  const konsentrasi = KONSENTRASI_KURIKULUM.find(
+    (pilihan) => pilihan === params.konsentrasi,
+  ) ?? "";
+
+  const daftarKurikulum = kurikulum
+    .filter(
+      (item) =>
+        (semester === undefined || item.semester === semester) &&
+        (konsentrasi === "" || item.konsentrasi === konsentrasi),
+    )
+    .sort(
+      (a, b) =>
+        a.semester - b.semester ||
+        a.kode.localeCompare(b.kode, "id"),
+    );
 
   return (
     <main>
@@ -53,8 +104,148 @@ export default async function AkademikPage() {
             tersedia pada Program Studi Magister Manajemen.
           </p>
 
+          <section
+            aria-labelledby="judul-dokumen-kurikulum"
+            className="mt-8 rounded-xl border border-slate-200 bg-white p-5"
+          >
+            <h3
+              id="judul-dokumen-kurikulum"
+              className="text-lg font-semibold text-slate-900"
+            >
+              Dokumen Kurikulum
+            </h3>
+
+            {daftarDokumen.length === 0 ? (
+              <p className="mt-4 text-sm text-slate-500">
+                Dokumen kurikulum belum tersedia.
+              </p>
+            ) : (
+              <ul className="mt-5 space-y-5">
+                {daftarDokumen.map((item) => (
+                  <li
+                    key={item.id}
+                    className="rounded-lg border border-slate-200 p-4 sm:p-5"
+                  >
+                    <h4 className="break-words font-semibold text-slate-900">
+                      {item.judul}
+                    </h4>
+
+                    <p className="mt-2 break-all text-sm text-slate-600">
+                      {item.namaAsli}
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-500">
+                      PDF · {Math.ceil(item.ukuran / 1024)} KB
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg border border-blue-200 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50"
+                      >
+                        Buka PDF (tab baru)
+                      </a>
+
+                      <a
+                        href={`${item.url}?download=1`}
+                        className="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
+                      >
+                        Download PDF
+                      </a>
+                    </div>
+
+                    <details className="mt-5">
+                      <summary className="cursor-pointer text-sm font-semibold text-blue-700">
+                        Lihat Preview PDF
+                      </summary>
+
+                      <iframe
+                        src={item.url}
+                        title={`Preview ${item.judul}`}
+                        loading="lazy"
+                        className="mt-4 h-[70vh] min-h-96 w-full rounded-lg border border-slate-200"
+                      />
+
+                      <p className="mt-3 text-sm text-slate-500">
+                        Jika preview tidak tampil, gunakan tombol
+                        Buka PDF atau Download PDF.
+                      </p>
+                    </details>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <form
+            key={`${semester ?? ""}:${konsentrasi}`}
+            action="/akademik#kurikulum"
+            method="get"
+            className="mt-8 flex flex-wrap items-end gap-4 rounded-xl border border-slate-200 bg-white p-5"
+          >
+            <label className="min-w-40 flex-1 text-sm font-medium text-slate-700">
+              Semester
+              <select
+                name="semester"
+                defaultValue={semester ?? ""}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-500"
+              >
+                <option value="">Semua Semester</option>
+
+                {pilihanSemester.map((nilai) => (
+                  <option key={nilai} value={nilai}>
+                    Semester {nilai}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="min-w-40 flex-1 text-sm font-medium text-slate-700">
+              Kelompok / Konsentrasi
+              <select
+                name="konsentrasi"
+                defaultValue={konsentrasi}
+                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-500"
+              >
+                <option value="">Semua Kelompok / Konsentrasi</option>
+
+                {KONSENTRASI_KURIKULUM.map((pilihan) => (
+                  <option key={pilihan} value={pilihan}>
+                    {pilihan}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <button
+              type="submit"
+              className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
+            >
+              Terapkan
+            </button>
+
+            <Link
+              href="/akademik#kurikulum"
+              className="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Reset
+            </Link>
+          </form>
+
+          <p role="status" className="mt-5 text-sm text-slate-500">
+            Menampilkan {daftarKurikulum.length} mata kuliah
+          </p>
+
+          {daftarKurikulum.length === 0 && (
+            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+              Belum ada mata kuliah yang sesuai dengan pilihan filter.
+            </div>
+          )}
+
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {kurikulum.map((item) => (
+            {daftarKurikulum.map((item) => (
               <article
                 key={item.id}
                 className="rounded-xl border border-slate-200 bg-white p-6"
@@ -75,8 +266,15 @@ export default async function AkademikPage() {
 
                 <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
                   <span>Semester {item.semester}</span>
-                  <span>•</span>
+                  <span aria-hidden="true">•</span>
                   <span>{item.jenis}</span>
+
+                  {item.konsentrasi && (
+                    <>
+                      <span aria-hidden="true">•</span>
+                      <span>{item.konsentrasi}</span>
+                    </>
+                  )}
                 </div>
               </article>
             ))}
