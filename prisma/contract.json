@@ -16,6 +16,10 @@
       "model": "AuditLog",
       "namespace": "public"
     },
+    "beranda": {
+      "model": "Beranda",
+      "namespace": "public"
+    },
     "berita": {
       "model": "Berita",
       "namespace": "public"
@@ -332,6 +336,107 @@
               "table": "auditLog"
             }
           },
+          "Beranda": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "fotoKalenderAkademik": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "fotoKegiatanKampus": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "fotoKurikulum": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "fotoPendaftaran": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "fotoProdi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "singletonKey": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "fotoKalenderAkademik": {
+                  "column": "fotoKalenderAkademik"
+                },
+                "fotoKegiatanKampus": {
+                  "column": "fotoKegiatanKampus"
+                },
+                "fotoKurikulum": {
+                  "column": "fotoKurikulum"
+                },
+                "fotoPendaftaran": {
+                  "column": "fotoPendaftaran"
+                },
+                "fotoProdi": {
+                  "column": "fotoProdi"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "singletonKey": {
+                  "column": "singletonKey"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "beranda"
+            }
+          },
           "Berita": {
             "fields": {
               "content": {
@@ -383,6 +488,13 @@
                   "kind": "scalar"
                 }
               },
+              "thumbnail": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "title": {
                 "nullable": false,
                 "type": {
@@ -421,6 +533,9 @@
                 },
                 "slug": {
                   "column": "slug"
+                },
+                "thumbnail": {
+                  "column": "thumbnail"
                 },
                 "title": {
                   "column": "title"
@@ -1174,6 +1289,13 @@
                   "kind": "scalar"
                 }
               },
+              "fotoProdi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -1242,6 +1364,9 @@
                 },
                 "dokumenAkreditasi": {
                   "column": "dokumenAkreditasi"
+                },
+                "fotoProdi": {
+                  "column": "fotoProdi"
                 },
                 "id": {
                   "column": "id"
@@ -1604,6 +1729,88 @@
               },
               "uniques": []
             },
+            "beranda": {
+              "checks": [
+                {
+                  "expression": "\"singletonKey\" = 1",
+                  "name": "beranda_singleton_key_dbdbc99e",
+                  "prefix": "beranda_singleton_key"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "fotoKalenderAkademik": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "fotoKegiatanKampus": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "fotoKurikulum": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "fotoPendaftaran": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "fotoProdi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "singletonKey": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 1
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "singletonKey"
+                  ]
+                }
+              ]
+            },
             "berita": {
               "columns": {
                 "content": {
@@ -1648,6 +1855,11 @@
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
+                },
+                "thumbnail": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "title": {
                   "codecId": "pg/text@1",
@@ -2276,6 +2488,11 @@
                   "nativeType": "text",
                   "nullable": true
                 },
+                "fotoProdi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "default": {
@@ -2406,10 +2623,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "1322c7e4b60615b121c8aeb0d6b749cfa032ffe766a2b4e242424f0b111eca87"
+    "storageHash": "c987cb0d8039515bf2d69672f058cd4170643ea45256f4fd0762aeb549868cc6"
   },
   "execution": {
-    "executionHash": "75370672577b86fb496550df69283c4283dba447d0247de9cdad42192a451dcd",
+    "executionHash": "5f113b431278615f08e1c148c6604048c94a84bfac77bf3afa27985563c9c2e3",
     "mutations": {
       "defaults": [
         {
@@ -2425,6 +2642,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "adminUser"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "beranda"
           }
         },
         {

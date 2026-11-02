@@ -1,0 +1,44 @@
+[
+  {
+    "id": "column.public.berita.thumbnail",
+    "label": "Add column \"thumbnail\" to \"berita\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "thumbnail",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"thumbnail\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "thumbnail"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"thumbnail\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ADD COLUMN \"thumbnail\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"thumbnail\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "thumbnail"
+        ]
+      }
+    ]
+  }
+]

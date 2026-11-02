@@ -1,6 +1,11 @@
 import { WHATSAPP_URL } from "@/lib/contact";
+import BerandaPhoto from "./BerandaPhoto";
 
-export default function Hero() {
+type Props= {
+  foto?: string | null;
+};
+
+export default function Hero({ foto }: Props) {
   return (
     <section className="px-6 py-16">
       <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
@@ -43,11 +48,11 @@ export default function Hero() {
         {/* Image */}
         <div>
           <div className="aspect-4/3 overflow-hidden rounded-2xl bg-slate-200">
-            <div
-              className="flex aspect-4/3 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
-            >
-              Foto kegiatan kampus belum tersedia
-            </div>
+            <BerandaPhoto
+              src={foto}
+              alt="Kegiatan kampus Magister Manajemen ITB Haji Agus Salim"
+              emptyText="Foto kegiatan kampus belum tersedia"
+            />
           </div>
         </div>
 

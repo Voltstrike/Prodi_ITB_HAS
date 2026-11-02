@@ -42,6 +42,7 @@ export function toBeritaDto(row: BeritaRow) {
         date: row.date,
         description: row.description,
         image: row.image,
+        thumbnaul: row.thumbnail,
         slug: row.slug,
         content: row.content,
         createdAt: row.createdAt,
@@ -98,6 +99,7 @@ export function toProfilDto(row: ProfilRow) {
         sejarah: row.sejarah,
         visi: row.visi,
         misi: row.misi,
+        fotoProdi: row.fotoProdi,
         struktur: row.struktur,
         strukturOrganisasi: row.strukturOrganisasi,
         akreditasi: row.akreditasi,
@@ -145,5 +147,24 @@ export function toDokumenKurikulumDto(
         url: `/dokumen/unggahan/${row.filename}`,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
+    };
+}
+
+type BerandaRow = NonNullable<
+    Awaited<ReturnType<typeof db.orm.public.Beranda.first>>
+>;
+
+export function toBerandaDto(
+    row: BerandaRow | null | undefined,
+) {
+    return {
+        id: row?.id ?? null,
+        fotoKegiatanKampus: row?.fotoKegiatanKampus ?? null,
+        fotoProdi: row?.fotoProdi ?? null,
+        fotoKurikulum: row?.fotoKurikulum ?? null,
+        fotoKalenderAkademik: row?.fotoKalenderAkademik ?? null,
+        fotoPendaftaran: row?.fotoPendaftaran ?? null,
+        createdAt: row?.createdAt ?? null,
+        updatedAt: row?.updatedAt ?? null,
     };
 }

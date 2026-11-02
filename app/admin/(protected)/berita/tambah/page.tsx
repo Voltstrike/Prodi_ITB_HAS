@@ -21,6 +21,7 @@ export default function TambahBeritaPage() {
 
         const form = new FormData(event.currentTarget);
         const image = form.get("image")?.toString().trim() ?? "";
+        const thumbnail = form.get("thumbnail")?.toString().trim() || null;
 
         if (!image){
             alert("Pilih gambar berita terlebih dahulu.");
@@ -41,6 +42,7 @@ export default function TambahBeritaPage() {
                     date,
                     description,
                     image,
+                    thumbnail,
                     content,
                 }),
             });
@@ -121,12 +123,21 @@ export default function TambahBeritaPage() {
                         />
                     </div>
 
-                    <ImageUploadField
-                        name="image"
-                        label="Gambar Berita"
-                        disabled={loading}
-                        onUploadingChange={setUploading}
-                    />
+                    <div className="space-y-3">
+                        <ImageUploadField
+                            name="image"
+                            label="Gambar Berita"
+                            cropAspect="16/10"
+                            thumbnailName="thumbnail"
+                            disabled={loading}
+                            onUploadingChange={setUploading}
+                        />
+
+                        <p className="text-xs leading-relaxed text-slate-500">
+                            Foto utama disimpan tanpa crop. Hasil crop
+                            digunakan untuk kartu berita.
+                        </p>
+                    </div>
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700">

@@ -1,28 +1,34 @@
+import BerandaPhoto from "@/components/BerandaPhoto";
+import type { FotoBerandaValues } from "@/lib/beranda/constants";
+
 const academicInfo = [
   {
     title: "Kurikulum",
     description:
       "Informasi mengenai struktur kurikulum dan mata kuliah Program Studi Magister Manajemen.",
-    image: "/academic-kurikulum.jpg",
+    photoField: "fotoKurikulum",
     href: "/akademik#kurikulum",
   },
   {
     title: "Kalender Akademik",
     description:
       "Jadwal dan informasi penting kegiatan akademik selama tahun perkuliahan.",
-    image: "/academic-kalender.jpg",
+    photoField: "fotoKalenderAkademik",
     href: "/akademik#kalender-akademik",
   },
   {
     title: "Pendaftaran",
     description:
       "Informasi persyaratan dan proses pendaftaran mahasiswa baru.",
-    image: "/academic-pendaftaran.jpg",
+    photoField:"fotoPendaftaran",
     href: "/pendaftaran",
   },
-];
+] as const;
 
-export default function AcademicInfo() {
+type Props ={
+  photos?: Partial<FotoBerandaValues>
+};
+export default function AcademicInfo({ photos = {} }: Props) {
   return (
     <section className="px-6 py-16">
       <div className="mx-auto max-w-6xl">
@@ -59,11 +65,12 @@ export default function AcademicInfo() {
               key={item.title}
               className="overflow-hidden rounded-xl border border-slate-200 bg-white"
             >
-              <div
-                className="flex aspect-16/10 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
-              >
-                Foto akademik belum tersedia
-              </div>
+              <BerandaPhoto
+                src={photos[item.photoField]}
+                alt={item.title}
+                emptyText="Foto akademik belum tersedia"
+                ratio="16/10"
+              />
 
               <div className="p-5">
                 <h3 className="text-lg font-semibold text-slate-900">

@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'1322c7e4b60615b121c8aeb0d6b749cfa032ffe766a2b4e242424f0b111eca87'>;
+  StorageHashBase<'c987cb0d8039515bf2d69672f058cd4170643ea45256f4fd0762aeb549868cc6'>;
 export type ExecutionHash =
-  ExecutionHashBase<'75370672577b86fb496550df69283c4283dba447d0247de9cdad42192a451dcd'>;
+  ExecutionHashBase<'5f113b431278615f08e1c148c6604048c94a84bfac77bf3afa27985563c9c2e3'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -268,12 +268,24 @@ export type FieldOutputTypes = {
       readonly details: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
+    readonly Beranda: {
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly singletonKey: CodecTypes['pg/int4@1']['output'];
+      readonly fotoKegiatanKampus: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoKurikulum: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoKalenderAkademik: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoPendaftaran: CodecTypes['pg/text@1']['output'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
     readonly Berita: {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly title: CodecTypes['pg/text@1']['output'];
       readonly date: CodecTypes['pg/text@1']['output'];
       readonly description: CodecTypes['pg/text@1']['output'];
       readonly image: CodecTypes['pg/text@1']['output'];
+      readonly thumbnail: CodecTypes['pg/text@1']['output'] | null;
       readonly slug: CodecTypes['pg/text@1']['output'];
       readonly content: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -359,6 +371,7 @@ export type FieldOutputTypes = {
       readonly sejarah: CodecTypes['pg/text@1']['output'];
       readonly visi: CodecTypes['pg/text@1']['output'];
       readonly misi: CodecTypes['pg/text@1']['output'];
+      readonly fotoProdi: CodecTypes['pg/text@1']['output'] | null;
       readonly struktur: CodecTypes['pg/text@1']['output'] | null;
       readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['output'] | null;
       readonly akreditasi: CodecTypes['pg/text@1']['output'] | null;
@@ -406,12 +419,24 @@ export type FieldInputTypes = {
       readonly details: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
+    readonly Beranda: {
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly singletonKey: CodecTypes['pg/int4@1']['input'];
+      readonly fotoKegiatanKampus: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoKurikulum: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoKalenderAkademik: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoPendaftaran: CodecTypes['pg/text@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
     readonly Berita: {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly title: CodecTypes['pg/text@1']['input'];
       readonly date: CodecTypes['pg/text@1']['input'];
       readonly description: CodecTypes['pg/text@1']['input'];
       readonly image: CodecTypes['pg/text@1']['input'];
+      readonly thumbnail: CodecTypes['pg/text@1']['input'] | null;
       readonly slug: CodecTypes['pg/text@1']['input'];
       readonly content: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -497,6 +522,7 @@ export type FieldInputTypes = {
       readonly sejarah: CodecTypes['pg/text@1']['input'];
       readonly visi: CodecTypes['pg/text@1']['input'];
       readonly misi: CodecTypes['pg/text@1']['input'];
+      readonly fotoProdi: CodecTypes['pg/text@1']['input'] | null;
       readonly struktur: CodecTypes['pg/text@1']['input'] | null;
       readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['input'] | null;
       readonly akreditasi: CodecTypes['pg/text@1']['input'] | null;
@@ -544,6 +570,17 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly userId: CodecTypes['pg/int4@1']['output'];
     };
+    readonly beranda: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly fotoKalenderAkademik: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoKegiatanKampus: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoKurikulum: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoPendaftaran: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly singletonKey: CodecTypes['pg/int4@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
     readonly berita: {
       readonly content: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -552,6 +589,7 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly image: CodecTypes['pg/text@1']['output'];
       readonly slug: CodecTypes['pg/text@1']['output'];
+      readonly thumbnail: CodecTypes['pg/text@1']['output'] | null;
       readonly title: CodecTypes['pg/text@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
@@ -633,6 +671,7 @@ export type StorageColumnTypes = {
       readonly akreditasi: CodecTypes['pg/text@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly dokumenAkreditasi: CodecTypes['pg/text@1']['output'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly misi: CodecTypes['pg/text@1']['output'];
       readonly sejarah: CodecTypes['pg/text@1']['output'];
@@ -682,6 +721,17 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
     };
+    readonly beranda: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly fotoKalenderAkademik: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoKegiatanKampus: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoKurikulum: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoPendaftaran: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly singletonKey: CodecTypes['pg/int4@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
     readonly berita: {
       readonly content: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -690,6 +740,7 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly image: CodecTypes['pg/text@1']['input'];
       readonly slug: CodecTypes['pg/text@1']['input'];
+      readonly thumbnail: CodecTypes['pg/text@1']['input'] | null;
       readonly title: CodecTypes['pg/text@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
@@ -771,6 +822,7 @@ export type StorageColumnInputTypes = {
       readonly akreditasi: CodecTypes['pg/text@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly dokumenAkreditasi: CodecTypes['pg/text@1']['input'] | null;
+      readonly fotoProdi: CodecTypes['pg/text@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly misi: CodecTypes['pg/text@1']['input'];
       readonly sejarah: CodecTypes['pg/text@1']['input'];
@@ -825,6 +877,7 @@ export namespace Models {
     date: CodecTypes['pg/text@1']['output'];
     description: CodecTypes['pg/text@1']['output'];
     image: CodecTypes['pg/text@1']['output'];
+    thumbnail: CodecTypes['pg/text@1']['output'] | null;
     slug: CodecTypes['pg/text@1']['output'];
     content: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -897,6 +950,7 @@ export namespace Models {
     sejarah: CodecTypes['pg/text@1']['output'];
     visi: CodecTypes['pg/text@1']['output'];
     misi: CodecTypes['pg/text@1']['output'];
+    fotoProdi: CodecTypes['pg/text@1']['output'] | null;
     struktur: CodecTypes['pg/text@1']['output'] | null;
     strukturOrganisasi: CodecTypes['pg/jsonb@1']['output'] | null;
     akreditasi: CodecTypes['pg/text@1']['output'] | null;
@@ -947,6 +1001,18 @@ export namespace Models {
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     readonly [RelationKeys]?: never;
   };
+  export type public_Beranda = {
+    id: CodecTypes['pg/int4@1']['output'];
+    singletonKey: CodecTypes['pg/int4@1']['output'];
+    fotoKegiatanKampus: CodecTypes['pg/text@1']['output'] | null;
+    fotoProdi: CodecTypes['pg/text@1']['output'] | null;
+    fotoKurikulum: CodecTypes['pg/text@1']['output'] | null;
+    fotoKalenderAkademik: CodecTypes['pg/text@1']['output'] | null;
+    fotoPendaftaran: CodecTypes['pg/text@1']['output'] | null;
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    readonly [RelationKeys]?: never;
+  };
 }
 
 export declare const models: {
@@ -965,6 +1031,7 @@ export declare const models: {
     KegiatanProdi: Models.public_KegiatanProdi;
     DosenMataKuliah: Models.public_DosenMataKuliah;
     DokumenKurikulum: Models.public_DokumenKurikulum;
+    Beranda: Models.public_Beranda;
   };
 };
 
@@ -1169,6 +1236,68 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly beranda: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly singletonKey: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 1>;
+                  };
+                };
+                readonly fotoKegiatanKampus: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly fotoProdi: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly fotoKurikulum: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly fotoKalenderAkademik: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly fotoPendaftaran: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['singletonKey'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly berita: {
               columns: {
                 readonly id: {
@@ -1199,6 +1328,11 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                };
+                readonly thumbnail: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                 };
                 readonly slug: {
                   readonly nativeType: 'text';
@@ -1715,6 +1849,11 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
+                readonly fotoProdi: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
                 readonly struktur: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
@@ -1851,6 +1990,7 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'DokumenKurikulum';
     };
+    readonly beranda: { readonly namespace: 'public' & NamespaceId; readonly model: 'Beranda' };
   };
   readonly domain: {
     readonly namespaces: {
@@ -2030,6 +2170,68 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly Beranda: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly singletonKey: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly fotoKegiatanKampus: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fotoProdi: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fotoKurikulum: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fotoKalenderAkademik: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly fotoPendaftaran: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'beranda';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly singletonKey: { readonly column: 'singletonKey' };
+                readonly fotoKegiatanKampus: { readonly column: 'fotoKegiatanKampus' };
+                readonly fotoProdi: { readonly column: 'fotoProdi' };
+                readonly fotoKurikulum: { readonly column: 'fotoKurikulum' };
+                readonly fotoKalenderAkademik: { readonly column: 'fotoKalenderAkademik' };
+                readonly fotoPendaftaran: { readonly column: 'fotoPendaftaran' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
           readonly Berita: {
             readonly fields: {
               readonly id: {
@@ -2050,6 +2252,10 @@ type ContractBase = Omit<
               };
               readonly image: {
                 readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly thumbnail: {
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly slug: {
@@ -2085,6 +2291,7 @@ type ContractBase = Omit<
                 readonly date: { readonly column: 'date' };
                 readonly description: { readonly column: 'description' };
                 readonly image: { readonly column: 'image' };
+                readonly thumbnail: { readonly column: 'thumbnail' };
                 readonly slug: { readonly column: 'slug' };
                 readonly content: { readonly column: 'content' };
                 readonly createdAt: { readonly column: 'createdAt' };
@@ -2572,6 +2779,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly fotoProdi: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly struktur: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -2613,6 +2824,7 @@ type ContractBase = Omit<
                 readonly sejarah: { readonly column: 'sejarah' };
                 readonly visi: { readonly column: 'visi' };
                 readonly misi: { readonly column: 'misi' };
+                readonly fotoProdi: { readonly column: 'fotoProdi' };
                 readonly struktur: { readonly column: 'struktur' };
                 readonly strukturOrganisasi: { readonly column: 'strukturOrganisasi' };
                 readonly akreditasi: { readonly column: 'akreditasi' };
@@ -2710,6 +2922,15 @@ type ContractBase = Omit<
           readonly ref: {
             readonly namespace: 'public';
             readonly table: 'adminUser';
+            readonly column: 'updatedAt';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'timestampNow' };
+          readonly onUpdate: { readonly kind: 'generator'; readonly id: 'timestampNow' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'beranda';
             readonly column: 'updatedAt';
           };
           readonly onCreate: { readonly kind: 'generator'; readonly id: 'timestampNow' };

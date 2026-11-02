@@ -52,6 +52,7 @@ export async function POST(request: Request) {
             "date",
             "description",
             "image",
+            "thumbnail",
             "content",
         ]);
         if (textTypeError) {
@@ -62,6 +63,7 @@ export async function POST(request: Request) {
         const date = String(body.date ?? "").trim();
         const description = String(body.description ?? "").trim();
         const image = String(body.image ?? "").trim();
+        const thumbnail = String(body.thumbnail ?? "").trim() || null;
 
         if (image && parseImageSource(image) === null) {
             return Response.json(
@@ -69,6 +71,16 @@ export async function POST(request: Request) {
                 { status: 400 },
             );
         }
+        if (thumbnail && parseImageSource(thumbnail) === null) {
+            return Response.json(
+                {
+                    message:
+                        "Thumbnail berita harus berupa path lokal atau URL HTTP/HTTPS yang valid.",
+                },
+                { status: 400 },
+            );
+        }
+
         const content = String(body.content ?? "").trim();
 
         if (
@@ -89,6 +101,7 @@ export async function POST(request: Request) {
             date.length > MAX_DATE_LENGTH ||
             description.length > MAX_DESCRIPTION_LENGTH ||
             image.length > MAX_IMAGE_LENGTH ||
+            (thumbnail?.length ?? 0) > MAX_IMAGE_LENGTH ||
             content.length > MAX_CONTENT_LENGTH
         ) {
             return Response.json(
@@ -105,6 +118,7 @@ export async function POST(request: Request) {
                 date,
                 description,
                 image,
+                thumbnail,
                 slug,
                 content,
             });

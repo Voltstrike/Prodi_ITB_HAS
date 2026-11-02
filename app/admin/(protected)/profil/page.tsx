@@ -3,11 +3,13 @@
 import { FormEvent, useEffect, useState } from "react";
 import OrganizationEditor from "./components/OrganizationEditor";
 import { validateOrganizationStructure, type OrganizationStructure } from "@/lib/organization/structure";
+import ImageUploadField from "@/components/admin/ImageUploadField";
 
 type Profil = {
     sejarah: string;
     visi: string;
     misi: string;
+    fotoProdi: string | null;
     struktur: string | null;
     strukturOrganisasi: OrganizationStructure | null;
     akreditasi: string | null;
@@ -26,6 +28,7 @@ export default function ProfilPage() {
         sejarah: "",
         visi: "",
         misi: "",
+        fotoProdi: "",
         struktur: "",
         strukturOrganisasi: null,
         akreditasi: "",
@@ -36,6 +39,7 @@ export default function ProfilPage() {
     const [loaded, setLoaded] = useState(false);
     const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -55,6 +59,7 @@ export default function ProfilPage() {
                         sejarah: data.sejarah ?? "",
                         visi: data.visi ?? "",
                         misi: data.misi ?? "",
+                        fotoProdi: data.fotoProdi ?? "",
                         struktur: data.struktur ?? "",
                         strukturOrganisasi: readOrganizationStructure(data.strukturOrganisasi),
                         akreditasi: data.akreditasi ?? "",
@@ -87,6 +92,8 @@ export default function ProfilPage() {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        if (saving || uploading) return;
+
         setError("");
         setSuccess("");
 
@@ -100,22 +107,35 @@ export default function ProfilPage() {
             return;
         }
 
+        const formData = new FormData(event.currentTarget);
+        const fotoProdi = formData.get("fotoProdi");
+
+        if (typeof fotoProdi !== "string") {
+            setError("Data foto belum siap. Muat ulang halaman.");
+            return;
+        }
+
         const { strukturOrganisasi, ...textFields } = form;
         let organization = strukturOrganisasi;
 
         if (organization !== null) {
             const parsed = validateOrganizationStructure(organization);
+
             if (!parsed.ok) {
                 setError(parsed.error);
                 return;
             }
+
             organization = parsed.value;
         }
 
         const payload = {
             ...textFields,
+            fotoProdi: fotoProdi.trim() || null,
             baseUpdatedAt,
-            ...(organization !== null ? { strukturOrganisasi: organization } : {}),
+            ...(organization !== null
+                ? { strukturOrganisasi: organization }
+                : {}),
         };
 
         setSaving(true);
@@ -132,19 +152,29 @@ export default function ProfilPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error ?? data.message ?? "Gagal menyimpan profil.");
+                throw new Error(
+                    data.error ?? data.message ?? "Gagal menyimpan profil.",
+                );
             }
 
             setForm({
                 sejarah: data.sejarah ?? "",
                 visi: data.visi ?? "",
                 misi: data.misi ?? "",
+                fotoProdi: data.fotoProdi ?? "",
                 struktur: data.struktur ?? "",
-                strukturOrganisasi: readOrganizationStructure(data.strukturOrganisasi),
+                strukturOrganisasi: readOrganizationStructure(
+                    data.strukturOrganisasi,
+                ),
                 akreditasi: data.akreditasi ?? "",
                 dokumenAkreditasi: data.dokumenAkreditasi ?? "",
             });
-            setBaseUpdatedAt(typeof data.updatedAt === "string" ? data.updatedAt : null);
+
+            setBaseUpdatedAt(
+                typeof data.updatedAt === "string"
+                    ? data.updatedAt
+                    : null,
+            );
 
             setSuccess("Profil berhasil disimpan.");
         } catch (err) {
@@ -214,6 +244,23 @@ export default function ProfilPage() {
                     </div>
 
                     <div className="space-y-6">
+                        <div>
+                            <ImageUploadField
+                                key={baseUpdatedAt ?? "profil-baru"}
+                                name="fotoProdi"
+                                label="Foto Program Studi"
+                                initialValue={form.fotoProdi ?? ""}
+                                cropAspect="4/3"
+                                disabled={saving || !loaded}
+                                onUploadingChange={setUploading}
+                            />
+
+                            <p className="mt-3 text-xs text-slate-500">
+                                Foto untuk halaman Profil dan bagian
+                                Tentang Program Studi di beranda.
+                            </p>
+                        </div>
+
                         <div>
                             <label
                                 htmlFor="sejarah"
@@ -343,20 +390,28 @@ export default function ProfilPage() {
                 <div className="hidden justify-end gap-3 lg:flex">
                     <button
                         type="submit"
-                        disabled={saving || !loaded}
+                        disabled={saving || uploading || !loaded}
                         className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                    {uploading
+                        ? "Menunggu foto..."
+                        : saving
+                            ? "Menyimpan..."
+                            : "Simpan Perubahan"}
                     </button>
                 </div>
 
                 <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white p-4 shadow-lg lg:hidden">
                     <button
                         type="submit"
-                        disabled={saving || !loaded}
+                        disabled={saving || uploading || !loaded}
                         className="w-full rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                        {uploading
+                            ? "Menunggu foto..."
+                            : saving
+                                ? "Menyimpan..."
+                                : "Simpan Perubahan"}
                     </button>
                 </div>
                 </fieldset>

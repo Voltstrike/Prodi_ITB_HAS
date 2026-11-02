@@ -3,12 +3,15 @@ import { validateOrganizationStructure } from "@/lib/organization/structure";
 import { getOrganizationPeople } from "@/lib/organization/people";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { db } from "@/prisma/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProfilPage() {
-  const profil = await db.orm.public.Profil.first();
+  const profil = await db.orm.public.Profil
+    .where({ singletonKey: 1 })
+    .first();
   const parsed = validateOrganizationStructure(profil?.strukturOrganisasi);
   const organization = parsed.ok ? parsed.value : null;
   const organizationPeople = organization ? await getOrganizationPeople(organization) : [];
@@ -19,15 +22,40 @@ export default async function ProfilPage() {
 
       {/* Page Header */}
       <section className="border-b border-slate-100 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-            Profil Program Studi
-          </h1>
+        <div
+          className={`mx-auto max-w-6xl px-6 py-16 ${
+            profil?.fotoProdi
+              ? "grid items-center gap-10 md:grid-cols-2"
+              : ""
+          }`}
+        >
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
+              Profil Program Studi
+            </h1>
 
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
-            Mengenal lebih dekat Program Studi Magister Manajemen
-            Institut Teknologi dan Bisnis Haji Agus Salim.
-          </p>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">
+              Mengenal lebih dekat Program Studi Magister Manajemen
+              Institut Teknologi dan Bisnis Haji Agus Salim.
+            </p>
+          </div>
+
+          {profil?.fotoProdi && (
+            <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-slate-200">
+              <ImageWithFallback
+                src={profil.fotoProdi}
+                alt="Program Studi Magister Manajemen ITB Haji Agus Salim"
+                fill
+                sizes="(max-width: 767px) 100vw, 50vw"
+                className="object-cover"
+                fallback={
+                  <div className="flex h-full items-center justify-center p-6 text-center text-sm text-slate-600">
+                    Foto program studi tidak dapat ditampilkan.
+                  </div>
+                }
+              />
+            </div>
+          )}
         </div>
       </section>
 

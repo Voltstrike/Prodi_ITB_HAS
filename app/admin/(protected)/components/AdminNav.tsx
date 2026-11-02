@@ -121,6 +121,14 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                             </p>
 
                             <div className="flex flex-col gap-1">
+                                                               <Link
+                                    href="/admin/beranda"
+                                    onClick={closeMenu}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Foto Beranda
+                                </Link>
+
                                 <Link
                                     href="/admin/profil"
                                     onClick={closeMenu}

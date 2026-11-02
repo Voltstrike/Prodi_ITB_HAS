@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type ChangeEvent } from "react";
+import {
+    useEffect,
+    useId,
+    useRef,
+    useState,
+    type ChangeEvent,
+} from "react";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import ImageCropDialog from "@/components/admin/ImageCropDialog";
 import {
     IMAGE_MIME_TYPES,
     MAX_IMAGE_UPLOAD_BYTES,
     isMediaFileName,
 } from "@/lib/media/constants";
+import type {
+    CropAreaPixels,
+    ImageCropAspect,
+} from "@/lib/media/crop-types";
 
 type Props = {
     name: string;
@@ -14,19 +25,116 @@ type Props = {
     initialValue?: string;
     disabled?: boolean;
     onUploadingChange: (uploading: boolean) => void;
+    cropAspect?: ImageCropAspect;
+    thumbnailName?: string;
+    initialThumbnailValue?: string;
 };
 
+type CropSource = {
+    url: string;
+    filename: string;
+    width: number;
+    height: number;
+    aspect: ImageCropAspect;
+    controller: AbortController;
+};
+
+function isImageSide(value: unknown): value is number {
+    return (
+        typeof value === "number" &&
+        Number.isSafeInteger(value) &&
+        value > 0 &&
+        value <= 1600
+    );
+}
+
+async function readMediaResult(
+    response: Response,
+    fallbackMessage: string,
+) {
+    const data: unknown = await response.json().catch(() => null);
+
+    const result =
+        data !== null &&
+        typeof data === "object" &&
+        !Array.isArray(data)
+            ? (data as Record<string, unknown>)
+            : null;
+
+    if (!response.ok) {
+        throw new Error(
+            typeof result?.message === "string"
+                ? result.message
+                : fallbackMessage,
+        );
+    }
+
+    const url = result?.url;
+
+    if (
+        typeof url !== "string" ||
+        !url.startsWith("/media/") ||
+        !isMediaFileName(url.slice("/media/".length))
+    ) {
+        throw new Error("Hasil pemrosesan foto tidak dapat dibaca.");
+    }
+
+    return {
+        url,
+        filename: url.slice("/media/".length),
+        width: result?.width,
+        height: result?.height,
+    };
+}
+
 export default function ImageUploadField({
-    name, label, initialValue = "", disabled = false, onUploadingChange,
+    name,
+    label,
+    initialValue = "",
+    disabled = false,
+    onUploadingChange,
+    cropAspect,
+    thumbnailName,
+    initialThumbnailValue = "",
 }: Props) {
     const id = useId();
+
     const [value, setValue] = useState(initialValue);
+    const [thumbnailValue, setThumbnailValue] = useState(
+        initialThumbnailValue,
+    );
     const [uploading, setUploading] = useState(false);
+    const [cropSource, setCropSource] = useState<CropSource | null>(
+        null,
+    );
     const [error, setError] = useState("");
     const [status, setStatus] = useState("");
+
     const pending = useRef<AbortController | null>(null);
 
-    useEffect(() => () => pending.current?.abort(), []);
+    useEffect(() => {
+        return () => {
+            const controller = pending.current;
+            pending.current = null;
+            controller?.abort();
+        };
+    }, []);
+
+    function isCurrent(controller: AbortController) {
+        return (
+            pending.current === controller &&
+            !controller.signal.aborted
+        );
+    }
+
+    function finish(controller: AbortController) {
+        if (pending.current !== controller) return;
+
+        pending.current = null;
+        setCropSource(null);
+        setUploading(false);
+        onUploadingChange(false);
+    }
 
     async function upload(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
@@ -42,17 +150,30 @@ export default function ImageUploadField({
             return;
         }
 
-        const extension = file.name.slice(file.name.lastIndexOf(".") + 1).toLowerCase();
-        if (!["jpg", "jpeg", "png", "webp"].includes(extension) ||
-            (file.type && !IMAGE_MIME_TYPES.some((type) => type === file.type))) {
+        const extension = file.name
+            .slice(file.name.lastIndexOf(".") + 1)
+            .toLowerCase();
+
+        if (
+            !["jpg", "jpeg", "png", "webp"].includes(extension) ||
+            (
+                file.type &&
+                !IMAGE_MIME_TYPES.some(
+                    (type) => type === file.type,
+                )
+            )
+        ) {
             setError("Gunakan foto JPG, PNG, atau WebP.");
             return;
         }
 
         const controller = new AbortController();
         pending.current = controller;
+
         setUploading(true);
         onUploadingChange(true);
+
+        let openedCrop = false;
 
         try {
             const form = new FormData();
@@ -64,25 +185,44 @@ export default function ImageUploadField({
                 signal: controller.signal,
             });
 
-            const data = await response.json().catch(() => null);
-            if (!response.ok) {
-                throw new Error(
-                    typeof data?.message === "string"
-                        ? data.message
-                        : "Foto gagal diunggah.",
+            if (!isCurrent(controller)) return;
+
+            const image = await readMediaResult(
+                response,
+                "Foto gagal diunggah.",
+            );
+
+            if (!isCurrent(controller)) return;
+
+            if (cropAspect) {
+                if (
+                    !isImageSide(image.width) ||
+                    !isImageSide(image.height)
+                ) {
+                    throw new Error(
+                        "Ukuran foto hasil unggahan tidak valid.",
+                    );
+                }
+
+                setCropSource({
+                    url: image.url,
+                    filename: image.filename,
+                    width: image.width,
+                    height: image.height,
+                    aspect: cropAspect,
+                    controller,
+                });
+
+                openedCrop = true;
+            } else {
+                setValue(image.url);
+                setThumbnailValue("");
+                setStatus(
+                    "Foto siap digunakan. Simpan data untuk menerapkannya.",
                 );
             }
-
-            if (typeof data?.url !== "string" ||
-                !data.url.startsWith("/media/") ||
-                !isMediaFileName(data.url.slice("/media/".length))) {
-                throw new Error("Hasil unggahan tidak dapat dibaca.");
-            }
-
-            setValue(data.url);
-            setStatus("Foto siap digunakan. Simpan data untuk menerapkannya.");
         } catch (failure) {
-            if (!controller.signal.aborted) {
+            if (isCurrent(controller)) {
                 setError(
                     failure instanceof Error
                         ? failure.message
@@ -90,11 +230,75 @@ export default function ImageUploadField({
                 );
             }
         } finally {
-            pending.current = null;
-            setUploading(false);
-            onUploadingChange(false);
+            if (!openedCrop) {
+                finish(controller);
+            }
         }
     }
+
+    async function applyCrop(area: CropAreaPixels) {
+        const source = cropSource;
+
+        if (!source || !isCurrent(source.controller)) return;
+
+        try {
+            const response = await fetch("/api/admin/media/crop", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    filename: source.filename,
+                    area,
+                    aspect: source.aspect,
+                }),
+                signal: source.controller.signal,
+            });
+
+            if (!isCurrent(source.controller)) return;
+
+            const cropped = await readMediaResult(
+                response,
+                "Foto gagal dipotong.",
+            );
+
+            if (!isCurrent(source.controller)) return;
+
+            setValue(thumbnailName ? source.url : cropped.url);
+            setThumbnailValue(thumbnailName ? cropped.url : "");
+            setError("");
+            setStatus(
+                "Foto siap digunakan. Simpan data untuk menerapkannya.",
+            );
+
+            finish(source.controller);
+        } catch (failure) {
+            if (isCurrent(source.controller)) {
+                throw failure;
+            }
+        }
+    }
+
+    function cancelCrop() {
+        const controller = cropSource?.controller;
+
+        if (!controller || pending.current !== controller) return;
+
+        controller.abort();
+        setError("");
+        setStatus("Pengaturan foto dibatalkan.");
+        finish(controller);
+    }
+
+    const preview =
+        thumbnailName && thumbnailValue ? thumbnailValue : value;
+
+    const previewSize =
+        cropAspect === "4/3"
+            ? "aspect-4/3 w-full max-w-sm"
+            : cropAspect === "16/10"
+                ? "aspect-16/10 w-full max-w-sm"
+                : "h-48 w-48";
 
     return (
         <div className="space-y-4">
@@ -107,17 +311,30 @@ export default function ImageUploadField({
 
             <input type="hidden" name={name} value={value} />
 
-            <div className="flex min-h-48 w-48 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+            {thumbnailName && (
+                <input
+                    type="hidden"
+                    name={thumbnailName}
+                    value={thumbnailValue}
+                />
+            )}
+
+            <div
+                className={`relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 ${previewSize}`}
+            >
                 <ImageWithFallback
-                    key={value}
-                    src={value}
+                    key={`${preview}:${value}`}
+                    src={preview}
+                    fallbackSrc={thumbnailName ? value : undefined}
                     alt={`Pratinjau ${label.toLowerCase()}`}
-                    width={240}
-                    height={240}
+                    fill
+                    sizes={cropAspect ? "384px" : "192px"}
                     unoptimized
-                    className="h-48 w-48 object-contain"
+                    className={
+                        cropAspect ? "object-cover" : "object-contain"
+                    }
                     fallback={
-                        <p className="p-4 text-center text-xs text-slate-500">
+                        <p className="flex h-full items-center justify-center p-4 text-center text-xs text-slate-500">
                             Pratinjau foto
                         </p>
                     }
@@ -134,34 +351,58 @@ export default function ImageUploadField({
                 className="block w-full text-sm text-slate-600 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:py-2.5 file:font-semibold file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
             />
 
-            <p id={`${id}-help`} className="text-xs leading-relaxed text-slate-500">
-                JPG, PNG, atau WebP, maksimal 5 MB. Pratinjau muncul setelah unggahan selesai.
+            <p
+                id={`${id}-help`}
+                className="text-xs leading-relaxed text-slate-500"
+            >
+                JPG, PNG, atau WebP, maksimal 5 MB.
+                {cropAspect && (
+                    <>
+                        {" "}Setelah unggah, atur foto pada bingkai{" "}
+                        {cropAspect.replace("/", ":")}.
+                    </>
+                )}
             </p>
 
             {uploading && (
                 <p role="status" className="text-sm text-blue-700">
-                    Mengunggah foto... tunggu hingga selesai sebelum menyimpan.
+                    {cropSource
+                        ? "Selesaikan pengaturan foto untuk melanjutkan."
+                        : "Mengunggah foto... tunggu hingga selesai."}
                 </p>
             )}
-            {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-            {status && <p role="status" className="text-sm text-emerald-700">{status}</p>}
+
+            {error && (
+                <p role="alert" className="text-sm text-red-700">
+                    {error}
+                </p>
+            )}
+
+            {status && (
+                <p role="status" className="text-sm text-emerald-700">
+                    {status}
+                </p>
+            )}
 
             <details className="rounded-lg border border-slate-200 p-3 text-sm">
                 <summary className="cursor-pointer font-medium text-slate-600">
                     Gunakan tautan gambar
                 </summary>
+
                 <label
                     htmlFor={`${id}-url`}
                     className="mt-3 block text-xs text-slate-500"
                 >
                     Tautan gambar
                 </label>
+
                 <input
                     id={`${id}-url`}
                     value={value}
                     disabled={disabled || uploading}
                     onChange={(event) => {
                         setValue(event.target.value);
+                        setThumbnailValue("");
                         setError("");
                         setStatus("");
                     }}
@@ -177,6 +418,7 @@ export default function ImageUploadField({
                     disabled={disabled || uploading}
                     onClick={() => {
                         setValue("");
+                        setThumbnailValue("");
                         setError("");
                         setStatus("");
                     }}
@@ -184,6 +426,18 @@ export default function ImageUploadField({
                 >
                     Kosongkan foto
                 </button>
+            )}
+
+            {cropSource && (
+                <ImageCropDialog
+                    key={cropSource.url}
+                    src={cropSource.url}
+                    sourceWidth={cropSource.width}
+                    sourceHeight={cropSource.height}
+                    aspect={cropSource.aspect}
+                    onApply={applyCrop}
+                    onCancel={cancelCrop}
+                />
             )}
         </div>
     );

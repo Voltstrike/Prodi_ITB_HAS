@@ -14,6 +14,7 @@ import {
     getOrganizationPeople,
     missingOrganizationPerson,
 } from "@/lib/organization/people";
+import { parseImageSource } from "@/lib/images/source";
 import { hasSqlState } from "@/lib/admin/accounts";
 
 const MAX_PROFIL_BODY_BYTES = 256 * 1024;
@@ -23,6 +24,7 @@ const MAX_MISI_LENGTH = 20_000;
 const MAX_STRUKTUR_LENGTH = 50_000;
 const MAX_AKREDITASI_LENGTH = 1_000;
 const MAX_DOKUMEN_AKREDITASI_LENGTH = 2_048;
+const MAX_FOTO_PRODI_LENGTH = 2_048;
 
 class ProfileMutationError extends Error {
     readonly status: number;
@@ -64,7 +66,7 @@ export async function PUT(request: Request) {
         const body = bodyResult.body;
         const textTypeError = validateTextFieldTypes(body, [
             "sejarah", "visi", "misi", "struktur",
-            "akreditasi", "dokumenAkreditasi",
+            "akreditasi", "dokumenAkreditasi", "fotoProdi",
         ]);
 
         if (textTypeError) {
@@ -80,6 +82,10 @@ export async function PUT(request: Request) {
             typeof body.visi === "string" ? body.visi.trim() : "";
         const misi =
             typeof body.misi === "string" ? body.misi.trim() : "";
+        const fotoProdi =
+            typeof body.fotoProdi === "string"
+                ? body.fotoProdi.trim() || null
+                : null;
         const struktur =
             typeof body.struktur === "string" ? body.struktur.trim() : null;
         const akreditasi =
@@ -106,6 +112,23 @@ export async function PUT(request: Request) {
         ) {
             return NextResponse.json(
                 { error: "Salah satu field melebihi batas panjang." },
+                { status: 400 },
+            );
+        }
+
+        if ((fotoProdi?.length ?? 0) > MAX_FOTO_PRODI_LENGTH) {
+            return NextResponse.json(
+                { error: "Foto prodi maksimal 2.048 karakter." },
+                { status: 400 },
+            );
+        }
+
+        if (fotoProdi && parseImageSource(fotoProdi) === null) {
+            return NextResponse.json(
+                {
+                    error:
+                        "Foto prodi harus berupa path lokal atau URL HTTP/HTTPS yang valid.",
+                },
                 { status: 400 },
             );
         }
@@ -196,6 +219,9 @@ export async function PUT(request: Request) {
                 sejarah,
                 visi,
                 misi,
+                ...(Object.hasOwn(body, "fotoProdi")
+                    ? { fotoProdi }
+                    : {}),
                 ...(Object.hasOwn(body, "struktur") ? { struktur } : {}),
                 akreditasi,
                 dokumenAkreditasi,

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "table.beranda",
+    "label": "Create table \"beranda\"",
+    "summary": "Creates table \"beranda\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "beranda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"beranda\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"beranda\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"beranda\"",
+        "sql": "CREATE TABLE \"public\".\"beranda\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"fotoKalenderAkademik\" text,\n  \"fotoKegiatanKampus\" text,\n  \"fotoKurikulum\" text,\n  \"fotoPendaftaran\" text,\n  \"fotoProdi\" text,\n  \"id\" SERIAL NOT NULL,\n  \"singletonKey\" int4 DEFAULT 1 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"beranda_singleton_key_dbdbc99e\" CHECK (\"singletonKey\" = 1)\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"beranda\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"beranda\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.beranda.beranda_singletonKey_key",
+    "label": "Add unique constraint on \"beranda\" (singletonKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "beranda_singletonKey_key",
+        "table": "beranda"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"beranda_singletonKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "beranda_singletonKey_key",
+          "public",
+          "\"public\".\"beranda\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"beranda_singletonKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"beranda\" ADD CONSTRAINT \"beranda_singletonKey_key\" UNIQUE (\"singletonKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"beranda_singletonKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "beranda_singletonKey_key",
+          "public",
+          "\"public\".\"beranda\""
+        ]
+      }
+    ]
+  }
+]

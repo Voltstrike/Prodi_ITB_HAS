@@ -1,15 +1,21 @@
-export default function About() {
+import BerandaPhoto from "./BerandaPhoto";
+
+type Props = {
+  foto?: string | null;
+};
+
+export default function About({ foto }: Props) {
   return (
     <section className="bg-slate-50 px-6 py-16">
       <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
         
         {/* Image */}
         <div className="overflow-hidden rounded-2xl">
-          <div
-            className="flex aspect-4/3 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
-          >
-            Foto program studi belum tersedia
-          </div>
+          <BerandaPhoto
+            src={foto}
+            alt="Program Studi Magister Manajemen ITB Haji Agus Salim"
+            emptyText="Foto program studi belum tersedia"
+          />
         </div>
 
         {/* Content */}

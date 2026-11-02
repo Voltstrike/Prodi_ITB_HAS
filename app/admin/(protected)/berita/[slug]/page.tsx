@@ -9,6 +9,7 @@ type Berita = {
     date: string;
     description: string;
     image: string;
+    thumbnail: string | null;
     slug: string;
     content: string;
 };
@@ -62,6 +63,7 @@ export default function EditBeritaPage() {
 
         const form = new FormData(event.currentTarget);
         const image = form.get("image")?.toString().trim() ?? "";
+        const thumbnail = form.get("thumbnail")?.toString().trim() || null;
 
         if (!image) {
             alert("Pilih gambar berita terlebih dahulu.");
@@ -81,6 +83,7 @@ export default function EditBeritaPage() {
                     date,
                     description,
                     image,
+                    thumbnail,
                     content,
                 }),
             });
@@ -189,14 +192,24 @@ export default function EditBeritaPage() {
                         />
                     </div>
 
-                    <ImageUploadField
-                        key={berita.slug}
-                        name="image"
-                        label="Gambar Berita"
-                        initialValue={berita.image ?? ""}
-                        disabled={saving}
-                        onUploadingChange={setUploading}
-                    />
+                    <div className="space-y-3">
+                        <ImageUploadField
+                            key={berita.slug}
+                            name="image"
+                            label="Gambar Berita"
+                            initialValue={berita.image ?? ""}
+                            initialThumbnailValue={berita.thumbnail ?? ""}
+                            cropAspect="16/10"
+                            thumbnailName="thumbnail"
+                            disabled={saving}
+                            onUploadingChange={setUploading}
+                        />
+
+                        <p className="text-xs leading-relaxed text-slate-500">
+                            Foto utama disimpan tanpa crop. Hasil crop
+                            digunakan untuk kartu berita.
+                        </p>
+                    </div>
 
                     <div>
                         <label className="block text-sm font-medium text-slate-700">

@@ -33,7 +33,7 @@ export default async function BeritaPage({
   const currentPage = Math.min(requestedPage, totalPages);
 
   const berita = await db.orm.public.Berita
-    .select("id", "title", "date", "description", "image", "slug")
+    .select("id", "title", "date", "description", "image", "thumbnail" ,"slug")
     .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
     .offset((currentPage - 1) * PAGE_SIZE)
     .limit(PAGE_SIZE)
@@ -97,9 +97,10 @@ export default async function BeritaPage({
                       className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-blue-600"
                     >
                       <div className="relative aspect-16/10 overflow-hidden bg-blue-50">
-                        {item.image?.trim() ? (
+                      {(item.thumbnail?.trim() || item.image?.trim()) ? (
                           <ImageWithFallback
-                            src={item.image}
+                            src={item.thumbnail ?? item.image}
+                            fallbackSrc={item.image}
                             alt={item.title}
                             fallback={
                               <div className="flex h-full items-center justify-center text-sm font-semibold tracking-wide text-blue-800">

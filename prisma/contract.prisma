@@ -30,6 +30,7 @@ model Berita {
   date        String
   description String
   image       String
+  thumbnail   String?
   slug        String                     @unique
   content     String
   createdAt   TimestamptzString          @default(now())
@@ -102,6 +103,7 @@ model Profil {
   sejarah           String
   visi              String
   misi              String
+  fotoProdi         String?
   struktur          String?
   strukturOrganisasi Jsonb?
   akreditasi        String?
@@ -156,4 +158,18 @@ model DokumenKurikulum {
   ukuran    Int
   createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
+}
+
+model Beranda {
+  id                    Int                        @id @default(autoincrement())
+  singletonKey          Int                        @default(1) @unique
+  fotoKegiatanKampus    String?
+  fotoProdi             String?
+  fotoKurikulum         String?
+  fotoKalenderAkademik  String?
+  fotoPendaftaran       String?
+  createdAt             TimestamptzString          @default(now())
+  updatedAt             temporal.updatedAtString()
+
+  @@check(expression: "\"singletonKey\" = 1", name: "beranda_singleton_key")
 }

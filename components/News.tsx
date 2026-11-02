@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { db } from "@/prisma/db";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 export default async function News() {
   const berita = await db.orm.public.Berita
-    .select("id", "title", "date", "description", "slug")
+    .select("id", "title", "date", "description", "image", "thumbnail", "slug")
     .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
     .limit(3)
     .all();
@@ -56,10 +57,21 @@ export default async function News() {
               className="overflow-hidden rounded-xl border border-slate-200 bg-white"
             >
               {/* Image */}
-              <div
-                className="flex aspect-16/10 w-full items-center justify-center bg-slate-200 p-6 text-center text-sm text-slate-600"
-              >
-                Foto berita belum tersedia
+              <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-200">
+                <ImageWithFallback
+                  src={item.thumbnail ?? item.image}
+                  fallbackSrc={item.image}
+                  alt={item.title}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 767px) 100vw, 33vw"
+                  className="object-cover"
+                  fallback={
+                    <div className="flex h-full w-full items-center justify-center p-6 text-center text-sm text-slate-600">
+                      Foto berita belum tersedia
+                    </div>
+                  }
+                />
               </div>
 
               {/* Content */}
