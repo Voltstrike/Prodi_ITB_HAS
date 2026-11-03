@@ -6,7 +6,8 @@ import { parseImageSource } from "@/lib/images/source";
 
 type Props = Pick<
     ImageProps,
-    "alt" | "width" | "height" | "fill" | "sizes" | "className" | "unoptimized"
+    "alt" | "width" | "height" | "fill" | "sizes" |
+    "className" | "unoptimized" | "loading"
 > & {
     src: string | null | undefined;
     fallbackSrc?: string;

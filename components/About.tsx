@@ -13,6 +13,7 @@ export default function About({ foto }: Props) {
         <div className="overflow-hidden rounded-2xl">
           <BerandaPhoto
             src={foto}
+            loading="eager"
             alt="Program Studi Magister Manajemen ITB Haji Agus Salim"
             emptyText="Foto program studi belum tersedia"
           />

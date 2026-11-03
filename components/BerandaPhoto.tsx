@@ -4,6 +4,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 type Props = {
     src?: string | null;
     alt: string;
+    loading?: "eager" | "lazy";
     emptyText: string;
     ratio?: "4/3" | "16/10";
     fallback?: ReactNode;
@@ -15,6 +16,7 @@ export default function BerandaPhoto({
     emptyText,
     ratio = "4/3",
     fallback,
+    loading,
 }: Props) {
     const isCard = ratio === "16/10";
 
@@ -27,6 +29,7 @@ export default function BerandaPhoto({
             <ImageWithFallback
                 src={src}
                 alt={alt}
+                loading={loading}
                 fill
                 sizes={
                     isCard
