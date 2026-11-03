@@ -15,7 +15,7 @@ const academicLinks = [
     title: "Perpustakaan",
     description:
       "Pencarian koleksi dan akses layanan perpustakaan kampus.",
-    href: "https://perpus.itbhas.ac.id/",
+    href: "https://www.perpusnas.go.id/",
   },
 ];
 
