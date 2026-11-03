@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import {
+    DEFAULT_KATEGORI_DOKUMEN,
     MAX_DOKUMEN_UPLOAD_BYTES,
     MAX_JUDUL_DOKUMEN_LENGTH,
+    isKategoriDokumen,
 } from "@/lib/dokumen/constants";
 
 export default function DokumenKurikulumForm() {
@@ -27,10 +29,16 @@ export default function DokumenKurikulumForm() {
         const form = event.currentTarget;
         const body = new FormData(form);
         const judul = String(body.get("judul") ?? "").trim();
+        const kategori = String(body.get("kategori") ?? "").trim();
         const file = body.get("file");
 
         if (!judul) {
             setError("Judul dokumen wajib diisi.");
+            return;
+        }
+
+        if (!isKategoriDokumen(kategori)) {
+            setError("Pilihan kategori dokumen tidak valid.");
             return;
         }
 
@@ -45,6 +53,7 @@ export default function DokumenKurikulumForm() {
         }
 
         body.set("judul", judul);
+        body.set("kategori", kategori);
         setSaving(true);
 
         try {
@@ -93,7 +102,7 @@ export default function DokumenKurikulumForm() {
             </h2>
 
             <p className="mt-2 text-sm text-slate-600">
-                Unggah PDF kurikulum untuk pengunjung website.
+                Unggah dokumen akademik berformat PDF untuk pengunjung website.
             </p>
 
             <form
@@ -103,8 +112,14 @@ export default function DokumenKurikulumForm() {
             >
                 <fieldset disabled={saving} className="space-y-5">
                     <legend className="sr-only">
-                        Informasi dokumen kurikulum
+                        Informasi dokumen akademik
                     </legend>
+
+                    <input
+                        type="hidden"
+                        name="kategori"
+                        value={DEFAULT_KATEGORI_DOKUMEN}
+                    />
 
                     <div>
                         <label
@@ -119,7 +134,7 @@ export default function DokumenKurikulumForm() {
                             name="judul"
                             required
                             maxLength={MAX_JUDUL_DOKUMEN_LENGTH}
-                            placeholder="Contoh: Kurikulum Magister Manajemen"
+                            placeholder="Contoh: Masukkan judul dokumen"
                             className="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         />
                     </div>

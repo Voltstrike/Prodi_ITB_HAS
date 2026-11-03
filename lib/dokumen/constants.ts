@@ -24,3 +24,21 @@ export class DokumenUploadError extends Error {
         this.status = status;
     }
 }
+
+export const KATEGORI_DOKUMEN = [
+    { value: "KURIKULUM", label: "Kurikulum" },
+] as const;
+
+export type KategoriDokumen =
+    (typeof KATEGORI_DOKUMEN)[number]["value"];
+
+export const DEFAULT_KATEGORI_DOKUMEN: KategoriDokumen = "KURIKULUM";
+
+export function isKategoriDokumen(
+    value: unknown,
+): value is KategoriDokumen {
+    return (
+        typeof value === "string" &&
+        KATEGORI_DOKUMEN.some((pilihan) => pilihan.value === value)
+    );
+}

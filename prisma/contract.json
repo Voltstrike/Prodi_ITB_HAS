@@ -578,6 +578,13 @@
                   "kind": "scalar"
                 }
               },
+              "kategori": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "namaAsli": {
                 "nullable": false,
                 "type": {
@@ -614,6 +621,9 @@
                 },
                 "judul": {
                   "column": "judul"
+                },
+                "kategori": {
+                  "column": "kategori"
                 },
                 "namaAsli": {
                   "column": "namaAsli"
@@ -1888,6 +1898,13 @@
               ]
             },
             "dokumenKurikulum": {
+              "checks": [
+                {
+                  "expression": "\"kategori\" IN ('KURIKULUM', 'PANDUAN_TESIS', 'DESKRIPSI_KONSENTRASI')",
+                  "name": "dokumen_kurikulum_kategori_ae7de11f",
+                  "prefix": "dokumen_kurikulum_kategori"
+                }
+              ],
               "columns": {
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
@@ -1914,6 +1931,15 @@
                 },
                 "judul": {
                   "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "kategori": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "KURIKULUM"
+                  },
                   "nativeType": "text",
                   "nullable": false
                 },
@@ -2623,7 +2649,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "c987cb0d8039515bf2d69672f058cd4170643ea45256f4fd0762aeb549868cc6"
+    "storageHash": "f929bf125681fe8399be014a99b7d8641b7892836ca69527a288089ae71652bf"
   },
   "execution": {
     "executionHash": "5f113b431278615f08e1c148c6604048c94a84bfac77bf3afa27985563c9c2e3",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import KurikulumList from "./components/KurikulumList";
 import DokumenKurikulumForm from "@/components/admin/DokumenKurikulumForm";
 import { toDokumenKurikulumDto } from "@/lib/http/dto";
+import { KATEGORI_DOKUMEN } from "@/lib/dokumen/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -10,14 +11,22 @@ export default async function AdminKurikulumPage() {
     const [kurikulum, dokumen] = await Promise.all([
         db.orm.public.Kurikulum.all(),
         db.orm.public.DokumenKurikulum
-            .orderBy([
-                (item) => item.createdAt.desc(),
-                (item) => item.id.desc(),
-            ])
-            .all(),
+        .where({ kategori: "KURIKULUM" })
+        .orderBy([
+            (item) => item.createdAt.desc(),
+            (item) => item.id.desc(),
+        ])
+        .all(),
     ]);
 
     const daftarDokumen = dokumen.map(toDokumenKurikulumDto);
+
+    const kelompokDokumen = KATEGORI_DOKUMEN.map((kategori) => ({
+        ...kategori,
+        dokumen: daftarDokumen.filter(
+            (item) => item.kategori === kategori.value,
+        ),
+    }));
 
     return (
         <div className="space-y-8 pb-24 sm:pb-0">
@@ -27,7 +36,7 @@ export default async function AdminKurikulumPage() {
                         Kurikulum
                     </h1>
                     <p className="mt-1 text-sm text-slate-600">
-                        Kelola mata kuliah dan dokumen kurikulum Program
+                        Kelola mata kuliah dan dokumen akademik Program
                         Studi Magister Manajemen.
                     </p>
                 </div>
@@ -51,71 +60,85 @@ export default async function AdminKurikulumPage() {
                     id="judul-dokumen-kurikulum"
                     className="text-xl font-bold text-slate-900"
                 >
-                    Dokumen Kurikulum
+                    Dokumen Akademik
                 </h2>
 
                 <DokumenKurikulumForm />
 
-                <div className="space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <h3 className="font-semibold text-slate-900">
-                            Dokumen Tersimpan
-                        </h3>
+                <div className="space-y-8">
+                    <p className="text-sm text-slate-500">
+                        Total {daftarDokumen.length} dokumen tersimpan
+                    </p>
 
-                        <p className="text-sm text-slate-500">
-                            {daftarDokumen.length} dokumen
-                        </p>
-                    </div>
-
-                    {daftarDokumen.length === 0 ? (
-                        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-                            Belum ada dokumen. Unggah PDF menggunakan
-                            form di atas.
-                        </div>
-                    ) : (
-                        <ul className="space-y-4">
-                            {daftarDokumen.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className="rounded-xl border border-slate-200 bg-white p-6"
+                    {kelompokDokumen.map((kelompok) => (
+                        <section
+                            key={kelompok.value}
+                            aria-labelledby={`kategori-${kelompok.value}`}
+                            className="space-y-4"
+                        >
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <h3
+                                    id={`kategori-${kelompok.value}`}
+                                    className="font-semibold text-slate-900"
                                 >
-                                    <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-                                        <div className="min-w-0">
-                                            <h4 className="break-words font-semibold text-slate-900">
-                                                {item.judul}
-                                            </h4>
+                                    {kelompok.label}
+                                </h3>
 
-                                            <p className="mt-2 break-all text-sm text-slate-600">
-                                                {item.namaAsli}
-                                            </p>
+                                <p className="text-sm text-slate-500">
+                                    {kelompok.dokumen.length} dokumen
+                                </p>
+                            </div>
 
-                                            <p className="mt-1 text-xs text-slate-500">
-                                                PDF · {Math.ceil(item.ukuran / 1024)} KB
-                                            </p>
-                                        </div>
+                            {kelompok.dokumen.length === 0 ? (
+                                <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
+                                    Belum ada dokumen pada kategori ini.
+                                </div>
+                            ) : (
+                                <ul className="space-y-4">
+                                    {kelompok.dokumen.map((item) => (
+                                        <li
+                                            key={item.id}
+                                            className="rounded-xl border border-slate-200 bg-white p-6"
+                                        >
+                                            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                                                <div className="min-w-0">
+                                                    <h4 className="break-words font-semibold text-slate-900">
+                                                        {item.judul}
+                                                    </h4>
 
-                                        <div className="flex shrink-0 flex-wrap gap-3">
-                                            <a
-                                                href={item.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
-                                            >
-                                                Buka PDF
-                                            </a>
+                                                    <p className="mt-2 break-all text-sm text-slate-600">
+                                                        {item.namaAsli}
+                                                    </p>
 
-                                            <a
-                                                href={`${item.url}?download=1`}
-                                                className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800"
-                                            >
-                                                Download PDF
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                                                    <p className="mt-1 text-xs text-slate-500">
+                                                        PDF · {Math.ceil(item.ukuran / 1024)} KB
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex shrink-0 flex-wrap gap-3">
+                                                    <a
+                                                        href={item.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
+                                                    >
+                                                        Buka PDF
+                                                    </a>
+
+                                                    <a
+                                                        href={`${item.url}?download=1`}
+                                                        className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800"
+                                                    >
+                                                        Download PDF
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </section>
+                    ))}
                 </div>
             </section>
 

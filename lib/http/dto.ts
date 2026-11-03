@@ -141,6 +141,7 @@ export function toDokumenKurikulumDto(
 ) {
     return {
         id: row.id,
+        kategori: row.kategori,
         judul: row.judul,
         namaAsli: row.namaAsli,
         ukuran: row.ukuran,

@@ -1,13 +1,20 @@
 import {
+    DEFAULT_KATEGORI_DOKUMEN,
     DokumenUploadError,
     MAX_DOKUMEN_MULTIPART_BYTES,
     MAX_DOKUMEN_UPLOAD_BYTES,
     MAX_JUDUL_DOKUMEN_LENGTH,
+    isKategoriDokumen,
+    type KategoriDokumen,
 } from "./constants";
 
 export async function readDokumenUpload(
     request: Request,
-): Promise<{ judul: string; file: File }> {
+): Promise<{
+    judul: string;
+    kategori: KategoriDokumen;
+    file: File;
+}> {
     const contentType = request.headers.get("content-type") ?? "";
 
     if (
@@ -74,17 +81,22 @@ export async function readDokumenUpload(
 
     const files = form.getAll("file");
     const titles = form.getAll("judul");
+    const categories = form.getAll("kategori");
 
     if (
         files.length !== 1 ||
         titles.length !== 1 ||
+        categories.length > 1 ||
         [...form.keys()].some(
-            (key) => key !== "file" && key !== "judul",
+            (key) =>
+                key !== "file" &&
+                key !== "judul" &&
+                key !== "kategori",
         )
     ) {
         throw new DokumenUploadError(
             400,
-            "Kirim tepat satu judul dan satu PDF.",
+            "Kirim tepat satu judul, satu PDF, dan maksimal satu kategori.",
         );
     }
 
@@ -103,6 +115,24 @@ export async function readDokumenUpload(
         );
     }
 
+    const rawKategori = categories[0] ?? DEFAULT_KATEGORI_DOKUMEN;
+
+    if (typeof rawKategori !== "string") {
+        throw new DokumenUploadError(
+            400,
+            "Kategori dokumen harus berupa teks.",
+        );
+    }
+
+    const kategori = rawKategori.trim();
+
+    if (!isKategoriDokumen(kategori)) {
+        throw new DokumenUploadError(
+            400,
+            "Pilihan kategori dokumen tidak valid.",
+        );
+    }
+
     const file = files[0];
 
     if (!file || typeof file === "string" || file.size === 0) {
@@ -116,5 +146,5 @@ export async function readDokumenUpload(
         throw new DokumenUploadError(413, "Ukuran PDF maksimal 10 MB.");
     }
 
-    return { judul, file };
+    return { judul, kategori, file };
 }

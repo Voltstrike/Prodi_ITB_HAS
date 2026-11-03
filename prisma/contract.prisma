@@ -152,12 +152,16 @@ model DosenMataKuliah {
 
 model DokumenKurikulum {
   id        Int                        @id @default(autoincrement())
+  kategori  String                     @default("KURIKULUM")
   judul     String
   filename  String                     @unique
   namaAsli  String
   ukuran    Int
   createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
+
+  @@check(expression: "\"kategori\" IN ('KURIKULUM', 'PANDUAN_TESIS', 'DESKRIPSI_KONSENTRASI')",
+name: "dokumen_kurikulum_kategori")
 }
 
 model Beranda {

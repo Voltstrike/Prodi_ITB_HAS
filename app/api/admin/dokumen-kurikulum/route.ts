@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     activeUploads.add(admin.id);
 
     try {
-        const { judul, file } = await readDokumenUpload(request);
+        const { judul, kategori, file } = await readDokumenUpload(request);
         const pdf = await validateUploadedPdf(file);
         const filename = await saveDokumen(pdf.data);
 
@@ -61,6 +61,7 @@ export async function POST(request: Request) {
             const dokumen =
                 await tx.orm.public.DokumenKurikulum.create({
                     judul,
+                    kategori,
                     filename,
                     namaAsli: pdf.namaAsli,
                     ukuran: pdf.data.length,
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
                 entity: "DokumenKurikulum",
                 entityId: dokumen.id,
                 details:
-                    `Mengunggah dokumen kurikulum: ${dokumen.judul}`,
+                    `Mengunggah dokumen akademik: ${dokumen.judul}`,
                 dbClient: tx,
             });
 

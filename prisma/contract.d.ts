@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'c987cb0d8039515bf2d69672f058cd4170643ea45256f4fd0762aeb549868cc6'>;
+  StorageHashBase<'f929bf125681fe8399be014a99b7d8641b7892836ca69527a288089ae71652bf'>;
 export type ExecutionHash =
   ExecutionHashBase<'5f113b431278615f08e1c148c6604048c94a84bfac77bf3afa27985563c9c2e3'>;
 export type ProfileHash =
@@ -293,6 +293,7 @@ export type FieldOutputTypes = {
     };
     readonly DokumenKurikulum: {
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly kategori: CodecTypes['pg/text@1']['output'];
       readonly judul: CodecTypes['pg/text@1']['output'];
       readonly filename: CodecTypes['pg/text@1']['output'];
       readonly namaAsli: CodecTypes['pg/text@1']['output'];
@@ -444,6 +445,7 @@ export type FieldInputTypes = {
     };
     readonly DokumenKurikulum: {
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly kategori: CodecTypes['pg/text@1']['input'];
       readonly judul: CodecTypes['pg/text@1']['input'];
       readonly filename: CodecTypes['pg/text@1']['input'];
       readonly namaAsli: CodecTypes['pg/text@1']['input'];
@@ -598,6 +600,7 @@ export type StorageColumnTypes = {
       readonly filename: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly judul: CodecTypes['pg/text@1']['output'];
+      readonly kategori: CodecTypes['pg/text@1']['output'];
       readonly namaAsli: CodecTypes['pg/text@1']['output'];
       readonly ukuran: CodecTypes['pg/int4@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -749,6 +752,7 @@ export type StorageColumnInputTypes = {
       readonly filename: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly judul: CodecTypes['pg/text@1']['input'];
+      readonly kategori: CodecTypes['pg/text@1']['input'];
       readonly namaAsli: CodecTypes['pg/text@1']['input'];
       readonly ukuran: CodecTypes['pg/int4@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -993,6 +997,7 @@ export namespace Models {
   };
   export type public_DokumenKurikulum = {
     id: CodecTypes['pg/int4@1']['output'];
+    kategori: CodecTypes['pg/text@1']['output'];
     judul: CodecTypes['pg/text@1']['output'];
     filename: CodecTypes['pg/text@1']['output'];
     namaAsli: CodecTypes['pg/text@1']['output'];
@@ -1370,6 +1375,15 @@ type ContractBase = Omit<
                   readonly default: {
                     readonly kind: 'function';
                     readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly kategori: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'KURIKULUM'>;
                   };
                 };
                 readonly judul: {
@@ -2305,6 +2319,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
+              readonly kategori: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly judul: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -2342,6 +2360,7 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly id: { readonly column: 'id' };
+                readonly kategori: { readonly column: 'kategori' };
                 readonly judul: { readonly column: 'judul' };
                 readonly filename: { readonly column: 'filename' };
                 readonly namaAsli: { readonly column: 'namaAsli' };

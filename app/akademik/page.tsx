@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
 import Link from "next/link";
+import { KATEGORI_DOKUMEN } from "@/lib/dokumen/constants";
 import { KONSENTRASI_KURIKULUM } from "@/lib/kurikulum/constants";
 import { toDokumenKurikulumDto } from "@/lib/http/dto";
 
@@ -27,6 +28,7 @@ export default async function AkademikPage({
     db.orm.public.KalenderAkademik.all(),
     db.orm.public.InformasiAkademik.all(),
     db.orm.public.DokumenKurikulum
+      .where({ kategori: "KURIKULUM" })
       .orderBy([
         (item) => item.createdAt.desc(),
         (item) => item.id.desc(),
@@ -35,6 +37,14 @@ export default async function AkademikPage({
   ]);
 
   const daftarDokumen = dokumen.map(toDokumenKurikulumDto);
+
+  const kelompokDokumen = KATEGORI_DOKUMEN.map((kategori) => ({
+    ...kategori,
+    anchor: `dokumen-${kategori.value.toLowerCase().replaceAll("_", "-")}`,
+    dokumen: daftarDokumen.filter(
+      (item) => item.kategori === kategori.value,
+    ),
+  }));
 
   const pilihanSemester = [
     ...new Set(kurikulum.map((item) => item.semester)),
@@ -104,80 +114,12 @@ export default async function AkademikPage({
             tersedia pada Program Studi Magister Manajemen.
           </p>
 
-          <section
-            aria-labelledby="judul-dokumen-kurikulum"
-            className="mt-8 rounded-xl border border-slate-200 bg-white p-5"
+          <Link
+            href="#dokumen-kurikulum"
+            className="mt-5 inline-flex rounded-lg border border-blue-200 bg-white px-4 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
           >
-            <h3
-              id="judul-dokumen-kurikulum"
-              className="text-lg font-semibold text-slate-900"
-            >
-              Dokumen Kurikulum
-            </h3>
-
-            {daftarDokumen.length === 0 ? (
-              <p className="mt-4 text-sm text-slate-500">
-                Dokumen kurikulum belum tersedia.
-              </p>
-            ) : (
-              <ul className="mt-5 space-y-5">
-                {daftarDokumen.map((item) => (
-                  <li
-                    key={item.id}
-                    className="rounded-lg border border-slate-200 p-4 sm:p-5"
-                  >
-                    <h4 className="break-words font-semibold text-slate-900">
-                      {item.judul}
-                    </h4>
-
-                    <p className="mt-2 break-all text-sm text-slate-600">
-                      {item.namaAsli}
-                    </p>
-
-                    <p className="mt-1 text-xs text-slate-500">
-                      PDF · {Math.ceil(item.ukuran / 1024)} KB
-                    </p>
-
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-lg border border-blue-200 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50"
-                      >
-                        Buka PDF (tab baru)
-                      </a>
-
-                      <a
-                        href={`${item.url}?download=1`}
-                        className="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
-                      >
-                        Download PDF
-                      </a>
-                    </div>
-
-                    <details className="mt-5">
-                      <summary className="cursor-pointer text-sm font-semibold text-blue-700">
-                        Lihat Preview PDF
-                      </summary>
-
-                      <iframe
-                        src={item.url}
-                        title={`Preview ${item.judul}`}
-                        loading="lazy"
-                        className="mt-4 h-[70vh] min-h-96 w-full rounded-lg border border-slate-200"
-                      />
-
-                      <p className="mt-3 text-sm text-slate-500">
-                        Jika preview tidak tampil, gunakan tombol
-                        Buka PDF atau Download PDF.
-                      </p>
-                    </details>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+            Lihat Dokumen Kurikulum
+          </Link>
 
           <form
             key={`${semester ?? ""}:${konsentrasi}`}
@@ -277,6 +219,114 @@ export default async function AkademikPage({
                   )}
                 </div>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+            {/* Dokumen Akademik */}
+      <section
+        id="dokumen-akademik"
+        aria-labelledby="judul-dokumen-akademik"
+        className="scroll-mt-24 border-t border-slate-200 bg-slate-50"
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h2
+            id="judul-dokumen-akademik"
+            className="text-2xl font-bold text-slate-900"
+          >
+            Dokumen Akademik
+          </h2>
+
+          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
+            Baca atau unduh dokumen kurikulum Program Studi
+            Magister Manajemen.
+          </p>
+
+          <div className="mt-8 space-y-8">
+            {kelompokDokumen.map((kelompok) => (
+              <section
+                key={kelompok.value}
+                id={kelompok.anchor}
+                aria-labelledby={`judul-${kelompok.anchor}`}
+                className="scroll-mt-24 rounded-xl border border-slate-200 bg-white p-5 sm:p-6"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3
+                    id={`judul-${kelompok.anchor}`}
+                    className="text-lg font-semibold text-slate-900"
+                  >
+                    {kelompok.label}
+                  </h3>
+
+                  <p className="text-sm text-slate-500">
+                    {kelompok.dokumen.length} dokumen
+                  </p>
+                </div>
+
+                {kelompok.dokumen.length === 0 ? (
+                  <p className="mt-4 text-sm text-slate-500">
+                    Dokumen pada kategori ini belum tersedia.
+                  </p>
+                ) : (
+                  <ul className="mt-5 space-y-5">
+                    {kelompok.dokumen.map((item) => (
+                      <li
+                        key={item.id}
+                        className="rounded-lg border border-slate-200 p-4 sm:p-5"
+                      >
+                        <h4 className="break-words font-semibold text-slate-900">
+                          {item.judul}
+                        </h4>
+
+                        <p className="mt-2 break-all text-sm text-slate-600">
+                          {item.namaAsli}
+                        </p>
+
+                        <p className="mt-1 text-xs text-slate-500">
+                          PDF · {Math.ceil(item.ukuran / 1024)} KB
+                        </p>
+
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-lg border border-blue-200 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50"
+                          >
+                            Buka PDF (tab baru)
+                          </a>
+
+                          <a
+                            href={`${item.url}?download=1`}
+                            className="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
+                          >
+                            Download PDF
+                          </a>
+                        </div>
+
+                        <details className="mt-5">
+                          <summary className="cursor-pointer text-sm font-semibold text-blue-700">
+                            Lihat Preview PDF
+                          </summary>
+
+                          <iframe
+                            src={item.url}
+                            title={`Preview ${item.judul}`}
+                            loading="lazy"
+                            className="mt-4 h-[70vh] min-h-96 w-full rounded-lg border border-slate-200"
+                          />
+
+                          <p className="mt-3 text-sm text-slate-500">
+                            Jika preview tidak tampil, gunakan tombol
+                            Buka PDF atau Download PDF.
+                          </p>
+                        </details>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
             ))}
           </div>
         </div>

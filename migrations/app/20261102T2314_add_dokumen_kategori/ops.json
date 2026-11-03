@@ -1,0 +1,86 @@
+[
+  {
+    "id": "column.public.dokumenKurikulum.kategori",
+    "label": "Add column \"kategori\" to \"dokumenKurikulum\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "kategori",
+        "table": "dokumenKurikulum"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"kategori\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dokumenKurikulum",
+          "kategori"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"kategori\"",
+        "sql": "ALTER TABLE \"public\".\"dokumenKurikulum\" ADD COLUMN \"kategori\" text DEFAULT 'KURIKULUM' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"kategori\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "dokumenKurikulum",
+          "kategori"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.dokumenKurikulum.dokumen_kurikulum_kategori_ae7de11f",
+    "label": "Add check constraint \"dokumen_kurikulum_kategori_ae7de11f\" on \"dokumenKurikulum\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "dokumen_kurikulum_kategori_ae7de11f",
+        "table": "dokumenKurikulum"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"dokumen_kurikulum_kategori_ae7de11f\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dokumen_kurikulum_kategori_ae7de11f",
+          "public",
+          "\"public\".\"dokumenKurikulum\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"dokumen_kurikulum_kategori_ae7de11f\"",
+        "sql": "ALTER TABLE \"public\".\"dokumenKurikulum\" ADD CONSTRAINT \"dokumen_kurikulum_kategori_ae7de11f\" CHECK (\"kategori\" IN ('KURIKULUM', 'PANDUAN_TESIS', 'DESKRIPSI_KONSENTRASI'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"dokumen_kurikulum_kategori_ae7de11f\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "dokumen_kurikulum_kategori_ae7de11f",
+          "public",
+          "\"public\".\"dokumenKurikulum\""
+        ]
+      }
+    ]
+  }
+]
