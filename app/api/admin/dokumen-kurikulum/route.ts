@@ -6,6 +6,8 @@ import { validateUploadedPdf } from "@/lib/dokumen/pdf";
 import { saveDokumen } from "@/lib/dokumen/storage";
 import { toDokumenKurikulumDto } from "@/lib/http/dto";
 import { requireSameOriginRequest } from "@/lib/http/origin";
+import { createPdfThumbnail } from "@/lib/dokumen/thumbnail";
+import { saveMedia } from "@/lib/media/storage";
 import { db } from "@/prisma/db";
 
 export const runtime = "nodejs";
@@ -55,7 +57,11 @@ export async function POST(request: Request) {
     try {
         const { judul, kategori, file } = await readDokumenUpload(request);
         const pdf = await validateUploadedPdf(file);
+        const preview = await createPdfThumbnail(pdf.data);
+
         const filename = await saveDokumen(pdf.data);
+        const previewFilename = await saveMedia(preview.data);
+        const fotoKurikulum = `/media/${previewFilename}`;
 
         const created = await db.transaction(async (tx) => {
             const dokumen =
@@ -67,13 +73,40 @@ export async function POST(request: Request) {
                     ukuran: pdf.data.length,
                 });
 
+            const existingBeranda = await tx.orm.public.Beranda
+                .where({ singletonKey: 1 })
+                .first();
+
+            const beranda = existingBeranda
+                ? await tx.orm.public.Beranda
+                    .where({ id: existingBeranda.id })
+                    .update({ fotoKurikulum })
+                : await tx.orm.public.Beranda.create({
+                    singletonKey: 1,
+                    fotoKurikulum,
+                });
+
+            if (!beranda) {
+                throw new Error("Pratinjau kurikulum gagal disimpan.");
+            }
+
             await createAuditLog({
                 userId: admin.id,
                 action: "CREATE",
                 entity: "DokumenKurikulum",
                 entityId: dokumen.id,
                 details:
-                    `Mengunggah dokumen akademik: ${dokumen.judul}`,
+                    `Mengunggah dokumen kurikulum: ${dokumen.judul}`,
+                dbClient: tx,
+            });
+
+            await createAuditLog({
+                userId: admin.id,
+                action: existingBeranda ? "UPDATE" : "CREATE",
+                entity: "Beranda",
+                entityId: beranda.id,
+                details:
+                    `Menetapkan pratinjau kurikulum dari dokumen ${dokumen.judul}.`,
                 dbClient: tx,
             });
 

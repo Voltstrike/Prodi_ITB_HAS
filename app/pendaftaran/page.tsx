@@ -3,33 +3,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import {
+  PMB_URL,
+  LANGKAH_PENDAFTARAN as langkah,
+} from "@/lib/pendaftaran/constants";
 
 export const metadata: Metadata = {
   title: "Pendaftaran | Magister Manajemen ITB HAS",
   description:
     "Informasi pendaftaran Program Studi Magister Manajemen ITB Haji Agus Salim dan akses ke portal PMB kampus.",
 };
-
-const PMB_URL = "https://itbhas.pmbonline.siakad.tech/";
-
-
-const langkah = [
-  {
-    judul: "Buka portal PMB kampus",
-    deskripsi:
-      "Gunakan tombol Buka Portal PMB untuk menuju layanan penerimaan mahasiswa baru kampus.",
-  },
-  {
-    judul: "Periksa program dan ketentuan",
-    deskripsi:
-      "Pastikan program dan jalur pendaftaran sesuai dengan Magister Manajemen. Periksa jadwal dan persyaratan yang dicantumkan.",
-  },
-  {
-    judul: "Ikuti petunjuk pendaftaran",
-    deskripsi:
-      "Lanjutkan pengisian formulir dan tahapan pendaftaran sesuai petunjuk pada portal PMB kampus.",
-  },
-];
 
 export default function PendaftaranPage() {
   return (

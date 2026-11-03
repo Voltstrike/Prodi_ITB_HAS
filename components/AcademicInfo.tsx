@@ -1,5 +1,9 @@
 import BerandaPhoto from "@/components/BerandaPhoto";
 import type { FotoBerandaValues } from "@/lib/beranda/constants";
+import {
+  KalenderPreview,
+  PendaftaranPreview,
+} from "@/components/AcademicCardPreview";
 
 const academicInfo = [
   {
@@ -70,6 +74,13 @@ export default function AcademicInfo({ photos = {} }: Props) {
                 alt={item.title}
                 emptyText="Foto akademik belum tersedia"
                 ratio="16/10"
+                fallback={
+                  item.photoField === "fotoKalenderAkademik"
+                    ? <KalenderPreview />
+                    : item.photoField === "fotoPendaftaran"
+                      ? <PendaftaranPreview />
+                      : undefined
+                }
               />
 
               <div className="p-5">
