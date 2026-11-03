@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const OJS_URL = "https://ojs.itbhas.ac.id/";
 const PAGE_SIZE = 9;
 
 type Props = {
@@ -112,6 +113,25 @@ export default async function KegiatanProdiPage({
                             Program Studi Magister Manajemen Institut
                             Teknologi dan Bisnis Haji Agus Salim.
                         </p>
+
+                        <div className="mt-6">
+                            <a
+                                href={OJS_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-700"
+                            >
+                                Akses OJS
+                                <span aria-hidden="true">↗</span>
+                                <span className="sr-only">
+                                    {" "}(terbuka di tab baru)
+                                </span>
+                            </a>
+
+                            <p className="mt-2 text-xs text-slate-500">
+                                Jurnal dan publikasi ilmiah ITB Haji Agus Salim.
+                            </p>
+                        </div>
                     </div>
                 </section>
 
