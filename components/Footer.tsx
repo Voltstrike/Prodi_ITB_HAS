@@ -59,7 +59,7 @@ export default function Footer() {
           <div className="mt-2 space-y-1 text-sm text-slate-400">
             <p>ITB Haji Agus Salim</p>
             <p>Bukittinggi, Sumatera Barat</p>
-            <p>Email: info@itbhas.ac.id</p>
+            <p>Email: mmitbhasbkt@gmail.com</p>
           </div>
         </div>
 

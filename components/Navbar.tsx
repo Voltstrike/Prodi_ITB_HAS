@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +14,14 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-bold text-[#1E3A8A]">
-              MM
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-1">
+              <Image
+                src="/brand/logo-itbhas.png"
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
+              />
             </div>
 
             <div>
