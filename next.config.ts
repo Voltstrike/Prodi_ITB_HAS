@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   poweredByHeader: false,
   turbopack: {
     root: __dirname,
@@ -31,10 +32,7 @@ const nextConfig: NextConfig = {
       {
         source: "/dokumen/unggahan/:filename",
         headers: [
-          {
-            key: "X-Frame-Options",
-            value: "SAMEORIGIN",
-          },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
     ];

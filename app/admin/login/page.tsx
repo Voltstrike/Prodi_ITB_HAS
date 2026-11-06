@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import Image from "next/image";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -55,9 +56,15 @@ export default function AdminLoginPage() {
           href="/"
           className="mb-8 flex items-center justify-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600"
         >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E3A8A] text-sm font-bold text-white">
-            MM
-          </span>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-1">
+              <Image
+                src="/brand/logo-itbhas.png"
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
+              />
+            </div>
           <span>
             <span className="block text-base font-bold text-slate-900">
               Magister Manajemen
