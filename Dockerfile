@@ -40,8 +40,9 @@ ENV NODE_ENV=production \
 
 # Dibutuhkan untuk membuat gambar preview PDF.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends poppler-utils poppler-utils
-curl \
+    && apt-get install -y --no-install-recommends \
+        poppler-utils \
+        curl \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /app/.next /data/media /data/dokumen \
     && chown -R node:node /app/.next /data \
