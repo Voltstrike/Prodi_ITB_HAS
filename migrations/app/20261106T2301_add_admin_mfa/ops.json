@@ -1,0 +1,329 @@
+[
+  {
+    "id": "table.adminMfa",
+    "label": "Create table \"adminMfa\"",
+    "summary": "Creates table \"adminMfa\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "adminMfa"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"adminMfa\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"adminMfa\"",
+        "sql": "CREATE TABLE \"public\".\"adminMfa\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"enabledAt\" timestamptz,\n  \"failedAttempts\" int4 DEFAULT 0 NOT NULL,\n  \"firstFailedAt\" timestamptz,\n  \"id\" SERIAL NOT NULL,\n  \"lastUsedStep\" int4,\n  \"pendingExpiresAt\" timestamptz,\n  \"pendingSecretEncrypted\" text,\n  \"pendingSessionTokenHash\" text,\n  \"secretEncrypted\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" int4 NOT NULL,\n  \"version\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"adminMfa\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.adminMfaRecoveryCode",
+    "label": "Create table \"adminMfaRecoveryCode\"",
+    "summary": "Creates table \"adminMfaRecoveryCode\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "adminMfaRecoveryCode"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"adminMfaRecoveryCode\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"adminMfaRecoveryCode\"",
+        "sql": "CREATE TABLE \"public\".\"adminMfaRecoveryCode\" (\n  \"codeHash\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"userId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"adminMfaRecoveryCode\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.adminSession.mfaVersion",
+    "label": "Add column \"mfaVersion\" to \"adminSession\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "mfaVersion",
+        "table": "adminSession"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"mfaVersion\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "adminSession",
+          "mfaVersion"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"mfaVersion\"",
+        "sql": "ALTER TABLE \"public\".\"adminSession\" ADD COLUMN \"mfaVersion\" int4 DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"mfaVersion\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "adminSession",
+          "mfaVersion"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.adminMfa.adminMfa_userId_key",
+    "label": "Add unique constraint on \"adminMfa\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "adminMfa_userId_key",
+        "table": "adminMfa"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"adminMfa_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfa_userId_key",
+          "public",
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"adminMfa_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"adminMfa\" ADD CONSTRAINT \"adminMfa_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"adminMfa_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfa_userId_key",
+          "public",
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.adminMfaRecoveryCode.adminMfaRecoveryCode_codeHash_key",
+    "label": "Add unique constraint on \"adminMfaRecoveryCode\" (codeHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "adminMfaRecoveryCode_codeHash_key",
+        "table": "adminMfaRecoveryCode"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"adminMfaRecoveryCode_codeHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfaRecoveryCode_codeHash_key",
+          "public",
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"adminMfaRecoveryCode_codeHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"adminMfaRecoveryCode\" ADD CONSTRAINT \"adminMfaRecoveryCode_codeHash_key\" UNIQUE (\"codeHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"adminMfaRecoveryCode_codeHash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfaRecoveryCode_codeHash_key",
+          "public",
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.adminMfaRecoveryCode.adminMfaRecoveryCode_userId_idx_a489d58a",
+    "label": "Create index \"adminMfaRecoveryCode_userId_idx_a489d58a\" on \"adminMfaRecoveryCode\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "adminMfaRecoveryCode_userId_idx_a489d58a",
+        "table": "adminMfaRecoveryCode"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"adminMfaRecoveryCode_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfaRecoveryCode_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"adminMfaRecoveryCode_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"adminMfaRecoveryCode_userId_idx_a489d58a\" ON \"public\".\"adminMfaRecoveryCode\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"adminMfaRecoveryCode_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"adminMfaRecoveryCode_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.adminMfa.adminMfa_userId_fkey",
+    "label": "Add foreign key \"adminMfa_userId_fkey\" on \"adminMfa\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "adminMfa_userId_fkey",
+        "table": "adminMfa"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"adminMfa_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfa_userId_fkey",
+          "public",
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"adminMfa_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"adminMfa\"\nADD CONSTRAINT \"adminMfa_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"adminUser\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"adminMfa_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfa_userId_fkey",
+          "public",
+          "\"public\".\"adminMfa\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.adminMfaRecoveryCode.adminMfaRecoveryCode_userId_fkey",
+    "label": "Add foreign key \"adminMfaRecoveryCode_userId_fkey\" on \"adminMfaRecoveryCode\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "adminMfaRecoveryCode_userId_fkey",
+        "table": "adminMfaRecoveryCode"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"adminMfaRecoveryCode_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfaRecoveryCode_userId_fkey",
+          "public",
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"adminMfaRecoveryCode_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"adminMfaRecoveryCode\"\nADD CONSTRAINT \"adminMfaRecoveryCode_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"adminUser\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"adminMfaRecoveryCode_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "adminMfaRecoveryCode_userId_fkey",
+          "public",
+          "\"public\".\"adminMfaRecoveryCode\""
+        ]
+      }
+    ]
+  }
+]

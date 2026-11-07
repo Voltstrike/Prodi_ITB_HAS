@@ -78,6 +78,7 @@ model AdminUser {
 }
 
 model AdminSession {
+  mfaVersion Int @default(0)
   id        Int               @id @default(autoincrement())
   userId    Int
   user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -176,4 +177,29 @@ model Beranda {
   updatedAt             temporal.updatedAtString()
 
   @@check(expression: "\"singletonKey\" = 1", name: "beranda_singleton_key")
+}
+
+model AdminMfa {
+  id                      Int @id @default(autoincrement())
+  userId                  Int @unique
+  user                    AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  secretEncrypted         String?
+  enabledAt               TimestamptzString?
+  pendingSecretEncrypted  String?
+  pendingExpiresAt        TimestamptzString?
+  pendingSessionTokenHash String?
+  lastUsedStep            Int?
+  version                 Int @default(0)
+  failedAttempts          Int @default(0)
+  firstFailedAt           TimestamptzString?
+  createdAt               TimestamptzString @default(now())
+  updatedAt               temporal.updatedAtString()
+}
+
+model AdminMfaRecoveryCode {
+  id        Int @id @default(autoincrement())
+  userId    Int
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  codeHash  String @unique
+  createdAt TimestamptzString @default(now())
 }

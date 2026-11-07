@@ -2,6 +2,7 @@ import { requireSameOriginRequest } from "@/lib/http/origin";
 import { isAdminRole } from "@/lib/auth/roles";
 import { verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
+import { MfaVerificationError, type MfaProof } from "@/lib/auth/mfa-verification";
 import {
     checkLoginRateLimit,
     clearLoginFailures,
@@ -37,7 +38,7 @@ async function loginFailureResponse(key: string) {
     );
 }
 
-export async function POST(request: Request) {
+async function login(request: Request) {
     const originError = requireSameOriginRequest(request);
     if (originError) {
         return originError;
@@ -53,6 +54,21 @@ export async function POST(request: Request) {
     }
 
     const body = bodyResult.body;
+
+    if (
+        (body.mfaCode !== undefined &&
+            (typeof body.mfaCode !== "string" || body.mfaCode.length > 64)) ||
+        (body.useRecoveryCode !== undefined && typeof body.useRecoveryCode !== "boolean")
+    ) {
+        return Response.json(
+            { message: "Format verifikasi MFA tidak valid." },
+            { status: 400 },
+        );
+    }
+
+    const mfaProof: MfaProof | undefined = typeof body.mfaCode === "string"
+        ? { code: body.mfaCode, recovery: body.useRecoveryCode === true }
+        : undefined;
 
     const email =
         typeof body.email === "string" ? body.email.trim() : "";
@@ -109,6 +125,7 @@ export async function POST(request: Request) {
     const sessionCreated = await createSession(
         user.id,
         user.passwordHash,
+        mfaProof,
     );
 
     if (!sessionCreated) {
@@ -120,4 +137,40 @@ export async function POST(request: Request) {
     return Response.json({
         message: "Login berhasil",
     });
+}
+
+export async function POST(request: Request) {
+    try {
+        const response = await login(request);
+        response.headers.set("Cache-Control", "no-store");
+        return response;
+    } catch (error) {
+        if (error instanceof MfaVerificationError) {
+            const blocked = error.kind === "blocked";
+            return Response.json({
+                requiresMfa: true,
+                message: error.kind === "required"
+                    ? "Masukkan kode dari aplikasi autentikator."
+                    : blocked
+                        ? "Terlalu banyak percobaan MFA. Silakan coba lagi nanti."
+                        : "Kode tidak valid, kedaluwarsa, atau sudah digunakan.",
+            }, {
+                status: error.kind === "required" ? 200 : blocked ? 429 : 401,
+                headers: {
+                    "Cache-Control": "no-store",
+                    ...(blocked ? { "Retry-After": String(error.retryAfterSeconds) } : {}),
+                },
+            });
+        }
+
+        console.error(
+            "ADMIN LOGIN ERROR:",
+            error instanceof Error ? error.name : "UnknownError",
+        );
+
+        return Response.json(
+            { message: "Login gagal diproses. Silakan coba lagi." },
+            { status: 500, headers: { "Cache-Control": "no-store" } },
+        );
+    }
 }

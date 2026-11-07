@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import AccountProfileForm from "./components/AccountProfileForm";
+import MfaSettings from "./components/MfaSettings";
+import { getMfaSummary } from "@/lib/auth/mfa-management";
 
 export const dynamic = "force-dynamic";
 
 export default async function AccountProfilePage() {
     const user = await requireAdmin();
+    const mfa = await getMfaSummary(user.id);
 
     return (
         <div className="mx-auto max-w-3xl space-y-8">
@@ -31,6 +34,11 @@ export default async function AccountProfilePage() {
                     email: user.email,
                     role: user.role,
                 }}
+            />
+
+            <MfaSettings
+                initialEnabled={mfa.enabled}
+                initialRecoveryCodesRemaining={mfa.recoveryCodesRemaining}
             />
         </div>
     );

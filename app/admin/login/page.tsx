@@ -10,14 +10,28 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [credentials, setCredentials] = useState<{
+    email: string;
+    password: string;
+  } | null>(null);
+  const [useRecoveryCode, setUseRecoveryCode] = useState(false);
+
+  function returnToLogin() {
+    setCredentials(null);
+    setUseRecoveryCode(false);
+    setShowPassword(false);
+    setError("");
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (loading) return;
 
     const form = new FormData(event.currentTarget);
-    const email = form.get("email")?.toString().trim() ?? "";
-    const password = form.get("password")?.toString() ?? "";
+    const account = credentials ?? {
+      email: form.get("email")?.toString().trim() ?? "",
+      password: form.get("password")?.toString() ?? "",
+    };
 
     setError("");
     setLoading(true);
@@ -26,25 +40,40 @@ export default function AdminLoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          ...account,
+          ...(credentials ? {
+            mfaCode: form.get("mfaCode")?.toString().trim() ?? "",
+            useRecoveryCode,
+          } : {}),
+        }),
       });
-
       const data = await response.json().catch(() => null);
 
-      if (!response.ok) {
-        setError(
-          typeof data?.message === "string"
-            ? data.message
-            : "Login gagal. Silakan coba lagi.",
-        );
-        setLoading(false);
+      if (data?.requiresMfa === true) {
+        setCredentials(account);
+        if (!response.ok) {
+          setError(typeof data.message === "string"
+            ? data.message : "Verifikasi MFA gagal. Silakan coba lagi.");
+        }
         return;
       }
 
+      if (!response.ok) {
+        setCredentials(null);
+        setUseRecoveryCode(false);
+        setError(typeof data?.message === "string"
+          ? data.message : "Login gagal. Silakan coba lagi.");
+        return;
+      }
+
+      setCredentials(null);
+      setUseRecoveryCode(false);
       router.replace("/admin");
       router.refresh();
     } catch {
       setError("Tidak dapat terhubung ke server. Periksa koneksi dan coba lagi.");
+    } finally {
       setLoading(false);
     }
   }
@@ -86,7 +115,7 @@ export default function AdminLoginPage() {
             id="login-title"
             className="mt-2 text-2xl font-bold text-slate-900"
           >
-            Login Admin
+            {credentials ? "Verifikasi MFA" : "Login Admin"}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             Masuk untuk mengelola informasi dan konten program studi.
@@ -97,6 +126,8 @@ export default function AdminLoginPage() {
             aria-busy={loading}
             className="mt-7 space-y-5"
           >
+            {!credentials && (
+              <>
             <div>
               <label
                 htmlFor="email"
@@ -152,6 +183,63 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
+              </>
+            )}
+
+            {credentials && (
+              <div key={useRecoveryCode ? "recovery" : "totp"} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="mfa-code"
+                    className="block text-sm font-medium text-slate-700"
+                  >
+                    {useRecoveryCode ? "Kode pemulihan" : "Kode autentikator"}
+                  </label>
+                  <input
+                    id="mfa-code"
+                    name="mfaCode"
+                    type="text"
+                    inputMode={useRecoveryCode ? "text" : "numeric"}
+                    autoComplete={useRecoveryCode ? "off" : "one-time-code"}
+                    autoCapitalize={useRecoveryCode ? "characters" : "none"}
+                    spellCheck={false}
+                    pattern={useRecoveryCode ? undefined : "[0-9]{6}"}
+                    maxLength={useRecoveryCode ? 64 : 6}
+                    required
+                    disabled={loading}
+                    aria-describedby="mfa-code-help"
+                    className="mt-2 block w-full rounded-lg border border-slate-300 px-3 py-3 font-mono text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50"
+                  />
+                  <p id="mfa-code-help" className="mt-2 text-sm text-slate-600">
+                    {useRecoveryCode
+                      ? "Masukkan satu kode pemulihan yang belum pernah digunakan."
+                      : "Masukkan kode 6 digit dari aplikasi autentikator Anda."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => {
+                    setUseRecoveryCode((value) => !value);
+                    setError("");
+                  }}
+                  className="block rounded text-sm font-medium text-blue-700 hover:underline disabled:opacity-50"
+                >
+                  {useRecoveryCode
+                    ? "Gunakan aplikasi autentikator"
+                    : "Gunakan kode pemulihan"}
+                </button>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={returnToLogin}
+                  className="block rounded text-sm text-slate-600 hover:underline disabled:opacity-50"
+                >
+                  Kembali ke login
+                </button>
+              </div>
+            )}
+
             {error && (
               <p
                 role="alert"
@@ -166,7 +254,7 @@ export default function AdminLoginPage() {
               disabled={loading}
               className="w-full rounded-lg bg-[#1E3A8A] px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-wait disabled:opacity-60"
             >
-              {loading ? "Memproses..." : "Masuk"}
+              {loading ? "Memproses..." : credentials ? "Verifikasi dan Masuk" : "Masuk"}
             </button>
             <span role="status" className="sr-only">
               {loading ? "Sedang memproses login." : ""}
