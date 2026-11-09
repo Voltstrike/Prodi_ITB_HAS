@@ -1,20 +1,26 @@
 import Link from "next/link";
 import { db } from "@/prisma/db";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { isSuperAdminRole } from "@/lib/auth/roles";
 
 export default async function AdminPage() {
     const user = await requireAdmin();
+    const canViewAudit = isSuperAdminRole(user.role);
 
     const [dosen, staff, berita, auditLogs, adminUsers] =
         await Promise.all([
             db.orm.public.Dosen.all(),
             db.orm.public.Staff.all(),
             db.orm.public.Berita.all(),
-            db.orm.public.AuditLog
-                .orderBy([(log) => log.createdAt.desc(), (log) => log.id.desc()])
-                .limit(5)
-                .all(),
-            db.orm.public.AdminUser.select("id", "nama").all(),
+            canViewAudit
+                ? db.orm.public.AuditLog
+                    .orderBy([(log) => log.createdAt.desc(), (log) => log.id.desc()])
+                    .limit(5)
+                    .all()
+                : Promise.resolve([]),
+            canViewAudit
+                ? db.orm.public.AdminUser.select("id", "nama").all()
+                : Promise.resolve([]),
         ]);
 
     const recentActivity = auditLogs.map((log) => ({
@@ -141,10 +147,14 @@ export default async function AdminPage() {
                     </Link>
                 </div>
 
+                    {canViewAudit && (
                     <div className="rounded-xl border border-slate-200 bg-white p-6">
-                        <h2 className="font-semibold text-slate-900">
-                            Aktivitas Terbaru
-                         </h2>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <h2 className="font-semibold text-slate-900">Aktivitas Terbaru</h2>
+                            <Link href="/admin/audit-log" className="text-sm font-medium text-blue-700 hover:underline">
+                                Lihat semua →
+                            </Link>
+                        </div>
 
                         {recentActivity.length === 0 ? (
                             <p className="mt-4 text-sm text-slate-500">
@@ -179,12 +189,13 @@ export default async function AdminPage() {
                                                 {new Date(activity.createdAt).toLocaleString(
                                                     "id-ID",
                                                     {
+                                                        timeZone: "Asia/Jakarta",
                                                         day: "2-digit",
                                                         month: "short",
                                                         hour: "2-digit",
                                                         minute: "2-digit",
                                                     },
-                                                )}
+                                                )}{" WIB"}
                                             </time>
                                         </div>
                                     </div>
@@ -192,6 +203,7 @@ export default async function AdminPage() {
                             </div>
                         )}
                     </div>
+                    )}
             </section>
         </div>
     );

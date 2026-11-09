@@ -214,6 +214,13 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 >
                                     Kelola Akun
                                 </Link>
+                                <Link
+                                    href="/admin/audit-log"
+                                    onClick={closeMenu}
+                                    className="block rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Audit Log
+                                </Link>
                             </div>
                         )}
                     </div>
