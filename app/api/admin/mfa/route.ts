@@ -138,7 +138,7 @@ export async function POST(request: Request) {
                 secret: payload.secret,
                 qrCodeDataUrl,
                 expiresAt: payload.expiresAt,
-                message: "Pindai QR, lalu masukkan kode autentikator untuk mengaktifkan MFA.",
+                message: "Pindai QR, lalu masukkan kode Authenticator untuk mengaktifkan MFA.",
             });
         }
 

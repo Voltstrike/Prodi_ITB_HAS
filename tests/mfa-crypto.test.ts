@@ -100,7 +100,7 @@ test("kode pemulihan unik, hash terikat akun, format penyalinan didukung", () =>
     assert.equal(recoveryCodeHash("invalid", 1), null);
 });
 
-test("setup menghasilkan URI autentikator dengan parameter yang tepat", () => {
+test("setup menghasilkan URI Authenticator dengan parameter yang tepat", () => {
     const setup = createTotpSetup("admin@example.test");
     const uri = new URL(setup.uri);
     assert.match(setup.secret, /^[A-Z2-7]{32}$/);

@@ -150,7 +150,7 @@ export async function POST(request: Request) {
             return Response.json({
                 requiresMfa: true,
                 message: error.kind === "required"
-                    ? "Masukkan kode dari aplikasi autentikator."
+                    ? "Masukkan kode dari aplikasi Authenticator."
                     : blocked
                         ? "Terlalu banyak percobaan MFA. Silakan coba lagi nanti."
                         : "Kode tidak valid, kedaluwarsa, atau sudah digunakan.",

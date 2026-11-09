@@ -193,7 +193,7 @@ export default function AdminLoginPage() {
                     htmlFor="mfa-code"
                     className="block text-sm font-medium text-slate-700"
                   >
-                    {useRecoveryCode ? "Kode pemulihan" : "Kode autentikator"}
+                    {useRecoveryCode ? "Kode pemulihan" : "Kode Authenticator"}
                   </label>
                   <input
                     id="mfa-code"
@@ -213,7 +213,7 @@ export default function AdminLoginPage() {
                   <p id="mfa-code-help" className="mt-2 text-sm text-slate-600">
                     {useRecoveryCode
                       ? "Masukkan satu kode pemulihan yang belum pernah digunakan."
-                      : "Masukkan kode 6 digit dari aplikasi autentikator Anda."}
+                      : "Masukkan kode 6 digit dari aplikasi Authenticator Anda."}
                   </p>
                 </div>
                 <button
@@ -226,7 +226,7 @@ export default function AdminLoginPage() {
                   className="block rounded text-sm font-medium text-blue-700 hover:underline disabled:opacity-50"
                 >
                   {useRecoveryCode
-                    ? "Gunakan aplikasi autentikator"
+                    ? "Gunakan aplikasi Authenticator"
                     : "Gunakan kode pemulihan"}
                 </button>
                 <button

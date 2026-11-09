@@ -225,7 +225,7 @@ export default function MfaSettings({
             <p className="mt-2 text-sm text-slate-600">
                 {enabled
                     ? `Aktif. Kode pemulihan tersisa: ${remaining}.`
-                    : "Tambahkan kode dari aplikasi autentikator saat login ke akun Anda."}
+                    : "Tambahkan kode dari aplikasi authenticator saat login ke akun Anda."}
             </p>
 
             {notice && (
@@ -322,14 +322,14 @@ export default function MfaSettings({
                     {setup && (
                         <div className="space-y-3 rounded-lg bg-slate-50 p-4">
                             <p className="text-sm text-slate-700">
-                                Pindai QR dengan aplikasi autentikator. Pengaturan berlaku selama 10 menit.
+                                Pindai QR dengan aplikasi Authenticator. Pengaturan berlaku selama 10 menit.
                             </p>
                             <Image
                                 src={setup.qrCodeDataUrl}
                                 width={256}
                                 height={256}
                                 unoptimized
-                                alt="QR untuk menambahkan akun ke aplikasi autentikator"
+                                alt="QR untuk menambahkan akun ke aplikasi Authenticator"
                             />
                             <p className="text-sm text-slate-600">
                                 Jika tidak bisa memindai, masukkan kunci ini secara manual:
@@ -371,7 +371,7 @@ export default function MfaSettings({
                     {(setup || mode !== "idle") && (
                         <div>
                             <label htmlFor="mfa-settings-code" className="block text-sm font-medium text-slate-700">
-                                {!setup && useRecoveryCode ? "Kode pemulihan" : "Kode autentikator"}
+                                {!setup && useRecoveryCode ? "Kode pemulihan" : "Kode Authenticator"}
                             </label>
                             <input
                                 id="mfa-settings-code"
@@ -398,7 +398,7 @@ export default function MfaSettings({
                                         setError("");
                                     }}
                                 >
-                                    {useRecoveryCode ? "Gunakan aplikasi autentikator" : "Gunakan kode pemulihan"}
+                                    {useRecoveryCode ? "Gunakan aplikasi Authenticator" : "Gunakan kode pemulihan"}
                                 </button>
                             )}
                         </div>
