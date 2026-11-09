@@ -115,6 +115,12 @@ export default async function KegiatanProdiPage({
                         </p>
 
                         <div className="mt-6">
+                            <Link
+                                href="/publikasi"
+                                className="mb-3 mr-3 inline-flex items-center rounded-lg border border-blue-300 bg-white px-5 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-700"
+                            >
+                                Publikasi Ilmiah
+                            </Link>
                             <a
                                 href={OJS_URL}
                                 target="_blank"

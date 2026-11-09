@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'0198f424bbcc7c8aa2703584bf4046eebdd6fb850e02e5327ffc4c6575ec7dc8'>;
+  StorageHashBase<'32ec3705587e447676509fc58ec87980ebe0d9c983282ee94aa4f0e26116e342'>;
 export type ExecutionHash =
-  ExecutionHashBase<'a88e9393b6cf03e822a1b24aefd353173f85821e2e3acb9441d3567da0f930da'>;
+  ExecutionHashBase<'82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -402,6 +402,21 @@ export type FieldOutputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
+    readonly PublikasiIlmiah: {
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly judul: CodecTypes['pg/text@1']['output'];
+      readonly slug: CodecTypes['pg/text@1']['output'];
+      readonly jenis: CodecTypes['pg/text@1']['output'];
+      readonly penulis: CodecTypes['pg/text@1']['output'];
+      readonly tahun: CodecTypes['pg/int4@1']['output'];
+      readonly sumber: CodecTypes['pg/text@1']['output'];
+      readonly ringkasan: CodecTypes['pg/text@1']['output'] | null;
+      readonly tautanPublikasi: CodecTypes['pg/text@1']['output'];
+      readonly doi: CodecTypes['pg/text@1']['output'] | null;
+      readonly ditampilkan: CodecTypes['pg/bool@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
     readonly Staff: {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly nama: CodecTypes['pg/text@1']['output'];
@@ -573,6 +588,21 @@ export type FieldInputTypes = {
       readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['input'] | null;
       readonly akreditasi: CodecTypes['pg/text@1']['input'] | null;
       readonly dokumenAkreditasi: CodecTypes['pg/text@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+    };
+    readonly PublikasiIlmiah: {
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly judul: CodecTypes['pg/text@1']['input'];
+      readonly slug: CodecTypes['pg/text@1']['input'];
+      readonly jenis: CodecTypes['pg/text@1']['input'];
+      readonly penulis: CodecTypes['pg/text@1']['input'];
+      readonly tahun: CodecTypes['pg/int4@1']['input'];
+      readonly sumber: CodecTypes['pg/text@1']['input'];
+      readonly ringkasan: CodecTypes['pg/text@1']['input'] | null;
+      readonly tautanPublikasi: CodecTypes['pg/text@1']['input'];
+      readonly doi: CodecTypes['pg/text@1']['input'] | null;
+      readonly ditampilkan: CodecTypes['pg/bool@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
@@ -750,6 +780,21 @@ export type StorageColumnTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly visi: CodecTypes['pg/text@1']['output'];
     };
+    readonly publikasiIlmiah: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly ditampilkan: CodecTypes['pg/bool@1']['output'];
+      readonly doi: CodecTypes['pg/text@1']['output'] | null;
+      readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly jenis: CodecTypes['pg/text@1']['output'];
+      readonly judul: CodecTypes['pg/text@1']['output'];
+      readonly penulis: CodecTypes['pg/text@1']['output'];
+      readonly ringkasan: CodecTypes['pg/text@1']['output'] | null;
+      readonly slug: CodecTypes['pg/text@1']['output'];
+      readonly sumber: CodecTypes['pg/text@1']['output'];
+      readonly tahun: CodecTypes['pg/int4@1']['output'];
+      readonly tautanPublikasi: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    };
     readonly staff: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly foto: CodecTypes['pg/text@1']['output'] | null;
@@ -923,6 +968,21 @@ export type StorageColumnInputTypes = {
       readonly strukturOrganisasi: CodecTypes['pg/jsonb@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly visi: CodecTypes['pg/text@1']['input'];
+    };
+    readonly publikasiIlmiah: {
+      readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly ditampilkan: CodecTypes['pg/bool@1']['input'];
+      readonly doi: CodecTypes['pg/text@1']['input'] | null;
+      readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly jenis: CodecTypes['pg/text@1']['input'];
+      readonly judul: CodecTypes['pg/text@1']['input'];
+      readonly penulis: CodecTypes['pg/text@1']['input'];
+      readonly ringkasan: CodecTypes['pg/text@1']['input'] | null;
+      readonly slug: CodecTypes['pg/text@1']['input'];
+      readonly sumber: CodecTypes['pg/text@1']['input'];
+      readonly tahun: CodecTypes['pg/int4@1']['input'];
+      readonly tautanPublikasi: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
     readonly staff: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -1132,6 +1192,22 @@ export namespace Models {
     user: public_AdminUser;
     readonly [RelationKeys]?: 'user';
   };
+  export type public_PublikasiIlmiah = {
+    id: CodecTypes['pg/int4@1']['output'];
+    judul: CodecTypes['pg/text@1']['output'];
+    slug: CodecTypes['pg/text@1']['output'];
+    jenis: CodecTypes['pg/text@1']['output'];
+    penulis: CodecTypes['pg/text@1']['output'];
+    tahun: CodecTypes['pg/int4@1']['output'];
+    sumber: CodecTypes['pg/text@1']['output'];
+    ringkasan: CodecTypes['pg/text@1']['output'] | null;
+    tautanPublikasi: CodecTypes['pg/text@1']['output'];
+    doi: CodecTypes['pg/text@1']['output'] | null;
+    ditampilkan: CodecTypes['pg/bool@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    readonly [RelationKeys]?: never;
+  };
 }
 
 export declare const models: {
@@ -1153,6 +1229,7 @@ export declare const models: {
     Beranda: Models.public_Beranda;
     AdminMfa: Models.public_AdminMfa;
     AdminMfaRecoveryCode: Models.public_AdminMfaRecoveryCode;
+    PublikasiIlmiah: Models.public_PublikasiIlmiah;
   };
 };
 
@@ -2182,6 +2259,98 @@ type ContractBase = Omit<
               indexes: readonly [];
               foreignKeys: readonly [];
             };
+            readonly publikasiIlmiah: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                };
+                readonly judul: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly slug: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly jenis: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly penulis: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly tahun: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+                readonly sumber: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly ringkasan: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly tautanPublikasi: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly doi: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly ditampilkan: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [
+                { readonly columns: readonly ['slug'] },
+                { readonly columns: readonly ['doi'] },
+              ];
+              indexes: readonly [
+                {
+                  readonly name: 'publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90';
+                  readonly prefix: 'publikasiIlmiah_ditampilkan_tahun_id_idx';
+                  readonly columns: readonly ['ditampilkan', 'tahun', 'id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [];
+            };
             readonly staff: {
               columns: {
                 readonly id: {
@@ -2286,6 +2455,10 @@ type ContractBase = Omit<
     readonly adminMfaRecoveryCode: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'AdminMfaRecoveryCode';
+    };
+    readonly publikasiIlmiah: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'PublikasiIlmiah';
     };
   };
   readonly domain: {
@@ -3291,6 +3464,88 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly PublikasiIlmiah: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly judul: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly slug: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly jenis: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly penulis: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly tahun: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly sumber: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly ringkasan: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly tautanPublikasi: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly doi: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly ditampilkan: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'publikasiIlmiah';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly judul: { readonly column: 'judul' };
+                readonly slug: { readonly column: 'slug' };
+                readonly jenis: { readonly column: 'jenis' };
+                readonly penulis: { readonly column: 'penulis' };
+                readonly tahun: { readonly column: 'tahun' };
+                readonly sumber: { readonly column: 'sumber' };
+                readonly ringkasan: { readonly column: 'ringkasan' };
+                readonly tautanPublikasi: { readonly column: 'tautanPublikasi' };
+                readonly doi: { readonly column: 'doi' };
+                readonly ditampilkan: { readonly column: 'ditampilkan' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
           readonly Staff: {
             readonly fields: {
               readonly id: {
@@ -3478,6 +3733,15 @@ type ContractBase = Omit<
           readonly ref: {
             readonly namespace: 'public';
             readonly table: 'profil';
+            readonly column: 'updatedAt';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'timestampNow' };
+          readonly onUpdate: { readonly kind: 'generator'; readonly id: 'timestampNow' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'publikasiIlmiah';
             readonly column: 'updatedAt';
           };
           readonly onCreate: { readonly kind: 'generator'; readonly id: 'timestampNow' };

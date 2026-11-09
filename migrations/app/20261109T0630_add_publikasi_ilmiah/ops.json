@@ -1,0 +1,164 @@
+[
+  {
+    "id": "table.publikasiIlmiah",
+    "label": "Create table \"publikasiIlmiah\"",
+    "summary": "Creates table \"publikasiIlmiah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "publikasiIlmiah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"publikasiIlmiah\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"publikasiIlmiah\"",
+        "sql": "CREATE TABLE \"public\".\"publikasiIlmiah\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"ditampilkan\" bool DEFAULT false NOT NULL,\n  \"doi\" text,\n  \"id\" SERIAL NOT NULL,\n  \"jenis\" text NOT NULL,\n  \"judul\" text NOT NULL,\n  \"penulis\" text NOT NULL,\n  \"ringkasan\" text,\n  \"slug\" text NOT NULL,\n  \"sumber\" text NOT NULL,\n  \"tahun\" int4 NOT NULL,\n  \"tautanPublikasi\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"publikasi_ilmiah_jenis_ac9352d8\" CHECK (\"jenis\" IN ('TESIS', 'ARTIKEL'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"publikasiIlmiah\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.publikasiIlmiah.publikasiIlmiah_slug_key",
+    "label": "Add unique constraint on \"publikasiIlmiah\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "publikasiIlmiah_slug_key",
+        "table": "publikasiIlmiah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"publikasiIlmiah_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "publikasiIlmiah_slug_key",
+          "public",
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"publikasiIlmiah_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"publikasiIlmiah\" ADD CONSTRAINT \"publikasiIlmiah_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"publikasiIlmiah_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "publikasiIlmiah_slug_key",
+          "public",
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.publikasiIlmiah.publikasiIlmiah_doi_key",
+    "label": "Add unique constraint on \"publikasiIlmiah\" (doi)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "publikasiIlmiah_doi_key",
+        "table": "publikasiIlmiah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"publikasiIlmiah_doi_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "publikasiIlmiah_doi_key",
+          "public",
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"publikasiIlmiah_doi_key\"",
+        "sql": "ALTER TABLE \"public\".\"publikasiIlmiah\" ADD CONSTRAINT \"publikasiIlmiah_doi_key\" UNIQUE (\"doi\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"publikasiIlmiah_doi_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "publikasiIlmiah_doi_key",
+          "public",
+          "\"public\".\"publikasiIlmiah\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.publikasiIlmiah.publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90",
+    "label": "Create index \"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\" on \"publikasiIlmiah\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90",
+        "table": "publikasiIlmiah"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\"",
+        "sql": "CREATE INDEX \"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\" ON \"public\".\"publikasiIlmiah\" (\"ditampilkan\", \"tahun\", \"id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90\""
+        ]
+      }
+    ]
+  }
+]

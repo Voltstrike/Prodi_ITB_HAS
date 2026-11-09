@@ -203,3 +203,22 @@ model AdminMfaRecoveryCode {
   codeHash  String @unique
   createdAt TimestamptzString @default(now())
 }
+
+model PublikasiIlmiah {
+  id                Int                        @id @default(autoincrement())
+  judul             String
+  slug              String                     @unique
+  jenis             String
+  penulis           String
+  tahun             Int
+  sumber            String
+  ringkasan         String?
+  tautanPublikasi   String
+  doi               String?                    @unique
+  ditampilkan       Boolean                    @default(false)
+  createdAt         TimestamptzString           @default(now())
+  updatedAt         temporal.updatedAtString()
+
+  @@index([ditampilkan, tahun, id])
+  @@check(expression: "\"jenis\" IN ('TESIS', 'ARTIKEL')", name: "publikasi_ilmiah_jenis")
+}

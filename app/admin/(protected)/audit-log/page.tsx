@@ -24,6 +24,7 @@ const entityLabels: Readonly<Record<string, string>> = {
     Staff: "Staff",
     Berita: "Berita",
     KegiatanProdi: "Kegiatan Prodi",
+    PublikasiIlmiah: "Publikasi Ilmiah",
     Kurikulum: "Kurikulum",
     KalenderAkademik: "Kalender Akademik",
     InformasiAkademik: "Informasi Akademik",

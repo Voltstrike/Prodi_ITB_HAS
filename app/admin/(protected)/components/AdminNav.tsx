@@ -168,6 +168,14 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 >
                                     Kegiatan Prodi
                                 </Link>
+
+                                <Link
+                                    href="/admin/publikasi"
+                                    onClick={closeMenu}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Publikasi Ilmiah
+                                </Link>
                             </div>
                         </div>
 

@@ -68,6 +68,10 @@
       "model": "Profil",
       "namespace": "public"
     },
+    "publikasiIlmiah": {
+      "model": "PublikasiIlmiah",
+      "namespace": "public"
+    },
     "staff": {
       "model": "Staff",
       "namespace": "public"
@@ -1651,6 +1655,147 @@
               "table": "profil"
             }
           },
+          "PublikasiIlmiah": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "ditampilkan": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "doi": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "jenis": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "judul": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "penulis": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "ringkasan": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "slug": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sumber": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tahun": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "tautanPublikasi": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "ditampilkan": {
+                  "column": "ditampilkan"
+                },
+                "doi": {
+                  "column": "doi"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "jenis": {
+                  "column": "jenis"
+                },
+                "judul": {
+                  "column": "judul"
+                },
+                "penulis": {
+                  "column": "penulis"
+                },
+                "ringkasan": {
+                  "column": "ringkasan"
+                },
+                "slug": {
+                  "column": "slug"
+                },
+                "sumber": {
+                  "column": "sumber"
+                },
+                "tahun": {
+                  "column": "tahun"
+                },
+                "tautanPublikasi": {
+                  "column": "tautanPublikasi"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "publikasiIlmiah"
+            }
+          },
           "Staff": {
             "fields": {
               "createdAt": {
@@ -3028,6 +3173,124 @@
                 }
               ]
             },
+            "publikasiIlmiah": {
+              "checks": [
+                {
+                  "expression": "\"jenis\" IN ('TESIS', 'ARTIKEL')",
+                  "name": "publikasi_ilmiah_jenis_ac9352d8",
+                  "prefix": "publikasi_ilmiah_jenis"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "ditampilkan": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
+                "doi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "jenis": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "judul": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "penulis": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "ringkasan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "slug": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "sumber": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tahun": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "tautanPublikasi": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [
+                {
+                  "columns": [
+                    "ditampilkan",
+                    "tahun",
+                    "id"
+                  ],
+                  "name": "publikasiIlmiah_ditampilkan_tahun_id_idx_28cdcc90",
+                  "prefix": "publikasiIlmiah_ditampilkan_tahun_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "slug"
+                  ]
+                },
+                {
+                  "columns": [
+                    "doi"
+                  ]
+                }
+              ]
+            },
             "staff": {
               "columns": {
                 "createdAt": {
@@ -3094,10 +3357,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "0198f424bbcc7c8aa2703584bf4046eebdd6fb850e02e5327ffc4c6575ec7dc8"
+    "storageHash": "32ec3705587e447676509fc58ec87980ebe0d9c983282ee94aa4f0e26116e342"
   },
   "execution": {
-    "executionHash": "a88e9393b6cf03e822a1b24aefd353173f85821e2e3acb9441d3567da0f930da",
+    "executionHash": "82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd",
     "mutations": {
       "defaults": [
         {
@@ -3278,6 +3541,21 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "profil"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "publikasiIlmiah"
           }
         },
         {
