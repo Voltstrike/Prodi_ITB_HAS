@@ -736,6 +736,13 @@
                   "kind": "scalar"
                 }
               },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "thumbnail": {
                 "nullable": true,
                 "type": {
@@ -781,6 +788,9 @@
                 },
                 "slug": {
                   "column": "slug"
+                },
+                "status": {
+                  "column": "status"
                 },
                 "thumbnail": {
                   "column": "thumbnail"
@@ -2412,6 +2422,13 @@
               ]
             },
             "berita": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('DRAFT', 'PUBLISHED')",
+                  "name": "berita_status_1b4a7b6b",
+                  "prefix": "berita_status"
+                }
+              ],
               "columns": {
                 "content": {
                   "codecId": "pg/text@1",
@@ -2453,6 +2470,15 @@
                 },
                 "slug": {
                   "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "DRAFT"
+                  },
                   "nativeType": "text",
                   "nullable": false
                 },
@@ -3357,7 +3383,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "32ec3705587e447676509fc58ec87980ebe0d9c983282ee94aa4f0e26116e342"
+    "storageHash": "8321d01a843f6bcbce8832b614e3475d5752b947c8778ebe6307ca610397a513"
   },
   "execution": {
     "executionHash": "82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd",

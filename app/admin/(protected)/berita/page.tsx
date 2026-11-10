@@ -1,9 +1,15 @@
+import { requireAdmin } from "@/lib/auth/require-admin";
 import Link from "next/link";
 import { db } from "@/prisma/db";
 import HapusBeritaButton from "./components/HapusBeritaButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminBeritaPage() {
-    const berita = await db.orm.public.Berita.all();
+    await requireAdmin();
+    const berita = await db.orm.public.Berita
+        .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
+        .all();
 
     return (
         <main className="min-h-screen bg-slate-50">
@@ -47,6 +53,9 @@ export default async function AdminBeritaPage() {
                                             Tanggal
                                         </th>
                                         <th className="px-4 py-3 font-semibold text-slate-700">
+                                            Status
+                                        </th>
+                                        <th className="px-4 py-3 font-semibold text-slate-700">
                                             Slug
                                         </th>
                                         <th className="px-4 py-3 font-semibold text-slate-700">
@@ -69,6 +78,15 @@ export default async function AdminBeritaPage() {
                                                 {item.date}
                                             </td>
 
+                                            <td className="px-4 py-4">
+                                                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                                                    item.status === "DRAFT"
+                                                        ? "bg-amber-50 text-amber-800"
+                                                        : "bg-emerald-50 text-emerald-800"
+                                                }`}>
+                                                    {item.status === "DRAFT" ? "Draft" : "Terbit"}
+                                                </span>
+                                            </td>
                                             <td className="px-4 py-4 text-slate-500">
                                                 {item.slug}
                                             </td>

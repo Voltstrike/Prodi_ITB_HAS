@@ -4,6 +4,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 
 export default async function News() {
   const berita = await db.orm.public.Berita
+    .where({ status: "PUBLISHED" })
     .select("id", "title", "date", "description", "image", "thumbnail", "slug")
     .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
     .limit(3)

@@ -26,13 +26,16 @@ export default async function BeritaPage({
   const requestedPage =
     Number.isSafeInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
-  const { total } = await db.orm.public.Berita.aggregate((a) => ({
+  const { total } = await db.orm.public.Berita
+    .where({ status: "PUBLISHED" })
+    .aggregate((a) => ({
     total: a.count(),
   }));
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const currentPage = Math.min(requestedPage, totalPages);
 
   const berita = await db.orm.public.Berita
+    .where({ status: "PUBLISHED" })
     .select("id", "title", "date", "description", "image", "thumbnail" ,"slug")
     .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
     .offset((currentPage - 1) * PAGE_SIZE)

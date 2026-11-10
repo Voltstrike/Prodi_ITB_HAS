@@ -1,0 +1,170 @@
+[
+  {
+    "id": "column.public.berita.status",
+    "label": "Add column \"status\" to \"berita\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ADD COLUMN \"status\" text DEFAULT 'PUBLISHED' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropDefault.berita.status",
+    "label": "Drop default on \"berita\".\"status\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop default on \"status\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ALTER COLUMN \"status\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" has no default",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "setDefault.berita.status",
+    "label": "Set default on \"berita\".\"status\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "set default on \"status\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ALTER COLUMN \"status\" SET DEFAULT 'DRAFT'"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" has a default",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "berita",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.berita.berita_status_1b4a7b6b",
+    "label": "Add check constraint \"berita_status_1b4a7b6b\" on \"berita\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "berita_status_1b4a7b6b",
+        "table": "berita"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"berita_status_1b4a7b6b\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "berita_status_1b4a7b6b",
+          "public",
+          "\"public\".\"berita\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"berita_status_1b4a7b6b\"",
+        "sql": "ALTER TABLE \"public\".\"berita\" ADD CONSTRAINT \"berita_status_1b4a7b6b\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"berita_status_1b4a7b6b\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "berita_status_1b4a7b6b",
+          "public",
+          "\"public\".\"berita\""
+        ]
+      }
+    ]
+  }
+]

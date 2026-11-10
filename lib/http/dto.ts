@@ -38,11 +38,12 @@ type BeritaRow = NonNullable<Awaited<ReturnType<typeof db.orm.public.Berita.firs
 export function toBeritaDto(row: BeritaRow) {
     return {
         id: row.id,
+        status: row.status,
         title: row.title,
         date: row.date,
         description: row.description,
         image: row.image,
-        thumbnaul: row.thumbnail,
+        thumbnail: row.thumbnail,
         slug: row.slug,
         content: row.content,
         createdAt: row.createdAt,

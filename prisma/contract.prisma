@@ -25,6 +25,7 @@ model Staff {
 }
 
 model Berita {
+  status      String                     @default("DRAFT")
   id          Int                        @id @default(autoincrement())
   title       String
   date        String
@@ -35,6 +36,8 @@ model Berita {
   content     String
   createdAt   TimestamptzString          @default(now())
   updatedAt   temporal.updatedAtString()
+
+  @@check(expression: "\"status\" IN ('DRAFT', 'PUBLISHED')", name: "berita_status")
 }
 
 model Kurikulum {

@@ -16,7 +16,7 @@ export default async function BeritaDetailPage({
 }: BeritaDetailPageProps) {
   const { slug } = await params;
   const item = await db.orm.public.Berita
-    .where({ slug })
+    .where({ slug, status: "PUBLISHED" })
     .first();
 
   if (!item) {

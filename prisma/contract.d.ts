@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'32ec3705587e447676509fc58ec87980ebe0d9c983282ee94aa4f0e26116e342'>;
+  StorageHashBase<'8321d01a843f6bcbce8832b614e3475d5752b947c8778ebe6307ca610397a513'>;
 export type ExecutionHash =
   ExecutionHashBase<'82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd'>;
 export type ProfileHash =
@@ -302,6 +302,7 @@ export type FieldOutputTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
     readonly Berita: {
+      readonly status: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly title: CodecTypes['pg/text@1']['output'];
       readonly date: CodecTypes['pg/text@1']['output'];
@@ -491,6 +492,7 @@ export type FieldInputTypes = {
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
     readonly Berita: {
+      readonly status: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly title: CodecTypes['pg/text@1']['input'];
       readonly date: CodecTypes['pg/text@1']['input'];
@@ -687,6 +689,7 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly image: CodecTypes['pg/text@1']['output'];
       readonly slug: CodecTypes['pg/text@1']['output'];
+      readonly status: CodecTypes['pg/text@1']['output'];
       readonly thumbnail: CodecTypes['pg/text@1']['output'] | null;
       readonly title: CodecTypes['pg/text@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -876,6 +879,7 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly image: CodecTypes['pg/text@1']['input'];
       readonly slug: CodecTypes['pg/text@1']['input'];
+      readonly status: CodecTypes['pg/text@1']['input'];
       readonly thumbnail: CodecTypes['pg/text@1']['input'] | null;
       readonly title: CodecTypes['pg/text@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -1024,6 +1028,7 @@ export namespace Models {
     readonly [RelationKeys]?: never;
   };
   export type public_Berita = {
+    status: CodecTypes['pg/text@1']['output'];
     id: CodecTypes['pg/int4@1']['output'];
     title: CodecTypes['pg/text@1']['output'];
     date: CodecTypes['pg/text@1']['output'];
@@ -1659,6 +1664,15 @@ type ContractBase = Omit<
             };
             readonly berita: {
               columns: {
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'DRAFT'>;
+                  };
+                };
                 readonly id: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -2859,6 +2873,10 @@ type ContractBase = Omit<
           };
           readonly Berita: {
             readonly fields: {
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -2911,6 +2929,7 @@ type ContractBase = Omit<
               readonly table: 'berita';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly status: { readonly column: 'status' };
                 readonly id: { readonly column: 'id' };
                 readonly title: { readonly column: 'title' };
                 readonly date: { readonly column: 'date' };

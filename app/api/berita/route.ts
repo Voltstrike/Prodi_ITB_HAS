@@ -1,157 +1,44 @@
-import { parseImageSource } from "@/lib/images/source";
-import { validateTextFieldTypes } from "@/lib/http/text-fields";
 import { requireSameOriginRequest } from "@/lib/http/origin";
-import { toBeritaDto } from "@/lib/http/dto";
-import { createAuditLog } from "@/lib/audit/log";
-import { generateUniqueBeritaSlug } from "@/lib/berita/slug";
 import { requireAdminApi } from "@/lib/auth/require-admin-api";
-import { readJsonObjectBody } from "@/lib/http/json";
+import { toBeritaDto } from "@/lib/http/dto";
 import { db } from "@/prisma/db";
+import { createBerita } from "@/lib/berita/management";
+import {
+    beritaJson,
+    beritaErrorResponse,
+    readBeritaBody,
+} from "@/lib/berita/api";
 
-const MAX_BERITA_BODY_BYTES = 256 * 1024;
-const MAX_TITLE_LENGTH = 300;
-const MAX_DATE_LENGTH = 64;
-const MAX_DESCRIPTION_LENGTH = 5_000;
-const MAX_IMAGE_LENGTH = 2_048;
-const MAX_CONTENT_LENGTH = 100_000;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-    const berita = await db.orm.public.Berita.all();
-    return Response.json(berita.map(toBeritaDto));
+    try {
+        const berita = await db.orm.public.Berita
+            .where({ status: "PUBLISHED" })
+            .all();
+
+        return beritaJson(berita.map(toBeritaDto));
+    } catch (error) {
+        return beritaErrorResponse(error);
+    }
 }
 
 export async function POST(request: Request) {
     const originError = requireSameOriginRequest(request);
-    if (originError) {
-        return originError;
-    }
+    if (originError) return originError;
 
     const user = await requireAdminApi();
-
     if (!user) {
-        return Response.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
+        return beritaJson({ message: "Silakan login kembali." }, 401);
     }
 
     try {
-        const bodyResult = await readJsonObjectBody(
-            request,
-            MAX_BERITA_BODY_BYTES
-        );
+        const body = await readBeritaBody(request);
+        if (!body.ok) return body.response;
 
-        if (!bodyResult.ok) {
-            return bodyResult.response;
-        }
-
-        const body = bodyResult.body;
-
-        const textTypeError = validateTextFieldTypes(body, [
-            "title",
-            "date",
-            "description",
-            "image",
-            "thumbnail",
-            "content",
-        ]);
-        if (textTypeError) {
-            return Response.json({ message: textTypeError }, { status: 400 });
-        }
-
-        const title = String(body.title ?? "").trim();
-        const date = String(body.date ?? "").trim();
-        const description = String(body.description ?? "").trim();
-        const image = String(body.image ?? "").trim();
-        const thumbnail = String(body.thumbnail ?? "").trim() || null;
-
-        if (image && parseImageSource(image) === null) {
-            return Response.json(
-                { message: "Gambar berita harus berupa path lokal /... atau URL HTTP/HTTPS yang valid." },
-                { status: 400 },
-            );
-        }
-        if (thumbnail && parseImageSource(thumbnail) === null) {
-            return Response.json(
-                {
-                    message:
-                        "Thumbnail berita harus berupa path lokal atau URL HTTP/HTTPS yang valid.",
-                },
-                { status: 400 },
-            );
-        }
-
-        const content = String(body.content ?? "").trim();
-
-        if (
-            !title ||
-            !date ||
-            !description ||
-            !image ||
-            !content
-        ) {
-            return Response.json(
-                { message: "Semua field wajib diisi" },
-                { status: 400 }
-            );
-        }
-
-        if (
-            title.length > MAX_TITLE_LENGTH ||
-            date.length > MAX_DATE_LENGTH ||
-            description.length > MAX_DESCRIPTION_LENGTH ||
-            image.length > MAX_IMAGE_LENGTH ||
-            (thumbnail?.length ?? 0) > MAX_IMAGE_LENGTH ||
-            content.length > MAX_CONTENT_LENGTH
-        ) {
-            return Response.json(
-                { message: "Salah satu field melebihi batas panjang" },
-                { status: 400 }
-            );
-        }
-
-        const slug = await generateUniqueBeritaSlug(title);
-
-        const created = await db.transaction(async (tx) => {
-            const beritaBaru = await tx.orm.public.Berita.create({
-                title,
-                date,
-                description,
-                image,
-                thumbnail,
-                slug,
-                content,
-            });
-
-            await createAuditLog({
-                userId: user.id,
-                action: "CREATE",
-                entity: "Berita",
-                entityId: beritaBaru.id,
-                details: `Menambahkan berita ${beritaBaru.title}`,
-                dbClient: tx,
-            });
-
-            return beritaBaru;
-        });
-
-        return Response.json(toBeritaDto(created), { status: 201 });
+        const created = await createBerita(user.id, body.body);
+        return beritaJson(toBeritaDto(created), 201);
     } catch (error) {
-        console.error("CREATE BERITA ERROR:", error);
-
-        if (
-            error instanceof Error &&
-            error.message.toLowerCase().includes("unique")
-        ) {
-            return Response.json(
-                { message: "Slug berita sudah digunakan" },
-                { status: 400 }
-            );
-        }
-
-        return Response.json(
-            { message: "Gagal menambahkan berita" },
-            { status: 500 }
-        );
+        return beritaErrorResponse(error);
     }
 }
