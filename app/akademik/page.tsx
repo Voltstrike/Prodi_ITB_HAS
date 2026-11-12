@@ -1,9 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
-import Link from "next/link";
+import KurikulumSection from "@/components/akademik/KurikulumSection";
 import { KATEGORI_DOKUMEN } from "@/lib/dokumen/constants";
-import { KONSENTRASI_KURIKULUM } from "@/lib/kurikulum/constants";
 import { toDokumenKurikulumDto } from "@/lib/http/dto";
 
 export const dynamic = "force-dynamic";
@@ -46,30 +45,6 @@ export default async function AkademikPage({
     ),
   }));
 
-  const pilihanSemester = [
-    ...new Set(kurikulum.map((item) => item.semester)),
-  ].sort((a, b) => a - b);
-
-  const semester = pilihanSemester.find(
-    (nilai) => String(nilai) === params.semester,
-  );
-
-  const konsentrasi = KONSENTRASI_KURIKULUM.find(
-    (pilihan) => pilihan === params.konsentrasi,
-  ) ?? "";
-
-  const daftarKurikulum = kurikulum
-    .filter(
-      (item) =>
-        (semester === undefined || item.semester === semester) &&
-        (konsentrasi === "" || item.konsentrasi === konsentrasi),
-    )
-    .sort(
-      (a, b) =>
-        a.semester - b.semester ||
-        a.kode.localeCompare(b.kode, "id"),
-    );
-
   return (
     <main>
       <Navbar />
@@ -103,126 +78,11 @@ export default async function AkademikPage({
       </section>
 
       {/* Kurikulum */}
-      <section id="kurikulum" className="scroll-mt-24 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Kurikulum
-          </h2>
-
-          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
-            Informasi mengenai kurikulum dan mata kuliah yang
-            tersedia pada Program Studi Magister Manajemen.
-          </p>
-
-          <Link
-            href="#dokumen-kurikulum"
-            className="mt-5 inline-flex rounded-lg border border-blue-200 bg-white px-4 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50"
-          >
-            Lihat Dokumen Kurikulum
-          </Link>
-
-          <form
-            key={`${semester ?? ""}:${konsentrasi}`}
-            action="/akademik#kurikulum"
-            method="get"
-            className="mt-8 flex flex-wrap items-end gap-4 rounded-xl border border-slate-200 bg-white p-5"
-          >
-            <label className="min-w-40 flex-1 text-sm font-medium text-slate-700">
-              Semester
-              <select
-                name="semester"
-                defaultValue={semester ?? ""}
-                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-500"
-              >
-                <option value="">Semua Semester</option>
-
-                {pilihanSemester.map((nilai) => (
-                  <option key={nilai} value={nilai}>
-                    Semester {nilai}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="min-w-40 flex-1 text-sm font-medium text-slate-700">
-              Kelompok / Konsentrasi
-              <select
-                name="konsentrasi"
-                defaultValue={konsentrasi}
-                className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-500"
-              >
-                <option value="">Semua Kelompok / Konsentrasi</option>
-
-                {KONSENTRASI_KURIKULUM.map((pilihan) => (
-                  <option key={pilihan} value={pilihan}>
-                    {pilihan}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <button
-              type="submit"
-              className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800"
-            >
-              Terapkan
-            </button>
-
-            <Link
-              href="/akademik#kurikulum"
-              className="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Reset
-            </Link>
-          </form>
-
-          <p role="status" className="mt-5 text-sm text-slate-500">
-            Menampilkan {daftarKurikulum.length} mata kuliah
-          </p>
-
-          {daftarKurikulum.length === 0 && (
-            <div className="mt-5 rounded-xl border border-slate-200 bg-white p-8 text-center text-slate-500">
-              Belum ada mata kuliah yang sesuai dengan pilihan filter.
-            </div>
-          )}
-
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {daftarKurikulum.map((item) => (
-              <article
-                key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-6"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm font-semibold text-[#1E3A8A]">
-                    {item.kode}
-                  </p>
-
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-[#1E3A8A]">
-                    {item.sks} SKS
-                  </span>
-                </div>
-
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                  {item.nama}
-                </h3>
-
-                <div className="mt-4 flex flex-wrap gap-2 text-sm text-slate-500">
-                  <span>Semester {item.semester}</span>
-                  <span aria-hidden="true">•</span>
-                  <span>{item.jenis}</span>
-
-                  {item.konsentrasi && (
-                    <>
-                      <span aria-hidden="true">•</span>
-                      <span>{item.konsentrasi}</span>
-                    </>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <KurikulumSection
+        items={kurikulum}
+        semester={params.semester}
+        konsentrasi={params.konsentrasi}
+      />
 
             {/* Dokumen Akademik */}
       <section
