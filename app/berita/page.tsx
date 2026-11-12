@@ -3,7 +3,8 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { db } from "@/prisma/db";
+import { NEWS_MAX_QUERY_LENGTH, parseNewsListFilters, newsPageHref } from "@/lib/berita/list-filters";
+import { getPublishedNewsPage, type PublishedNewsPage } from "@/lib/berita/list";
 
 export const metadata: Metadata = {
   title: "Berita | Magister Manajemen ITB HAS",
@@ -13,34 +14,53 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const PAGE_SIZE = 9;
-
 export default async function BeritaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    page?: string | string[];
+  }>;
 }) {
   const params = await searchParams;
-  const rawPage = typeof params.page === "string" ? params.page : "1";
-  const parsedPage = /^\d+$/.test(rawPage) ? Number(rawPage) : 1;
-  const requestedPage =
-    Number.isSafeInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const search = new URLSearchParams();
 
-  const { total } = await db.orm.public.Berita
-    .where({ status: "PUBLISHED" })
-    .aggregate((a) => ({
-    total: a.count(),
-  }));
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const currentPage = Math.min(requestedPage, totalPages);
+  for (const key of ["q", "page"] as const) {
+    const value = params[key];
+    if (Array.isArray(value)) {
+      for (const item of value) search.append(key, item);
+    } else if (typeof value === "string") {
+      search.set(key, value);
+    }
+  }
 
-  const berita = await db.orm.public.Berita
-    .where({ status: "PUBLISHED" })
-    .select("id", "title", "date", "description", "image", "thumbnail" ,"slug")
-    .orderBy([(item) => item.createdAt.desc(), (item) => item.id.desc()])
-    .offset((currentPage - 1) * PAGE_SIZE)
-    .limit(PAGE_SIZE)
-    .all();
+  const parsed = parseNewsListFilters(search);
+  const filters = parsed.ok ? parsed.filters : {
+    q: typeof params.q === "string"
+      ? params.q.slice(0, NEWS_MAX_QUERY_LENGTH).replace(/\p{Cc}/gu, "")
+      : "",
+    page: 1,
+  };
+
+  let message = parsed.ok ? "" : parsed.message;
+  let result: PublishedNewsPage | null = null;
+
+  if (parsed.ok) {
+    try {
+      result = await getPublishedNewsPage(filters);
+    } catch (error) {
+      console.error(
+        "NEWS LIST ERROR:",
+        error instanceof Error ? error.name : "UnknownError",
+      );
+      message = "Daftar berita sementara tidak tersedia. Silakan coba kembali.";
+    }
+  }
+
+  const berita = result?.berita ?? [];
+  const total = result?.total ?? 0;
+  const totalPages = result?.totalPages ?? 1;
+  const currentPage = result?.page ?? 1;
 
   return (
     <>
@@ -72,20 +92,67 @@ export default async function BeritaPage({
 
         <section aria-labelledby="daftar-berita" className="px-6 py-12 md:py-16">
           <div className="mx-auto max-w-6xl">
+            <form
+              key={filters.q}
+              action="/berita"
+              method="get"
+              role="search"
+              aria-label="Pencarian berita"
+              className="mb-8 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-5"
+            >
+              <div className="min-w-0 basis-full sm:basis-64 sm:flex-1">
+                <label htmlFor="berita-search" className="text-sm font-medium text-slate-700">
+                  Cari berita
+                </label>
+                <input
+                  id="berita-search" name="q" type="search"
+                  minLength={2} maxLength={NEWS_MAX_QUERY_LENGTH}
+                  defaultValue={filters.q}
+                  placeholder="Judul atau kata kunci berita..."
+                  className="mt-2 min-h-11 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="min-h-11 rounded-lg bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+              >
+                Cari
+              </button>
+
+              <Link
+                href="/berita"
+                prefetch={false}
+                className="inline-flex min-h-11 items-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
+              >
+                Reset
+              </Link>
+            </form>
+
+            {!message && filters.q && (
+              <p className="mb-5 break-words text-sm text-slate-600">
+                Hasil pencarian untuk “{filters.q}”.
+              </p>
+            )}
+
             <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
               <h2 id="daftar-berita" className="text-2xl font-bold text-slate-900">
-                Berita Terbaru
+                {filters.q ? "Hasil Pencarian Berita" : "Berita Terbaru"}
               </h2>
-              <p className="text-sm text-slate-500">{total} berita</p>
+              {!message && <p className="text-sm text-slate-500">{total} {filters.q ? "hasil" : "berita"}</p>}
             </div>
 
-            {berita.length === 0 ? (
+            {message ? (
+              <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
+                {message}
+              </p>
+            ) : berita.length === 0 ? (
               <div className="rounded-xl border border-slate-200 bg-white px-6 py-16 text-center">
                 <h3 className="text-lg font-semibold text-slate-900">
-                  Belum ada berita
+                  {filters.q ? "Berita tidak ditemukan" : "Belum ada berita"}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  Informasi dan kegiatan terbaru akan ditampilkan di halaman ini.
+                  {filters.q ? "Coba kata kunci lain atau tekan Reset untuk melihat semua berita." : "Informasi dan kegiatan terbaru akan ditampilkan di halaman ini."}
                 </p>
               </div>
             ) : (
@@ -149,7 +216,7 @@ export default async function BeritaPage({
               >
                 {currentPage > 1 ? (
                   <Link
-                    href={currentPage === 2 ? "/berita" : `/berita?page=${currentPage - 1}`}
+                    href={newsPageHref(filters, currentPage - 1)}
                     className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
                   >
                     Sebelumnya
@@ -166,7 +233,7 @@ export default async function BeritaPage({
 
                 {currentPage < totalPages ? (
                   <Link
-                    href={`/berita?page=${currentPage + 1}`}
+                    href={newsPageHref(filters, currentPage + 1)}
                     className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
                   >
                     Berikutnya

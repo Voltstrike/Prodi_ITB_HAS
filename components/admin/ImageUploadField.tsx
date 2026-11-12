@@ -9,6 +9,8 @@ import {
 } from "react";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import ImageCropDialog from "@/components/admin/ImageCropDialog";
+import MediaLibraryDialog from "@/components/admin/MediaLibraryDialog";
+import type { MediaLibraryItem } from "@/lib/media/library-list";
 import {
     IMAGE_MIME_TYPES,
     MAX_IMAGE_UPLOAD_BYTES,
@@ -28,6 +30,7 @@ type Props = {
     cropAspect?: ImageCropAspect;
     thumbnailName?: string;
     initialThumbnailValue?: string;
+    allowLibrarySelection?: boolean;
 };
 
 type CropSource = {
@@ -96,6 +99,7 @@ export default function ImageUploadField({
     cropAspect,
     thumbnailName,
     initialThumbnailValue = "",
+    allowLibrarySelection = false,
 }: Props) {
     const id = useId();
 
@@ -109,6 +113,7 @@ export default function ImageUploadField({
     );
     const [error, setError] = useState("");
     const [status, setStatus] = useState("");
+    const [libraryOpen, setLibraryOpen] = useState(false);
 
     const pending = useRef<AbortController | null>(null);
 
@@ -134,6 +139,64 @@ export default function ImageUploadField({
         setCropSource(null);
         setUploading(false);
         onUploadingChange(false);
+    }
+
+    async function selectFromLibrary(item: MediaLibraryItem) {
+        if (disabled || pending.current) return;
+        if (item.jenis !== "GAMBAR" || !isMediaFileName(item.filename) ||
+            item.url !== "/media/" + item.filename) {
+            setError("Gambar pustaka tidak valid.");
+            return;
+        }
+        setLibraryOpen(false);
+        setError("");
+        setStatus("");
+        const controller = new AbortController();
+        pending.current = controller;
+        setUploading(true);
+        onUploadingChange(true);
+        let openedCrop = false;
+        try {
+            if (cropAspect) {
+                const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+                    const image = new window.Image();
+                    const timeout = window.setTimeout(() => fail(), 10000);
+                    const cleanup = () => {
+                        window.clearTimeout(timeout);
+                        controller.signal.removeEventListener("abort", abort);
+                        image.onload = null;
+                        image.onerror = null;
+                    };
+                    const fail = () => { cleanup(); image.src = ""; reject(new Error("Gambar tidak dapat dimuat. Pilih ulang dari pustaka.")); };
+                    const abort = () => fail();
+                    controller.signal.addEventListener("abort", abort, { once: true });
+                    image.onerror = fail;
+                    image.onload = () => {
+                        const width = image.naturalWidth;
+                        const height = image.naturalHeight;
+                        cleanup();
+                        if (!isImageSide(width) || !isImageSide(height)) {
+                            reject(new Error("Ukuran gambar pustaka tidak valid."));
+                        } else resolve({ width, height });
+                    };
+                    image.src = item.url;
+                });
+                if (!isCurrent(controller)) return;
+                setCropSource({
+                    url: item.url, filename: item.filename,
+                    ...dimensions, aspect: cropAspect, controller,
+                });
+                openedCrop = true;
+            } else {
+                setValue(item.url);
+                setThumbnailValue("");
+                setStatus("Gambar pustaka siap digunakan. Simpan data untuk menerapkannya.");
+            }
+        } catch (failure) {
+            if (isCurrent(controller)) setError(failure instanceof Error ? failure.message : "Gambar pustaka gagal dimuat.");
+        } finally {
+            if (!openedCrop) finish(controller);
+        }
     }
 
     async function upload(event: ChangeEvent<HTMLInputElement>) {
@@ -364,6 +427,12 @@ export default function ImageUploadField({
                 )}
             </p>
 
+            {allowLibrarySelection && <button type="button" disabled={disabled || uploading}
+                onClick={() => setLibraryOpen(true)}
+                className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50">
+                Pilih dari pustaka
+            </button>}
+
             {uploading && (
                 <p role="status" className="text-sm text-blue-700">
                     {cropSource
@@ -439,6 +508,10 @@ export default function ImageUploadField({
                     onCancel={cancelCrop}
                 />
             )}
+            {libraryOpen && <MediaLibraryDialog
+                onCancel={() => setLibraryOpen(false)}
+                onSelect={(item) => { void selectFromLibrary(item); }}
+            />}
         </div>
     );
 }

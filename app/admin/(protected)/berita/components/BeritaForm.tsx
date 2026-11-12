@@ -176,6 +176,7 @@ export default function BeritaForm({ initial }: { initial?: InitialBerita }) {
                     <ImageUploadField
                         name="image"
                         label="Gambar Berita"
+                        allowLibrarySelection
                         initialValue={initial?.image ?? ""}
                         initialThumbnailValue={initial?.thumbnail ?? ""}
                         cropAspect="16/10"

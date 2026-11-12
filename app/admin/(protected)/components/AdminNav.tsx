@@ -176,6 +176,13 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 >
                                     Publikasi Ilmiah
                                 </Link>
+                                <Link
+                                    href="/admin/pustaka-media"
+                                    onClick={closeMenu}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Pustaka Media
+                                </Link>
                             </div>
                         </div>
 
