@@ -78,12 +78,6 @@ export default function DosenCarousel({
                   NIDN: {item.nidn}
                 </p>
 
-                <div className="mt-4 space-y-1 text-sm text-slate-600">
-                  <p>S1: {item.pendidikanS1 || "-"}</p>
-                  <p>S2: {item.pendidikanS2 || "-"}</p>
-                  <p>S3: {item.pendidikanS3 || "-"}</p>
-                </div>
-
                 {item.mataKuliah.length > 0 && (
                   <div className="mt-4 border-t border-slate-100 pt-4">
                     <p className="text-sm font-semibold text-slate-900">

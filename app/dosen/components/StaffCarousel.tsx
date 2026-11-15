@@ -66,7 +66,6 @@ export default function StaffCarousel({
               </p>
 
               <div className="mt-4 space-y-1 text-sm text-slate-600">
-                <p>Pendidikan: {item.pendidikan || "-"}</p>
                 <p>Lingkup Kerja: {item.lingkupKerja || "-"}</p>
               </div>
             </div>
