@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'8321d01a843f6bcbce8832b614e3475d5752b947c8778ebe6307ca610397a513'>;
+  StorageHashBase<'5884e1e45d7e37c9b182bd94b0744b579bb4068b4d349b85fba111a542da4c99'>;
 export type ExecutionHash =
   ExecutionHashBase<'82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd'>;
 export type ProfileHash =
@@ -264,6 +264,7 @@ export type FieldOutputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     };
     readonly AdminSession: {
+      readonly lastActivityAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly mfaVersion: CodecTypes['pg/int4@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly userId: CodecTypes['pg/int4@1']['output'];
@@ -454,6 +455,7 @@ export type FieldInputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
     };
     readonly AdminSession: {
+      readonly lastActivityAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly mfaVersion: CodecTypes['pg/int4@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
@@ -647,6 +649,7 @@ export type StorageColumnTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
+      readonly lastActivityAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly mfaVersion: CodecTypes['pg/int4@1']['output'];
       readonly tokenHash: CodecTypes['pg/text@1']['output'];
       readonly userId: CodecTypes['pg/int4@1']['output'];
@@ -837,6 +840,7 @@ export type StorageColumnInputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly expiresAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
+      readonly lastActivityAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly mfaVersion: CodecTypes['pg/int4@1']['input'];
       readonly tokenHash: CodecTypes['pg/text@1']['input'];
       readonly userId: CodecTypes['pg/int4@1']['input'];
@@ -1082,6 +1086,7 @@ export namespace Models {
     readonly [RelationKeys]?: never;
   };
   export type public_AdminSession = {
+    lastActivityAt: CodecTypes['pg/timestamptz-string@1']['output'];
     mfaVersion: CodecTypes['pg/int4@1']['output'];
     id: CodecTypes['pg/int4@1']['output'];
     userId: CodecTypes['pg/int4@1']['output'];
@@ -1410,6 +1415,12 @@ type ContractBase = Omit<
             };
             readonly adminSession: {
               columns: {
+                readonly lastActivityAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
                 readonly mfaVersion: {
                   readonly nativeType: 'int4';
                   readonly codecId: 'pg/int4@1';
@@ -2632,6 +2643,13 @@ type ContractBase = Omit<
           };
           readonly AdminSession: {
             readonly fields: {
+              readonly lastActivityAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
               readonly mfaVersion: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
@@ -2681,6 +2699,7 @@ type ContractBase = Omit<
               readonly table: 'adminSession';
               readonly namespaceId: 'public';
               readonly fields: {
+                readonly lastActivityAt: { readonly column: 'lastActivityAt' };
                 readonly mfaVersion: { readonly column: 'mfaVersion' };
                 readonly id: { readonly column: 'id' };
                 readonly userId: { readonly column: 'userId' };

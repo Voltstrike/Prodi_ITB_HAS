@@ -1,4 +1,7 @@
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { redirect } from "next/navigation";
+import { getSessionTokenHash } from "@/lib/auth/session";
+import { publicSessionState, readActiveAdminSession } from "@/lib/auth/session-lifecycle";
+import AdminSessionGuard from "@/components/admin/AdminSessionGuard";
 import AdminNav from "./components/AdminNav";
 
 export default async function ProtectedAdminLayout({
@@ -6,10 +9,14 @@ export default async function ProtectedAdminLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const user = await requireAdmin();
+    const tokenHash = await getSessionTokenHash();
+    const state = tokenHash ? await readActiveAdminSession(tokenHash) : null;
+    if (!state) redirect("/admin/login");
+    const user = state.user;
 
     return (
         <div className="min-h-screen bg-slate-50 lg:flex">
+            <AdminSessionGuard key={state.session.id} initial={publicSessionState(state)} />
             <AdminNav
                 user={{
                     nama: user.nama,

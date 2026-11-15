@@ -81,6 +81,7 @@ model AdminUser {
 }
 
 model AdminSession {
+  lastActivityAt TimestamptzString @default(now())
   mfaVersion Int @default(0)
   id        Int               @id @default(autoincrement())
   userId    Int

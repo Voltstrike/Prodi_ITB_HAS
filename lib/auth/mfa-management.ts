@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { db } from "@/prisma/db";
 import { isAdminRole } from "./roles";
+import { getSessionDeadlines, isSessionExpired } from "./session-policy";
 import {
     createRecoveryCodes,
     createTotpSetup,
@@ -136,8 +137,7 @@ export async function runMfaAction(input: {
 
         if (
             !session ||
-            !Number.isFinite(Date.parse(session.expiresAt)) ||
-            Date.parse(session.expiresAt) <= Date.now() ||
+            isSessionExpired(session) ||
             session.mfaVersion !== (mfa?.version ?? 0)
         ) {
             throw new MfaManagementError(401, "Silakan login kembali.");
@@ -299,7 +299,8 @@ export async function runMfaAction(input: {
         }
 
         const renewed = await rotateSession(
-            tx, user.id, nextVersion, session.expiresAt,
+            tx, user.id, nextVersion,
+            new Date(getSessionDeadlines(session)!.absoluteExpiresAt).toISOString(),
         );
 
         await tx.orm.public.AuditLog.create({

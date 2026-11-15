@@ -330,6 +330,13 @@
                   "kind": "scalar"
                 }
               },
+              "lastActivityAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "mfaVersion": {
                 "nullable": false,
                 "type": {
@@ -380,6 +387,9 @@
                 },
                 "id": {
                   "column": "id"
+                },
+                "lastActivityAt": {
+                  "column": "lastActivityAt"
                 },
                 "mfaVersion": {
                   "column": "mfaVersion"
@@ -2123,6 +2133,15 @@
                   "nativeType": "int4",
                   "nullable": false
                 },
+                "lastActivityAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
                 "mfaVersion": {
                   "codecId": "pg/int4@1",
                   "default": {
@@ -3383,7 +3402,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "8321d01a843f6bcbce8832b614e3475d5752b947c8778ebe6307ca610397a513"
+    "storageHash": "5884e1e45d7e37c9b182bd94b0744b579bb4068b4d349b85fba111a542da4c99"
   },
   "execution": {
     "executionHash": "82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd",
