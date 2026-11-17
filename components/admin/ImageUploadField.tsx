@@ -31,6 +31,7 @@ type Props = {
     thumbnailName?: string;
     initialThumbnailValue?: string;
     allowLibrarySelection?: boolean;
+    allowExistingCrop?: boolean;
 };
 
 type CropSource = {
@@ -100,6 +101,7 @@ export default function ImageUploadField({
     thumbnailName,
     initialThumbnailValue = "",
     allowLibrarySelection = false,
+    allowExistingCrop = false,
 }: Props) {
     const id = useId();
 
@@ -148,6 +150,16 @@ export default function ImageUploadField({
             setError("Gambar pustaka tidak valid.");
             return;
         }
+        await selectStoredImage(item.url);
+    }
+
+    async function selectStoredImage(url: string) {
+        if (disabled || pending.current) return;
+        const filename = url.slice("/media/".length);
+        if (url !== "/media/" + filename || !isMediaFileName(filename)) {
+            setError("Unggah foto atau pilih gambar dari pustaka untuk mengatur crop.");
+            return;
+        }
         setLibraryOpen(false);
         setError("");
         setStatus("");
@@ -167,7 +179,7 @@ export default function ImageUploadField({
                         image.onload = null;
                         image.onerror = null;
                     };
-                    const fail = () => { cleanup(); image.src = ""; reject(new Error("Gambar tidak dapat dimuat. Pilih ulang dari pustaka.")); };
+                    const fail = () => { cleanup(); image.src = ""; reject(new Error("Foto tidak dapat dimuat. Coba lagi atau unggah ulang foto.")); };
                     const abort = () => fail();
                     controller.signal.addEventListener("abort", abort, { once: true });
                     image.onerror = fail;
@@ -179,16 +191,16 @@ export default function ImageUploadField({
                             reject(new Error("Ukuran gambar pustaka tidak valid."));
                         } else resolve({ width, height });
                     };
-                    image.src = item.url;
+                    image.src = url;
                 });
                 if (!isCurrent(controller)) return;
                 setCropSource({
-                    url: item.url, filename: item.filename,
+                    url, filename,
                     ...dimensions, aspect: cropAspect, controller,
                 });
                 openedCrop = true;
             } else {
-                setValue(item.url);
+                setValue(url);
                 setThumbnailValue("");
                 setStatus("Gambar pustaka siap digunakan. Simpan data untuk menerapkannya.");
             }
@@ -356,6 +368,10 @@ export default function ImageUploadField({
     const preview =
         thumbnailName && thumbnailValue ? thumbnailValue : value;
 
+    const canCropCurrentImage = allowExistingCrop && Boolean(cropAspect) &&
+        value.startsWith("/media/") &&
+        isMediaFileName(value.slice("/media/".length));
+
     const previewSize =
         cropAspect === "4/3"
             ? "aspect-4/3 w-full max-w-sm"
@@ -426,6 +442,24 @@ export default function ImageUploadField({
                     </>
                 )}
             </p>
+
+            {canCropCurrentImage && (
+                <button
+                    type="button"
+                    disabled={disabled || uploading}
+                    onClick={() => { void selectStoredImage(value); }}
+                    className="rounded-lg border border-blue-200 px-4 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50"
+                >
+                    Atur posisi &amp; crop
+                </button>
+            )}
+
+            {allowExistingCrop && cropAspect && value && !canCropCurrentImage && (
+                <p className="text-xs leading-relaxed text-slate-500">
+                    Untuk mengatur posisi dan crop foto dari tautan luar,
+                    unggah foto atau pilih gambar dari pustaka terlebih dahulu.
+                </p>
+            )}
 
             {allowLibrarySelection && <button type="button" disabled={disabled || uploading}
                 onClick={() => setLibraryOpen(true)}

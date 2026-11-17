@@ -241,6 +241,9 @@ export default function EditStaffPage({
                             key={staff.id}
                             name="foto"
                             label="Foto Staff"
+                            cropAspect="1/1"
+                            allowExistingCrop
+                            allowLibrarySelection
                             initialValue={staff.foto ?? ""}
                             disabled={saving}
                             onUploadingChange={setUploading}

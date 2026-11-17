@@ -1,4 +1,8 @@
 export const IMAGE_CROP_PRESETS = {
+    "1/1": {
+        width: 800,
+        height: 800,
+    },
     "4/3": {
         width: 1600,
         height: 1200,

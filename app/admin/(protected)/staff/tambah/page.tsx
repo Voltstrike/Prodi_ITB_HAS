@@ -175,6 +175,9 @@ export default function TambahStaffPage() {
                         <ImageUploadField
                             name="foto"
                             label="Foto Staff"
+                            cropAspect="1/1"
+                            allowExistingCrop
+                            allowLibrarySelection
                             disabled={saving}
                             onUploadingChange={setUploading}
                         />
