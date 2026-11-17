@@ -1,4 +1,6 @@
 import OrganizationChart from "@/components/OrganizationChart";
+import ProfileOverview from "@/components/profil/ProfileOverview";
+import ProfileAccreditation from "@/components/profil/ProfileAccreditation";
 import { validateOrganizationStructure } from "@/lib/organization/structure";
 import { getOrganizationPeople } from "@/lib/organization/people";
 import Navbar from "@/components/Navbar";
@@ -23,7 +25,7 @@ export default async function ProfilPage() {
       {/* Page Header */}
       <section className="border-b border-slate-100 bg-slate-50">
         <div
-          className={`mx-auto max-w-6xl px-6 py-16 ${
+          className={`mx-auto max-w-6xl px-6 py-12 sm:py-16 ${
             profil?.fotoProdi
               ? "grid items-center gap-10 md:grid-cols-2"
               : ""
@@ -59,57 +61,24 @@ export default async function ProfilPage() {
         </div>
       </section>
 
-      {/* Sejarah */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Sejarah
-          </h2>
-
-          <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
-            {profil?.sejarah?.trim() ||
-              "Informasi mengenai sejarah Program Studi Magister Manajemen belum tersedia."}
-          </p>
+      <nav aria-label="Bagian profil" className="border-b border-slate-200 bg-slate-50">
+        <div className="mx-auto flex max-w-6xl flex-wrap gap-x-6 gap-y-1 px-6">
+          {[
+            ["#sejarah", "Sejarah"], ["#visi-misi", "Visi & Misi"],
+            ["#struktur-organisasi", "Struktur"], ["#akreditasi", "Akreditasi"],
+          ].map(([href, label]) => (
+            <a key={href} href={href} className="inline-flex min-h-11 items-center border-b-2 border-transparent py-3 text-sm font-medium text-slate-600 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700">{label}</a>
+          ))}
         </div>
-      </section>
+      </nav>
 
-      {/* Visi & Misi */}
-      <section className="bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Visi & Misi
-          </h2>
-
-          <div className="mt-8 grid gap-8 md:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-6">
-              <h3 className="text-lg font-semibold text-slate-900">
-                Visi
-              </h3>
-
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
-                {profil?.visi?.trim() ||
-                  "Visi Program Studi Magister Manajemen belum tersedia."}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-6">
-              <h3 className="text-lg font-semibold text-slate-900">
-                Misi
-              </h3>
-
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-slate-600">
-                {profil?.misi?.trim() ||
-                  "Misi Program Studi Magister Manajemen belum tersedia."}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ProfileOverview sejarah={profil?.sejarah} visi={profil?.visi} misi={profil?.misi} />
 
       {/* Struktur Organisasi */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
+      <section id="struktur-organisasi" aria-labelledby="profil-struktur-heading" className="scroll-mt-24 bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-blue-700">Pengelola program studi</p>
+          <h2 id="profil-struktur-heading" className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Struktur Organisasi
           </h2>
 
@@ -130,19 +99,7 @@ export default async function ProfilPage() {
         </div>
       </section>
 
-      {/* Akreditasi */}
-      <section className="bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Akreditasi
-          </h2>
-
-          <p className="mt-4 max-w-3xl whitespace-pre-line leading-relaxed text-slate-600">
-            {profil?.akreditasi?.trim() ||
-              "Informasi mengenai akreditasi Program Studi Magister Manajemen belum tersedia."}
-          </p>
-        </div>
-      </section>
+      <ProfileAccreditation akreditasi={profil?.akreditasi} dokumen={profil?.dokumenAkreditasi} />
 
       <Footer />
     </main>
