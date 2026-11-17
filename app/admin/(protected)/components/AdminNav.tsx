@@ -236,6 +236,13 @@ export default function AdminNav({ user }: { user: AdminUser }) {
                                 >
                                     Audit Log
                                 </Link>
+                                <Link
+                                    href="/admin/backup-status"
+                                    onClick={closeMenu}
+                                    className="block rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                >
+                                    Status Backup
+                                </Link>
                             </div>
                         )}
                     </div>
