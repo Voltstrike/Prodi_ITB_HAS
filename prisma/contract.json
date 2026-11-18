@@ -1118,6 +1118,13 @@
                   "kind": "scalar"
                 }
               },
+              "diterbitkanPada": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -1132,10 +1139,24 @@
                   "kind": "scalar"
                 }
               },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "updatedAt": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "utama": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
                   "kind": "scalar"
                 }
               }
@@ -1149,14 +1170,23 @@
                 "deskripsi": {
                   "column": "deskripsi"
                 },
+                "diterbitkanPada": {
+                  "column": "diterbitkanPada"
+                },
                 "id": {
                   "column": "id"
                 },
                 "judul": {
                   "column": "judul"
                 },
+                "status": {
+                  "column": "status"
+                },
                 "updatedAt": {
                   "column": "updatedAt"
+                },
+                "utama": {
+                  "column": "utama"
                 }
               },
               "namespaceId": "public",
@@ -1181,6 +1211,34 @@
               },
               "kegiatan": {
                 "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "keterangan": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "semester": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tahunAkademik": {
+                "nullable": true,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
@@ -1219,6 +1277,18 @@
                 },
                 "kegiatan": {
                   "column": "kegiatan"
+                },
+                "keterangan": {
+                  "column": "keterangan"
+                },
+                "semester": {
+                  "column": "semester"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "tahunAkademik": {
+                  "column": "tahunAkademik"
                 },
                 "tanggalMulai": {
                   "column": "tanggalMulai"
@@ -2788,6 +2858,13 @@
               ]
             },
             "informasiAkademik": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('DRAFT', 'PUBLISHED')",
+                  "name": "informasi_akademik_status_1b4a7b6b",
+                  "prefix": "informasi_akademik_status"
+                }
+              ],
               "columns": {
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
@@ -2803,6 +2880,11 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "diterbitkanPada": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/int4@1",
                   "default": {
@@ -2817,14 +2899,52 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PUBLISHED"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-string@1",
                   "nativeType": "timestamptz",
                   "nullable": false
+                },
+                "utama": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
                 }
               },
               "foreignKeys": [],
-              "indexes": [],
+              "indexes": [
+                {
+                  "columns": [
+                    "status",
+                    "diterbitkanPada",
+                    "id"
+                  ],
+                  "name": "informasiAkademik_status_diterbitkanPada_id_idx_12465584",
+                  "prefix": "informasiAkademik_status_diterbitkanPada_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "utama"
+                  ],
+                  "name": "informasi_akademik_satu_utama_751771f5",
+                  "prefix": "informasi_akademik_satu_utama",
+                  "unique": true,
+                  "where": "\"utama\" = true AND \"status\" = 'PUBLISHED'"
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -2833,6 +2953,18 @@
               "uniques": []
             },
             "kalenderAkademik": {
+              "checks": [
+                {
+                  "expression": "\"semester\" IS NULL OR \"semester\" IN ('GANJIL', 'GENAP')",
+                  "name": "kalender_akademik_semester_758a09af",
+                  "prefix": "kalender_akademik_semester"
+                },
+                {
+                  "expression": "\"status\" IN ('DRAFT', 'PUBLISHED')",
+                  "name": "kalender_akademik_status_1b4a7b6b",
+                  "prefix": "kalender_akademik_status"
+                }
+              ],
               "columns": {
                 "createdAt": {
                   "codecId": "pg/timestamptz-string@1",
@@ -2857,6 +2989,30 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "keterangan": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "semester": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PUBLISHED"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tahunAkademik": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "tanggalMulai": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -2874,7 +3030,18 @@
                 }
               },
               "foreignKeys": [],
-              "indexes": [],
+              "indexes": [
+                {
+                  "columns": [
+                    "status",
+                    "tanggalMulai",
+                    "id"
+                  ],
+                  "name": "kalenderAkademik_status_tanggalMulai_id_idx_aef62342",
+                  "prefix": "kalenderAkademik_status_tanggalMulai_id_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -3402,7 +3569,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "5884e1e45d7e37c9b182bd94b0744b579bb4068b4d349b85fba111a542da4c99"
+    "storageHash": "101e954a136905b7d44a5c5d62bea6a026be0edacf6b99465769e10c7b74724b"
   },
   "execution": {
     "executionHash": "82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd",

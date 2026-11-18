@@ -59,6 +59,14 @@ model KalenderAkademik {
   tanggalSelesai String
   createdAt      TimestamptzString          @default(now())
   updatedAt      temporal.updatedAtString()
+  keterangan    String?
+  semester      String?
+  tahunAkademik String?
+  status        String @default("PUBLISHED")
+
+  @@check(expression: "\"status\" IN ('DRAFT', 'PUBLISHED')", name: "kalender_akademik_status")
+  @@check(expression: "\"semester\" IS NULL OR \"semester\" IN ('GANJIL', 'GENAP')", name: "kalender_akademik_semester")
+  @@index([status, tanggalMulai, id])
 }
 
 model InformasiAkademik {
@@ -67,6 +75,13 @@ model InformasiAkademik {
   deskripsi String
   createdAt TimestamptzString          @default(now())
   updatedAt temporal.updatedAtString()
+  status            String @default("PUBLISHED")
+  utama             Boolean @default(false)
+  diterbitkanPada   TimestamptzString?
+
+  @@check(expression: "\"status\" IN ('DRAFT', 'PUBLISHED')", name: "informasi_akademik_status")
+  @@index([status, diterbitkanPada, id])
+  @@index([utama], unique: true, where: "\"utama\" = true AND \"status\" = 'PUBLISHED'", name: "informasi_akademik_satu_utama")
 }
 
 model AdminUser {

@@ -1,0 +1,539 @@
+[
+  {
+    "id": "column.public.informasiAkademik.diterbitkanPada",
+    "label": "Add column \"diterbitkanPada\" to \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "diterbitkanPada",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"diterbitkanPada\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "diterbitkanPada"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"diterbitkanPada\"",
+        "sql": "ALTER TABLE \"public\".\"informasiAkademik\" ADD COLUMN \"diterbitkanPada\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"diterbitkanPada\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "diterbitkanPada"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.informasiAkademik.status",
+    "label": "Add column \"status\" to \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"informasiAkademik\" ADD COLUMN \"status\" text DEFAULT 'PUBLISHED' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.informasiAkademik.utama",
+    "label": "Add column \"utama\" to \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "utama",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"utama\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "utama"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"utama\"",
+        "sql": "ALTER TABLE \"public\".\"informasiAkademik\" ADD COLUMN \"utama\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"utama\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "informasiAkademik",
+          "utama"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.kalenderAkademik.keterangan",
+    "label": "Add column \"keterangan\" to \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "keterangan",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"keterangan\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "keterangan"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"keterangan\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD COLUMN \"keterangan\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"keterangan\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "keterangan"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.kalenderAkademik.semester",
+    "label": "Add column \"semester\" to \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "semester",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"semester\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "semester"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"semester\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD COLUMN \"semester\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"semester\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "semester"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.kalenderAkademik.status",
+    "label": "Add column \"status\" to \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD COLUMN \"status\" text DEFAULT 'PUBLISHED' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.kalenderAkademik.tahunAkademik",
+    "label": "Add column \"tahunAkademik\" to \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tahunAkademik",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tahunAkademik\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "tahunAkademik"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"tahunAkademik\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD COLUMN \"tahunAkademik\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tahunAkademik\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "kalenderAkademik",
+          "tahunAkademik"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.informasiAkademik.informasi_akademik_status_1b4a7b6b",
+    "label": "Add check constraint \"informasi_akademik_status_1b4a7b6b\" on \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "informasi_akademik_status_1b4a7b6b",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"informasi_akademik_status_1b4a7b6b\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "informasi_akademik_status_1b4a7b6b",
+          "public",
+          "\"public\".\"informasiAkademik\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"informasi_akademik_status_1b4a7b6b\"",
+        "sql": "ALTER TABLE \"public\".\"informasiAkademik\" ADD CONSTRAINT \"informasi_akademik_status_1b4a7b6b\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"informasi_akademik_status_1b4a7b6b\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "informasi_akademik_status_1b4a7b6b",
+          "public",
+          "\"public\".\"informasiAkademik\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.kalenderAkademik.kalender_akademik_semester_758a09af",
+    "label": "Add check constraint \"kalender_akademik_semester_758a09af\" on \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "kalender_akademik_semester_758a09af",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"kalender_akademik_semester_758a09af\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kalender_akademik_semester_758a09af",
+          "public",
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"kalender_akademik_semester_758a09af\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD CONSTRAINT \"kalender_akademik_semester_758a09af\" CHECK (\"semester\" IS NULL OR \"semester\" IN ('GANJIL', 'GENAP'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"kalender_akademik_semester_758a09af\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kalender_akademik_semester_758a09af",
+          "public",
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.kalenderAkademik.kalender_akademik_status_1b4a7b6b",
+    "label": "Add check constraint \"kalender_akademik_status_1b4a7b6b\" on \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "kalender_akademik_status_1b4a7b6b",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"kalender_akademik_status_1b4a7b6b\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kalender_akademik_status_1b4a7b6b",
+          "public",
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"kalender_akademik_status_1b4a7b6b\"",
+        "sql": "ALTER TABLE \"public\".\"kalenderAkademik\" ADD CONSTRAINT \"kalender_akademik_status_1b4a7b6b\" CHECK (\"status\" IN ('DRAFT', 'PUBLISHED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"kalender_akademik_status_1b4a7b6b\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "kalender_akademik_status_1b4a7b6b",
+          "public",
+          "\"public\".\"kalenderAkademik\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.informasiAkademik.informasiAkademik_status_diterbitkanPada_id_idx_12465584",
+    "label": "Create index \"informasiAkademik_status_diterbitkanPada_id_idx_12465584\" on \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "informasiAkademik_status_diterbitkanPada_id_idx_12465584",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"informasiAkademik_status_diterbitkanPada_id_idx_12465584\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasiAkademik_status_diterbitkanPada_id_idx_12465584\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"informasiAkademik_status_diterbitkanPada_id_idx_12465584\"",
+        "sql": "CREATE INDEX \"informasiAkademik_status_diterbitkanPada_id_idx_12465584\" ON \"public\".\"informasiAkademik\" (\"status\", \"diterbitkanPada\", \"id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"informasiAkademik_status_diterbitkanPada_id_idx_12465584\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasiAkademik_status_diterbitkanPada_id_idx_12465584\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.informasiAkademik.informasi_akademik_satu_utama_751771f5",
+    "label": "Create index \"informasi_akademik_satu_utama_751771f5\" on \"informasiAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "informasi_akademik_satu_utama_751771f5",
+        "table": "informasiAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"informasi_akademik_satu_utama_751771f5\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasi_akademik_satu_utama_751771f5\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"informasi_akademik_satu_utama_751771f5\"",
+        "sql": "CREATE UNIQUE INDEX \"informasi_akademik_satu_utama_751771f5\" ON \"public\".\"informasiAkademik\" (\"utama\") WHERE (\"utama\" = true AND \"status\" = 'PUBLISHED')",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"informasi_akademik_satu_utama_751771f5\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"informasi_akademik_satu_utama_751771f5\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.kalenderAkademik.kalenderAkademik_status_tanggalMulai_id_idx_aef62342",
+    "label": "Create index \"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\" on \"kalenderAkademik\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "kalenderAkademik_status_tanggalMulai_id_idx_aef62342",
+        "table": "kalenderAkademik"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\"",
+        "sql": "CREATE INDEX \"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\" ON \"public\".\"kalenderAkademik\" (\"status\", \"tanggalMulai\", \"id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"kalenderAkademik_status_tanggalMulai_id_idx_aef62342\""
+        ]
+      }
+    ]
+  }
+]

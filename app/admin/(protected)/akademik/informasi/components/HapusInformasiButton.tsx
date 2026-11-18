@@ -23,7 +23,7 @@ export default function HapusInformasiButton({
         setLoading(true);
 
         try {
-            const response = await fetch(`/api/informasi-akademik/${id}`, {
+            const response = await fetch(`/api/admin/informasi-akademik/${id}`, {
                 method: "DELETE",
             });
 

@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'5884e1e45d7e37c9b182bd94b0744b579bb4068b4d349b85fba111a542da4c99'>;
+  StorageHashBase<'101e954a136905b7d44a5c5d62bea6a026be0edacf6b99465769e10c7b74724b'>;
 export type ExecutionHash =
   ExecutionHashBase<'82a9a12dc2487b8766a2c4185709a458038fe01b4b0a9d83d115692e051a29dd'>;
 export type ProfileHash =
@@ -349,6 +349,9 @@ export type FieldOutputTypes = {
       readonly deskripsi: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly status: CodecTypes['pg/text@1']['output'];
+      readonly utama: CodecTypes['pg/bool@1']['output'];
+      readonly diterbitkanPada: CodecTypes['pg/timestamptz-string@1']['output'] | null;
     };
     readonly KalenderAkademik: {
       readonly id: CodecTypes['pg/int4@1']['output'];
@@ -357,6 +360,10 @@ export type FieldOutputTypes = {
       readonly tanggalSelesai: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly keterangan: CodecTypes['pg/text@1']['output'] | null;
+      readonly semester: CodecTypes['pg/text@1']['output'] | null;
+      readonly tahunAkademik: CodecTypes['pg/text@1']['output'] | null;
+      readonly status: CodecTypes['pg/text@1']['output'];
     };
     readonly KegiatanProdi: {
       readonly id: CodecTypes['pg/int4@1']['output'];
@@ -540,6 +547,9 @@ export type FieldInputTypes = {
       readonly deskripsi: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly status: CodecTypes['pg/text@1']['input'];
+      readonly utama: CodecTypes['pg/bool@1']['input'];
+      readonly diterbitkanPada: CodecTypes['pg/timestamptz-string@1']['input'] | null;
     };
     readonly KalenderAkademik: {
       readonly id: CodecTypes['pg/int4@1']['input'];
@@ -548,6 +558,10 @@ export type FieldInputTypes = {
       readonly tanggalSelesai: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly keterangan: CodecTypes['pg/text@1']['input'] | null;
+      readonly semester: CodecTypes['pg/text@1']['input'] | null;
+      readonly tahunAkademik: CodecTypes['pg/text@1']['input'] | null;
+      readonly status: CodecTypes['pg/text@1']['input'];
     };
     readonly KegiatanProdi: {
       readonly id: CodecTypes['pg/int4@1']['input'];
@@ -728,14 +742,21 @@ export type StorageColumnTypes = {
     readonly informasiAkademik: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly deskripsi: CodecTypes['pg/text@1']['output'];
+      readonly diterbitkanPada: CodecTypes['pg/timestamptz-string@1']['output'] | null;
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly judul: CodecTypes['pg/text@1']['output'];
+      readonly status: CodecTypes['pg/text@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+      readonly utama: CodecTypes['pg/bool@1']['output'];
     };
     readonly kalenderAkademik: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
       readonly id: CodecTypes['pg/int4@1']['output'];
       readonly kegiatan: CodecTypes['pg/text@1']['output'];
+      readonly keterangan: CodecTypes['pg/text@1']['output'] | null;
+      readonly semester: CodecTypes['pg/text@1']['output'] | null;
+      readonly status: CodecTypes['pg/text@1']['output'];
+      readonly tahunAkademik: CodecTypes['pg/text@1']['output'] | null;
       readonly tanggalMulai: CodecTypes['pg/text@1']['output'];
       readonly tanggalSelesai: CodecTypes['pg/text@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
@@ -919,14 +940,21 @@ export type StorageColumnInputTypes = {
     readonly informasiAkademik: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly deskripsi: CodecTypes['pg/text@1']['input'];
+      readonly diterbitkanPada: CodecTypes['pg/timestamptz-string@1']['input'] | null;
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly judul: CodecTypes['pg/text@1']['input'];
+      readonly status: CodecTypes['pg/text@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
+      readonly utama: CodecTypes['pg/bool@1']['input'];
     };
     readonly kalenderAkademik: {
       readonly createdAt: CodecTypes['pg/timestamptz-string@1']['input'];
       readonly id: CodecTypes['pg/int4@1']['input'];
       readonly kegiatan: CodecTypes['pg/text@1']['input'];
+      readonly keterangan: CodecTypes['pg/text@1']['input'] | null;
+      readonly semester: CodecTypes['pg/text@1']['input'] | null;
+      readonly status: CodecTypes['pg/text@1']['input'];
+      readonly tahunAkademik: CodecTypes['pg/text@1']['input'] | null;
       readonly tanggalMulai: CodecTypes['pg/text@1']['input'];
       readonly tanggalSelesai: CodecTypes['pg/text@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-string@1']['input'];
@@ -1064,6 +1092,10 @@ export namespace Models {
     tanggalSelesai: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    keterangan: CodecTypes['pg/text@1']['output'] | null;
+    semester: CodecTypes['pg/text@1']['output'] | null;
+    tahunAkademik: CodecTypes['pg/text@1']['output'] | null;
+    status: CodecTypes['pg/text@1']['output'];
     readonly [RelationKeys]?: never;
   };
   export type public_InformasiAkademik = {
@@ -1072,6 +1104,9 @@ export namespace Models {
     deskripsi: CodecTypes['pg/text@1']['output'];
     createdAt: CodecTypes['pg/timestamptz-string@1']['output'];
     updatedAt: CodecTypes['pg/timestamptz-string@1']['output'];
+    status: CodecTypes['pg/text@1']['output'];
+    utama: CodecTypes['pg/bool@1']['output'];
+    diterbitkanPada: CodecTypes['pg/timestamptz-string@1']['output'] | null;
     readonly [RelationKeys]?: never;
   };
   export type public_AdminUser = {
@@ -1970,10 +2005,47 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                   readonly nullable: false;
                 };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PUBLISHED'>;
+                  };
+                };
+                readonly utama: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                };
+                readonly diterbitkanPada: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                  readonly nullable: true;
+                };
               };
               primaryKey: { readonly columns: readonly ['id'] };
               uniques: readonly [];
-              indexes: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'informasiAkademik_status_diterbitkanPada_id_idx_12465584';
+                  readonly prefix: 'informasiAkademik_status_diterbitkanPada_id_idx';
+                  readonly columns: readonly ['status', 'diterbitkanPada', 'id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'informasi_akademik_satu_utama_751771f5';
+                  readonly prefix: 'informasi_akademik_satu_utama';
+                  readonly columns: readonly ['utama'];
+                  readonly where: '"utama" = true AND "status" = \'PUBLISHED\'';
+                  readonly unique: true;
+                },
+              ];
               foreignKeys: readonly [];
             };
             readonly kalenderAkademik: {
@@ -2013,10 +2085,41 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                   readonly nullable: false;
                 };
+                readonly keterangan: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly semester: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly tahunAkademik: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PUBLISHED'>;
+                  };
+                };
               };
               primaryKey: { readonly columns: readonly ['id'] };
               uniques: readonly [];
-              indexes: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'kalenderAkademik_status_tanggalMulai_id_idx_aef62342';
+                  readonly prefix: 'kalenderAkademik_status_tanggalMulai_id_idx';
+                  readonly columns: readonly ['status', 'tanggalMulai', 'id'];
+                  readonly unique: false;
+                },
+              ];
               foreignKeys: readonly [];
             };
             readonly kegiatanProdi: {
@@ -3170,6 +3273,21 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
               };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly utama: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly diterbitkanPada: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-string@1';
+                };
+              };
             };
             readonly relations: Record<string, never>;
             readonly storage: {
@@ -3181,6 +3299,9 @@ type ContractBase = Omit<
                 readonly deskripsi: { readonly column: 'deskripsi' };
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
+                readonly status: { readonly column: 'status' };
+                readonly utama: { readonly column: 'utama' };
+                readonly diterbitkanPada: { readonly column: 'diterbitkanPada' };
               };
             };
           };
@@ -3216,6 +3337,22 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/timestamptz-string@1';
                 };
               };
+              readonly keterangan: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly semester: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly tahunAkademik: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
             };
             readonly relations: Record<string, never>;
             readonly storage: {
@@ -3228,6 +3365,10 @@ type ContractBase = Omit<
                 readonly tanggalSelesai: { readonly column: 'tanggalSelesai' };
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
+                readonly keterangan: { readonly column: 'keterangan' };
+                readonly semester: { readonly column: 'semester' };
+                readonly tahunAkademik: { readonly column: 'tahunAkademik' };
+                readonly status: { readonly column: 'status' };
               };
             };
           };

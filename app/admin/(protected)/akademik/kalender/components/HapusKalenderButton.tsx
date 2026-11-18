@@ -17,7 +17,7 @@ export default function HapusKalenderButton({
         }
 
         const response = await fetch(
-            `/api/kalender-akademik/${id}`,
+            `/api/admin/kalender-akademik/${id}`,
             {
                 method: "DELETE",
             }

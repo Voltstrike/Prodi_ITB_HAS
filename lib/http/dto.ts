@@ -75,6 +75,10 @@ export function toKalenderAkademikDto(row: KalenderAkademikRow) {
         kegiatan: row.kegiatan,
         tanggalMulai: row.tanggalMulai,
         tanggalSelesai: row.tanggalSelesai,
+        status: row.status,
+        semester: row.semester,
+        tahunAkademik: row.tahunAkademik,
+        keterangan: row.keterangan,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
     };
@@ -87,6 +91,9 @@ export function toInformasiAkademikDto(row: InformasiAkademikRow) {
         id: row.id,
         judul: row.judul,
         deskripsi: row.deskripsi,
+        status: row.status,
+        utama: row.utama,
+        diterbitkanPada: row.diterbitkanPada,
         createdAt: row.createdAt,
         updatedAt: row.updatedAt,
     };

@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { academicSummary } from "@/lib/akademik/policy";
 import { useMemo, useState } from "react";
 
 type InformasiAkademik = {
     id: number;
+    status: string;
+    utama: boolean;
     judul: string;
     deskripsi: string;
 };
@@ -43,7 +46,7 @@ export default function InformasiAkademikList({
 
                     <div className="w-full sm:w-72">
                         <input
-                            type="search"
+                            type="search" aria-label="Cari informasi"
                             value={search}
                             onChange={(event) =>
                                 setSearch(event.target.value)
@@ -58,7 +61,7 @@ export default function InformasiAkademikList({
             {filteredInformasi.length === 0 ? (
                 <div className="px-6 py-12 text-center">
                     <p className="text-sm text-slate-500">
-                        Tidak ada informasi yang sesuai dengan pencarian.
+                        {informasi.length ? "Tidak ada informasi yang sesuai dengan pencarian." : "Belum ada informasi akademik."}
                     </p>
                 </div>
             ) : (
@@ -72,9 +75,13 @@ export default function InformasiAkademikList({
                                 <h3 className="font-semibold text-slate-900">
                                     {item.judul}
                                 </h3>
+                                <p className="mt-1 text-sm font-medium text-slate-600">
+                                    {item.status === "PUBLISHED" ? "Terbit" : "Draf"}
+                                    {item.utama && item.status === "PUBLISHED" && " · Informasi utama"}
+                                </p>
 
                                 <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-600">
-                                    {item.deskripsi}
+                                    {academicSummary(item.deskripsi)}
                                 </p>
                             </div>
 
@@ -96,7 +103,7 @@ export default function InformasiAkademikList({
                                         if (!confirmed) return;
 
                                         const response = await fetch(
-                                            `/api/informasi-akademik/${item.id}`,
+                                            `/api/admin/informasi-akademik/${item.id}`,
                                             {
                                                 method: "DELETE",
                                             },

@@ -1,3 +1,6 @@
+import InformasiSection from "@/components/akademik/InformasiSection";
+import KalenderSection from "@/components/akademik/KalenderSection";
+import { academicToday } from "@/lib/akademik/policy";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
@@ -24,8 +27,8 @@ export default async function AkademikPage({
   ] = await Promise.all([
     searchParams,
     db.orm.public.Kurikulum.all(),
-    db.orm.public.KalenderAkademik.all(),
-    db.orm.public.InformasiAkademik.all(),
+    db.orm.public.KalenderAkademik.where({ status: "PUBLISHED" }).all(),
+    db.orm.public.InformasiAkademik.where({ status: "PUBLISHED" }).all(),
     db.orm.public.DokumenKurikulum
       .where({ kategori: "KURIKULUM" })
       .orderBy([
@@ -192,66 +195,9 @@ export default async function AkademikPage({
         </div>
       </section>
 
-      {/* Kalender Akademik */}
-      <section id="kalender-akademik" className="scroll-mt-24 bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Kalender Akademik
-          </h2>
+      <KalenderSection items={kalenderAkademik} today={academicToday()} />
 
-          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
-            Informasi jadwal dan kalender kegiatan akademik.
-          </p>
-
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {kalenderAkademik.map((item) => (
-              <article
-                key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-6"
-              >
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {item.kegiatan}
-                </h3>
-
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  {item.tanggalMulai} - {item.tanggalSelesai}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Informasi Akademik */}
-      <section className="bg-slate-50">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Informasi Akademik
-          </h2>
-
-          <p className="mt-4 max-w-3xl leading-relaxed text-slate-600">
-            Informasi terkait kegiatan dan ketentuan akademik
-            Program Studi Magister Manajemen.
-          </p>
-
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {informasiAkademik.map((item) => (
-              <article
-                key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-6"
-              >
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {item.judul}
-                </h3>
-
-                <p className="mt-3 leading-relaxed text-slate-600">
-                  {item.deskripsi}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <InformasiSection items={informasiAkademik} />
 
       <Footer />
     </main>

@@ -5,6 +5,9 @@ import { useMemo, useState } from "react";
 
 type KalenderAkademik = {
     id: number;
+    status: string;
+    semester: string | null;
+    tahunAkademik: string | null;
     kegiatan: string;
     tanggalMulai: string;
     tanggalSelesai: string;
@@ -61,7 +64,7 @@ export default function KalenderAkademikList({
 
                     <div className="w-full sm:w-72">
                         <input
-                            type="search"
+                            type="search" aria-label="Cari kegiatan"
                             value={search}
                             onChange={(event) =>
                                 setSearch(event.target.value)
@@ -76,7 +79,7 @@ export default function KalenderAkademikList({
             {filteredKalender.length === 0 ? (
                 <div className="px-6 py-12 text-center">
                     <p className="text-sm text-slate-500">
-                        Tidak ada kegiatan yang sesuai dengan pencarian.
+                        {kalender.length ? "Tidak ada kegiatan yang sesuai dengan pencarian." : "Belum ada kegiatan akademik."}
                     </p>
                 </div>
             ) : (
@@ -90,6 +93,11 @@ export default function KalenderAkademikList({
                                 <h3 className="font-semibold text-slate-900">
                                     {item.kegiatan}
                                 </h3>
+                                <p className="mt-1 text-sm font-medium text-slate-600">
+                                    {item.status === "PUBLISHED" ? "Terbit" : "Draf"}
+                                    {item.semester && " · " + (item.semester === "GANJIL" ? "Ganjil" : "Genap")}
+                                    {item.tahunAkademik && " · " + item.tahunAkademik}
+                                </p>
 
                                 <p className="mt-2 text-sm text-slate-600">
                                     {formatTanggal(item.tanggalMulai)}
@@ -116,7 +124,7 @@ export default function KalenderAkademikList({
                                         if (!confirmed) return;
 
                                         const response = await fetch(
-                                            `/api/kalender-akademik/${item.id}`,
+                                            `/api/admin/kalender-akademik/${item.id}`,
                                             {
                                                 method: "DELETE",
                                             },
