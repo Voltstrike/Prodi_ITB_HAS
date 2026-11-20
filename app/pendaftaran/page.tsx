@@ -9,9 +9,9 @@ import {
 } from "@/lib/pendaftaran/constants";
 
 export const metadata: Metadata = {
-  title: "Pendaftaran | Magister Manajemen ITB HAS",
-  description:
-    "Informasi pendaftaran Program Studi Magister Manajemen ITB Haji Agus Salim dan akses ke portal PMB kampus.",
+  title: "Pendaftaran S2 Manajemen ITB Haji Agus Salim Bukittinggi",
+  description: "Ikuti panduan pendaftaran mahasiswa baru Magister Manajemen ITB HAS. Buka portal PMB kampus atau hubungi admin untuk informasi penerimaan.",
+  alternates: { canonical: "/pendaftaran" },
 };
 
 export default function PendaftaranPage() {

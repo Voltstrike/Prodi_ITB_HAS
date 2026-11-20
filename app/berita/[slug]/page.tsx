@@ -1,3 +1,6 @@
+import { cache } from "react";
+import { detailMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,13 +14,23 @@ interface BeritaDetailPageProps {
 
 export const dynamic = "force-dynamic";
 
+const getItem = cache((slug: string) => db.orm.public.Berita
+    .where({ slug, status: "PUBLISHED" })
+    .first());
+
+export async function generateMetadata({ params }: BeritaDetailPageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const item = await getItem(slug);
+    if (!item) notFound();
+    return detailMetadata("berita", item.slug, item.title,
+        item.description || item.title);
+}
+
 export default async function BeritaDetailPage({
   params,
 }: BeritaDetailPageProps) {
   const { slug } = await params;
-  const item = await db.orm.public.Berita
-    .where({ slug, status: "PUBLISHED" })
-    .first();
+  const item = await getItem(slug);
 
   if (!item) {
     notFound();

@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { detailMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,12 +9,6 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import { db } from "@/prisma/db";
 import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
 
-export const metadata: Metadata = {
-  title: "Profil Dosen | Magister Manajemen ITB HAS",
-  description:
-    "Profil dan riwayat pendidikan dosen Program Studi Magister Manajemen ITB Haji Agus Salim.",
-};
-
 export const dynamic = "force-dynamic";
 
 interface DosenDetailPageProps {
@@ -21,13 +17,23 @@ interface DosenDetailPageProps {
   }>;
 }
 
+const getItem = cache((slug: string) => db.orm.public.Dosen
+    .where({ slug })
+    .first());
+
+export async function generateMetadata({ params }: DosenDetailPageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const item = await getItem(slug);
+    if (!item) notFound();
+    return detailMetadata("dosen", item.slug, item.nama,
+        item.profil?.trim() || `Profil ${item.nama}, dosen Magister Manajemen ITB Haji Agus Salim Bukittinggi.`);
+}
+
 export default async function DosenDetailPage({
   params,
 }: DosenDetailPageProps) {
   const { slug } = await params;
-  const item = await db.orm.public.Dosen
-    .where({ slug })
-    .first();
+  const item = await getItem(slug);
 
   if (!item) {
     notFound();

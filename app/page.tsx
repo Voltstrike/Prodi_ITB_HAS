@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import { PublishDate } from "@/components/akademik/InformasiSection";
@@ -8,6 +9,12 @@ import Documents from "@/components/Documents";
 import Footer from "@/components/Footer";
 import { toBerandaDto } from "@/lib/http/dto";
 import { db } from "@/prisma/db";
+
+export const metadata: Metadata = {
+  title: "S2 Magister Manajemen ITB Haji Agus Salim Bukittinggi",
+  description: "Kenali program S2 Manajemen di Bukittinggi. Jelajahi profil prodi, kurikulum, dosen, dan panduan pendaftaran mahasiswa baru ITB Haji Agus Salim.",
+  alternates: { canonical: "/" },
+};
 
 export const dynamic = "force-dynamic";
 

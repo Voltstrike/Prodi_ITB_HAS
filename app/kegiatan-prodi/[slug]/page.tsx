@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { detailMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -6,25 +8,29 @@ import Footer from "@/components/Footer";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { db } from "@/prisma/db";
 
-export const metadata: Metadata = {
-    title: "Detail Kegiatan | Magister Manajemen ITB HAS",
-    description:
-        "Informasi kegiatan penelitian dan pengabdian masyarakat Program Studi Magister Manajemen ITB Haji Agus Salim.",
-};
-
 export const dynamic = "force-dynamic";
 
 type Props = {
     params: Promise<{ slug: string }>;
 };
 
+const getItem = cache((slug: string) => db.orm.public.KegiatanProdi
+        .where({ slug })
+        .include("dosen")
+        .first());
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { slug } = await params;
+    const item = await getItem(slug);
+    if (!item) notFound();
+    return detailMetadata("kegiatan-prodi", item.slug, item.judul,
+        item.ringkasan || item.judul);
+}
+
 export default async function KegiatanDetailPage({ params }: Props) {
     const { slug } = await params;
 
-    const item = await db.orm.public.KegiatanProdi
-        .where({ slug })
-        .include("dosen")
-        .first();
+    const item = await getItem(slug);
 
     if (!item) {
         notFound();

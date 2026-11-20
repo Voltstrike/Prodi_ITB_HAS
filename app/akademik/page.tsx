@@ -1,3 +1,5 @@
+import { listingMetadata } from "@/lib/seo";
+import type { Metadata } from "next";
 import InformasiSection from "@/components/akademik/InformasiSection";
 import KalenderSection from "@/components/akademik/KalenderSection";
 import { academicToday } from "@/lib/akademik/policy";
@@ -7,6 +9,13 @@ import { db } from "@/prisma/db";
 import KurikulumSection from "@/components/akademik/KurikulumSection";
 import { KATEGORI_DOKUMEN } from "@/lib/dokumen/constants";
 import { toDokumenKurikulumDto } from "@/lib/http/dto";
+
+export async function generateMetadata({ searchParams }: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+    return listingMetadata("/akademik", "Kurikulum dan Kalender Akademik Magister Manajemen ITB HAS",
+        "Telusuri mata kuliah per semester, konsentrasi, dokumen kurikulum, kalender kegiatan, dan pengumuman akademik Magister Manajemen ITB HAS.", await searchParams);
+}
 
 export const dynamic = "force-dynamic";
 

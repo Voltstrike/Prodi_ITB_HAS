@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { detailMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,11 +12,6 @@ import {
 } from "@/lib/publikasi/validation";
 
 export const dynamic = "force-dynamic";
-
-export const metadata: Metadata = {
-    title: "Detail Publikasi | Magister Manajemen ITB HAS",
-    description: "Informasi publikasi ilmiah dan tautan menuju sumber aslinya.",
-};
 
 function sourceUrl(value: string): string | null {
     if (/[\u0000-\u0020\u007f-\u009f]/.test(value)) return null;
@@ -34,13 +31,23 @@ function sourceUrl(value: string): string | null {
     }
 }
 
+const getItem = cache(getPublicPublicationBySlug);
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const item = await getItem(slug);
+    if (!item) notFound();
+    return detailMetadata("publikasi", item.slug, item.judul,
+        item.ringkasan?.trim() || `${item.judul}. ${item.sumber}, ${item.tahun}.`);
+}
+
 export default async function PublicationDetailPage({
     params,
 }: {
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-    const item = await getPublicPublicationBySlug(slug);
+    const item = await getItem(slug);
 
     if (!item) notFound();
 

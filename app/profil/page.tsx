@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import OrganizationChart from "@/components/OrganizationChart";
 import ProfileOverview from "@/components/profil/ProfileOverview";
 import ProfileAccreditation from "@/components/profil/ProfileAccreditation";
@@ -7,6 +8,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { db } from "@/prisma/db";
+
+export const metadata: Metadata = {
+  title: "Profil dan Akreditasi Magister Manajemen ITB HAS",
+  description: "Pelajari sejarah, visi dan misi, struktur organisasi, serta informasi akreditasi Program Studi Magister Manajemen ITB Haji Agus Salim Bukittinggi.",
+  alternates: { canonical: "/profil" },
+};
 
 export const dynamic = "force-dynamic";
 

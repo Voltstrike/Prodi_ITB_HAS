@@ -1,3 +1,4 @@
+import { listingMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -14,11 +15,12 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-    title: "Publikasi Ilmiah | Magister Manajemen ITB HAS",
-    description:
-        "Daftar tesis dan artikel ilmiah yang telah diterbitkan, beserta penulis dan tautan sumber publikasinya.",
-};
+export async function generateMetadata({ searchParams }: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+    return listingMetadata("/publikasi", "Publikasi Ilmiah Magister Manajemen ITB HAS",
+        "Telusuri tesis dan artikel ilmiah beserta penulis, tahun terbit, dan tautan ke sumber publikasinya.", await searchParams);
+}
 
 export default async function PublicationsPage({
     searchParams,

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/prisma/db";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -5,6 +6,12 @@ import DosenCarousel from "./components/DosenCarousel";
 import StaffCarousel from "./components/StaffCarousel";
 import { getMataKuliahDosen } from "@/lib/dosen/mata-kuliah-data";
 import { toDosenDto } from "@/lib/http/dto";
+
+export const metadata: Metadata = {
+  title: "Dosen dan Staf Magister Manajemen ITB HAS",
+  description: "Kenali dosen pengampu, mata kuliah yang diajarkan, dan tenaga kependidikan Magister Manajemen ITB Haji Agus Salim Bukittinggi.",
+  alternates: { canonical: "/dosen" },
+};
 
 export const dynamic = "force-dynamic";
 

@@ -1,3 +1,4 @@
+import { listingMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
@@ -6,11 +7,12 @@ import Footer from "@/components/Footer";
 import { NEWS_MAX_QUERY_LENGTH, parseNewsListFilters, newsPageHref } from "@/lib/berita/list-filters";
 import { getPublishedNewsPage, type PublishedNewsPage } from "@/lib/berita/list";
 
-export const metadata: Metadata = {
-  title: "Berita | Magister Manajemen ITB HAS",
-  description:
-    "Berita dan kegiatan Program Studi Magister Manajemen ITB Haji Agus Salim.",
-};
+export async function generateMetadata({ searchParams }: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+    return listingMetadata("/berita", "Berita Magister Manajemen ITB HAS",
+        "Baca berita, kegiatan kampus, dan kabar terbaru dari Program Studi Magister Manajemen ITB Haji Agus Salim Bukittinggi.", await searchParams);
+}
 
 export const dynamic = "force-dynamic";
 

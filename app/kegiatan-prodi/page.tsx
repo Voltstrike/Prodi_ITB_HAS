@@ -1,3 +1,4 @@
+import { listingMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -5,11 +6,12 @@ import Footer from "@/components/Footer";
 import { db } from "@/prisma/db";
 import KegiatanCard from "./components/KegiatanCard";
 
-export const metadata: Metadata = {
-    title: "Penelitian & Pengabdian | Magister Manajemen ITB HAS",
-    description:
-        "Kegiatan penelitian dan pengabdian masyarakat Program Studi Magister Manajemen ITB Haji Agus Salim.",
-};
+export async function generateMetadata({ searchParams }: {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+    return listingMetadata("/kegiatan-prodi", "Penelitian dan Pengabdian Magister Manajemen ITB HAS",
+        "Telusuri kegiatan penelitian dan pengabdian kepada masyarakat oleh dosen Magister Manajemen ITB HAS berdasarkan jenis dan tahun kegiatan.", await searchParams);
+}
 
 export const dynamic = "force-dynamic";
 
