@@ -169,44 +169,53 @@ export default async function PublicationsPage({
                                     : "Belum ada publikasi yang ditampilkan."}
                             </p>
                         ) : (
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                {publications.map((item) => (
-                                    <article
-                                        key={item.id}
-                                        className="flex min-w-0 flex-col rounded-xl border border-slate-200 bg-white p-6"
-                                    >
-                                        <p className="text-xs font-semibold text-blue-700">
-                                            {item.jenis === "TESIS" ? "Tesis" : "Artikel ilmiah"}
-                                            {" · "}{item.tahun}
-                                        </p>
-                                        <h3 className="mt-3 break-words text-lg font-bold leading-snug text-slate-900">
-                                            <Link
-                                                href={`/publikasi/${encodeURIComponent(item.slug)}`}
-                                                className="hover:text-blue-700 hover:underline"
-                                            >
-                                                {item.judul}
-                                            </Link>
-                                        </h3>
-                                        <p className="mt-4 line-clamp-3 break-words text-sm text-slate-600">
-                                            {publicationAuthors(item.penulis).join("; ")}
-                                        </p>
-                                        <p className="mt-3 break-words text-xs text-slate-500">
-                                            {item.sumber}
-                                        </p>
-                                        {item.ringkasan && (
-                                            <p className="mt-4 line-clamp-3 break-words text-sm leading-relaxed text-slate-600">
-                                                {item.ringkasan}
-                                            </p>
-                                        )}
-                                        <Link
-                                            href={`/publikasi/${encodeURIComponent(item.slug)}`}
-                                            aria-label={`Lihat detail ${item.judul}`}
-                                            className="mt-auto pt-6 text-sm font-semibold text-blue-700 hover:underline"
-                                        >
-                                            Lihat detail →
-                                        </Link>
-                                    </article>
-                                ))}
+                            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                <table aria-labelledby="publication-list" className="w-full table-fixed text-left">
+                                    <thead className="bg-slate-100 text-sm text-slate-700">
+                                        <tr>
+                                            <th scope="col" className="px-4 py-3 font-semibold md:w-[53%] md:px-6">Judul publikasi</th>
+                                            <th scope="col" className="hidden px-3 py-3 font-semibold md:table-cell md:w-[23%]">Penulis</th>
+                                            <th scope="col" className="hidden px-3 py-3 font-semibold md:table-cell md:w-[15%]">Jenis</th>
+                                            <th scope="col" className="w-[4.5rem] px-2 py-3 text-right font-semibold md:w-[9%] md:pr-6">Tahun</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {publications.map((item) => {
+                                            const authors = publicationAuthors(item.penulis).join("; ");
+                                            const isThesis = item.jenis === "TESIS";
+                                            const kind = isThesis ? "Tesis" : "Artikel ilmiah";
+                                            return (
+                                                <tr key={item.id} className="border-t border-slate-200 align-top hover:bg-slate-50 focus-within:bg-blue-50">
+                                                    <td className="break-words px-4 py-4 md:px-6">
+                                                        <Link
+                                                            href={`/publikasi/${encodeURIComponent(item.slug)}`}
+                                                            className="rounded-sm font-semibold leading-snug text-blue-800 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                                                        >
+                                                            {item.judul}
+                                                        </Link>
+                                                        <p className="mt-1 hidden text-sm leading-snug text-slate-600 md:block">
+                                                            {item.sumber}
+                                                        </p>
+                                                        <p className="mt-1 text-sm text-slate-600 md:hidden">
+                                                            {authors && `${authors} · `}{kind}
+                                                        </p>
+                                                    </td>
+                                                    <td className="hidden break-words px-3 py-4 text-sm text-slate-700 md:table-cell">
+                                                        {authors}
+                                                    </td>
+                                                    <td className="hidden px-3 py-4 md:table-cell">
+                                                        <span className={`inline-block rounded-md px-2 py-1 text-xs font-medium ${isThesis ? "bg-violet-50 text-violet-800" : "bg-blue-50 text-blue-800"}`}>
+                                                            {kind}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-2 py-4 text-right text-sm tabular-nums text-slate-700 md:pr-6">
+                                                        {item.tahun}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
 
