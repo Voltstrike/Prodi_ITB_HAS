@@ -32,9 +32,10 @@ export default function KurikulumSection({
         ?? semesters[0]
     );
 
-    const konsentrasi = KONSENTRASI_KURIKULUM.find(
-        (value) => value === konsentrasiParam,
-    ) ?? "";
+    const showFilter = semester === 3;
+    const konsentrasi = showFilter
+        ? KONSENTRASI_KURIKULUM.find((value) => value === konsentrasiParam) ?? ""
+        : "";
 
     const courses = items.filter((item) =>
         (showAll || semester === undefined || item.semester === semester) &&
@@ -48,15 +49,7 @@ export default function KurikulumSection({
         : `Semester ${semester}`;
 
     function semesterHref(value: number | "semua") {
-        const params = new URLSearchParams({
-            semester: String(value),
-        });
-
-        if (konsentrasi) {
-            params.set("konsentrasi", konsentrasi);
-        }
-
-        return `/akademik?${params.toString()}#kurikulum`;
+        return `/akademik?semester=${value}#kurikulum`;
     }
 
     const tabClass = (active: boolean) =>
@@ -85,8 +78,7 @@ export default function KurikulumSection({
                 </div>
 
                 <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-                    Pilih semester untuk melihat mata kuliah, atau saring
-                    berdasarkan kelompok dan konsentrasi.
+                    Pilih semester untuk melihat daftar mata kuliah.
                 </p>
 
                 <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -125,55 +117,55 @@ export default function KurikulumSection({
                         </Link>
                     </nav>
 
-                    <form
-                        key={`${semester ?? "semua"}:${konsentrasi}`}
-                        action="/akademik#kurikulum"
-                        method="get"
-                        className="flex flex-wrap items-end gap-3 border-b border-slate-200 bg-slate-50/60 px-4 py-4 sm:px-5"
-                    >
-                        <input
-                            type="hidden"
-                            name="semester"
-                            value={
-                                showAll ? "semua" : semester ?? ""
-                            }
-                        />
+                    {showFilter && (
+                        <form
+                            key={konsentrasi}
+                            action="/akademik#kurikulum"
+                            method="get"
+                            className="flex flex-wrap items-end gap-3 border-b border-slate-200 bg-slate-50/60 px-4 py-4 sm:px-5"
+                        >
+                            <input
+                                type="hidden"
+                                name="semester"
+                                value="3"
+                            />
 
-                        <label className="min-w-0 basis-full text-sm font-medium text-slate-700 sm:basis-auto">
-                            Kelompok / Konsentrasi
+                            <label className="min-w-0 basis-full text-sm font-medium text-slate-700 sm:basis-auto">
+                                Kelompok / Konsentrasi
 
-                            <select
-                                name="konsentrasi"
-                                defaultValue={konsentrasi}
-                                className="mt-1.5 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-700 sm:w-72"
-                            >
-                                <option value="">
-                                    Semua Kelompok / Konsentrasi
-                                </option>
-
-                                {KONSENTRASI_KURIKULUM.map((value) => (
-                                    <option key={value} value={value}>
-                                        {value}
+                                <select
+                                    name="konsentrasi"
+                                    defaultValue={konsentrasi}
+                                    className="mt-1.5 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-blue-700 sm:w-72"
+                                >
+                                    <option value="">
+                                        Semua Kelompok / Konsentrasi
                                     </option>
-                                ))}
-                            </select>
-                        </label>
 
-                        <button
-                            type="submit"
-                            className="min-h-11 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-                        >
-                            Terapkan
-                        </button>
+                                    {KONSENTRASI_KURIKULUM.map((value) => (
+                                        <option key={value} value={value}>
+                                            {value}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
 
-                        <Link
-                            href="/akademik#kurikulum"
-                            prefetch={false}
-                            className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-                        >
-                            Reset
-                        </Link>
-                    </form>
+                            <button
+                                type="submit"
+                                className="min-h-11 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                            >
+                                Terapkan
+                            </button>
+
+                            <Link
+                                href={semesterHref(3)}
+                                prefetch={false}
+                                className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                            >
+                                Reset
+                            </Link>
+                        </form>
+                    )}
 
                     <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:px-5">
                         <h3 className="font-semibold text-slate-900">
@@ -196,8 +188,9 @@ export default function KurikulumSection({
                             </p>
 
                             <p className="mt-2 text-xs text-slate-500">
-                                Coba semester lain, pilih Semua,
-                                atau reset filter.
+                                {konsentrasi
+                                    ? "Reset filter untuk melihat semua mata kuliah Semester 3."
+                                    : "Coba semester lain atau pilih Semua."}
                             </p>
                         </div>
                     ) : (
