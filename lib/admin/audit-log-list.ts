@@ -28,6 +28,21 @@ export type AuditLogPage = {
 export async function getAuditLogsPage(
     filters: AuditLogFilters,
 ): Promise<AuditLogPage> {
+    return readAuditLogs(filters, AUDIT_LOG_PAGE_SIZE);
+}
+
+export async function getAuditLogsForExport(filters: AuditLogFilters) {
+    // One worksheet has 1,048,576 rows, including its header.
+    const capacity = 1_048_575;
+    const result = await readAuditLogs({ ...filters, page: 1 }, capacity);
+    if (result.total > capacity) return null;
+    return result.logs;
+}
+
+async function readAuditLogs(
+    filters: AuditLogFilters,
+    pageSize: number,
+): Promise<AuditLogPage> {
     const searchPattern = `%${escapeAuditLike(filters.q)}%`;
     const actorPattern = `%${escapeAuditLike(filters.actor)}%`;
     const fromInstant = filters.fromInstant ?? "";
@@ -73,8 +88,8 @@ export async function getAuditLogsPage(
                 total,
                 GREATEST(
                     1,
-                    ((total::bigint + ${AUDIT_LOG_PAGE_SIZE - 1})
-                        / ${AUDIT_LOG_PAGE_SIZE})::integer
+                    ((total::bigint + ${pageSize - 1})
+                        / ${pageSize})::integer
                 ) AS "totalPages"
             FROM totals
         ),
@@ -90,6 +105,14 @@ export async function getAuditLogsPage(
         )
         SELECT
             COALESCE(item.id, 0)::integer AS id,
+            COALESCE(log."userId", 0) AS "userId",
+            COALESCE(actor.nama, '') AS "actorName",
+            COALESCE(actor.email, '') AS "actorEmail",
+            COALESCE(log.action, '') AS action,
+            COALESCE(log.entity, '') AS entity,
+            COALESCE(log."entityId", 0) AS "entityId",
+            COALESCE(log.details, '') AS details,
+            COALESCE(item."createdAt", 'epoch'::timestamptz) AS "createdAt",
             chosen.total,
             chosen.page,
             chosen."totalPages"
@@ -97,13 +120,24 @@ export async function getAuditLogsPage(
         LEFT JOIN LATERAL (
             SELECT id, "createdAt"
             FROM filtered
+            WHERE chosen.total <= ${pageSize} OR ${pageSize === AUDIT_LOG_PAGE_SIZE}::boolean
             ORDER BY "createdAt" DESC, id DESC
-            LIMIT ${AUDIT_LOG_PAGE_SIZE}
-            OFFSET ((chosen.page - 1)::bigint * ${AUDIT_LOG_PAGE_SIZE})
+            LIMIT ${pageSize}
+            OFFSET ((chosen.page - 1)::bigint * ${pageSize})
         ) AS item ON true
+        LEFT JOIN public."auditLog" AS log ON log.id = item.id
+        LEFT JOIN public."adminUser" AS actor ON actor.id = log."userId"
         ORDER BY item."createdAt" DESC, item.id DESC
     `.returnsRow({
         id: "pg/int4@1",
+        userId: "pg/int4@1",
+        actorName: "pg/text@1",
+        actorEmail: "pg/text@1",
+        action: "pg/text@1",
+        entity: "pg/text@1",
+        entityId: "pg/int4@1",
+        details: "pg/text@1",
+        createdAt: "pg/timestamptz-string@1",
         total: "pg/int4@1",
         page: "pg/int4@1",
         totalPages: "pg/int4@1",
@@ -116,54 +150,21 @@ export async function getAuditLogsPage(
         throw new Error("Metadata pagination audit tidak tersedia.");
     }
 
-    const result: AuditLogPage = {
-        logs: [],
+    return {
+        logs: records.filter(row => row.id > 0).map(row => ({
+            id: row.id,
+            userId: row.userId,
+            actorName: row.actorName,
+            actorEmail: row.actorEmail,
+            action: row.action,
+            entity: row.entity,
+            entityId: row.entityId,
+            details: row.details,
+            createdAt: row.createdAt,
+        })),
         total: metadata.total,
         page: metadata.page,
         totalPages: metadata.totalPages,
-        pageSize: AUDIT_LOG_PAGE_SIZE,
+        pageSize,
     };
-
-    const ids = records.map((record) => record.id).filter((id) => id > 0);
-    if (ids.length === 0) return result;
-
-    const logs = await db.orm.public.AuditLog
-        .where((row) => row.id.in(ids))
-        .select(
-            "id", "userId", "action", "entity",
-            "entityId", "details", "createdAt",
-        )
-        .all();
-
-    const userIds = [...new Set(logs.map((log) => log.userId))];
-    if (userIds.length === 0) return result;
-
-    const actors = await db.orm.public.AdminUser
-        .where((row) => row.id.in(userIds))
-        .select("id", "nama", "email")
-        .all();
-
-    const actorById = new Map(actors.map((actor) => [actor.id, actor]));
-    const logById = new Map(logs.map((log) => [log.id, log]));
-
-    for (const id of ids) {
-        const log = logById.get(id);
-        if (!log) continue;
-
-        const actor = actorById.get(log.userId);
-
-        result.logs.push({
-            id: log.id,
-            userId: log.userId,
-            actorName: actor?.nama ?? "Admin tidak tersedia",
-            actorEmail: actor?.email ?? "",
-            action: log.action,
-            entity: log.entity,
-            entityId: log.entityId,
-            details: log.details,
-            createdAt: log.createdAt,
-        });
-    }
-
-    return result;
 }

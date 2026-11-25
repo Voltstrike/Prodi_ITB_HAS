@@ -1,3 +1,4 @@
+import ExportAuditButton from "./ExportAuditButton";
 import Link from "next/link";
 import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
 import { getAuditLogsPage } from "@/lib/admin/audit-log-list";
@@ -15,6 +16,7 @@ const actionLabels: Readonly<Record<string, string>> = {
     UPDATE: "Ubah",
     DELETE: "Hapus",
     IMPORT: "Impor",
+    EXPORT: "Ekspor",
 };
 
 const entityLabels: Readonly<Record<string, string>> = {
@@ -31,6 +33,7 @@ const entityLabels: Readonly<Record<string, string>> = {
     DokumenKurikulum: "Dokumen Akademik",
     DosenMataKuliah: "Penugasan Mengajar",
     AdminUser: "Akun Admin",
+    AuditLog: "Audit Log",
     AdminMfa: "MFA Admin",
 };
 
@@ -225,6 +228,15 @@ export default async function AuditLogPage({
 
             {filters && data && (
                 <>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-sm text-slate-600">
+                            {data.total} aktivitas sesuai filter.
+                        </p>
+                        <ExportAuditButton
+                            query={new URL(auditLogHref(filters, 1), "http://localhost").search}
+                            hasPeriod={Boolean(filters.from && filters.to)}
+                        />
+                    </div>
                     <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                         <table className="min-w-[54rem] w-full text-left text-sm">
                             <caption className="sr-only">
